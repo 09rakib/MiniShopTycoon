@@ -1,0 +1,5 @@
+[
+  {"id":"pantry","name":"Pantry shelves","shelf":0,"base_cost":120,"capacity_per_level":10,"requirements":[1,2,3]},
+  {"id":"chilled","name":"Chilled shelves","shelf":1,"base_cost":150,"capacity_per_level":10,"requirements":[1,2,3]},
+  {"id":"daily","name":"Daily picks shelves","shelf":2,"base_cost":180,"capacity_per_level":10,"requirements":[1,2,3]}
+]

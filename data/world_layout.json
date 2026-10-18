@@ -1,0 +1,102 @@
+{
+  "room_size": [
+    820,
+    1200
+  ],
+  "player_spawn": [
+    390,
+    610
+  ],
+  "player_speed": 205,
+  "player_radius": 15,
+  "camera_zoom": 0.82,
+  "camera_follow_speed": 8.0,
+  "walls": [
+    [
+      24,
+      170,
+      772,
+      22
+    ],
+    [
+      24,
+      170,
+      22,
+      830
+    ],
+    [
+      774,
+      170,
+      22,
+      830
+    ],
+    [
+      24,
+      978,
+      772,
+      22
+    ]
+  ],
+  "fixtures": [
+    {
+      "id": "burger_machine",
+      "type": "machine",
+      "name": "Burger machine",
+      "rect": [
+        100,
+        270,
+        150,
+        100
+      ],
+      "hint_point": [
+        170,
+        410
+      ]
+    },
+    {
+      "id": "serving_counter",
+      "type": "counter",
+      "name": "Serving counter",
+      "rect": [
+        430,
+        470,
+        220,
+        90
+      ],
+      "hint_point": [
+        415,
+        560
+      ]
+    },
+    {
+      "id": "cash_point",
+      "type": "cash",
+      "name": "Cash collection area",
+      "rect": [
+        430,
+        610,
+        74,
+        44
+      ],
+      "hint_point": [
+        415,
+        655
+      ]
+    },
+    {
+      "id": "plant",
+      "type": "plant",
+      "name": "Plant",
+      "rect": [
+        690,
+        230,
+        46,
+        46
+      ],
+      "hint_point": [
+        680,
+        300
+      ]
+    }
+  ]
+}

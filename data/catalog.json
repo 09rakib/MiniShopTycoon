@@ -1,0 +1,119 @@
+{
+  "starting_coins": 500,
+  "stock_batch": 5,
+  "customer_interval": 3.5,
+  "customer_duration": 9.0,
+  "max_customers": 4,
+  "products": [
+    {
+      "id": "bread",
+      "name": "Bread",
+      "wholesale": 8,
+      "price": 14,
+      "capacity": 20,
+      "color": "e6ac64",
+      "category": "Bakery",
+      "shelf": 0,
+      "unlock_level": 1
+    },
+    {
+      "id": "milk",
+      "name": "Milk",
+      "wholesale": 12,
+      "price": 20,
+      "capacity": 20,
+      "color": "88b9d2",
+      "category": "Dairy",
+      "shelf": 1,
+      "unlock_level": 1
+    },
+    {
+      "id": "apples",
+      "name": "Apples",
+      "wholesale": 6,
+      "price": 11,
+      "capacity": 20,
+      "color": "e98069",
+      "category": "Produce",
+      "shelf": 2,
+      "unlock_level": 1
+    },
+    {
+      "id": "eggs",
+      "name": "Eggs",
+      "wholesale": 10,
+      "price": 17,
+      "capacity": 20,
+      "color": "e3cba2",
+      "category": "Dairy",
+      "shelf": 1,
+      "unlock_level": 2
+    },
+    {
+      "id": "bananas",
+      "name": "Bananas",
+      "wholesale": 5,
+      "price": 9,
+      "capacity": 20,
+      "color": "efc85c",
+      "category": "Produce",
+      "shelf": 2,
+      "unlock_level": 2
+    },
+    {
+      "id": "rice",
+      "name": "Rice",
+      "wholesale": 15,
+      "price": 25,
+      "capacity": 20,
+      "color": "a6bb83",
+      "category": "Pantry",
+      "shelf": 0,
+      "unlock_level": 3
+    },
+    {
+      "id": "soft_drinks",
+      "name": "Soft drinks",
+      "wholesale": 9,
+      "price": 16,
+      "capacity": 20,
+      "color": "d78d79",
+      "category": "Drinks",
+      "shelf": 1,
+      "unlock_level": 3
+    },
+    {
+      "id": "snacks",
+      "name": "Snacks",
+      "wholesale": 7,
+      "price": 12,
+      "capacity": 20,
+      "color": "e8ac5f",
+      "category": "Snacks",
+      "shelf": 0,
+      "unlock_level": 4
+    },
+    {
+      "id": "soap",
+      "name": "Soap",
+      "wholesale": 11,
+      "price": 19,
+      "capacity": 20,
+      "color": "b49bc7",
+      "category": "Household",
+      "shelf": 2,
+      "unlock_level": 5
+    },
+    {
+      "id": "water",
+      "name": "Bottled water",
+      "wholesale": 4,
+      "price": 7,
+      "capacity": 20,
+      "color": "8dbbc9",
+      "category": "Drinks",
+      "shelf": 1,
+      "unlock_level": 2
+    }
+  ]
+}

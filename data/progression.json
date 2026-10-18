@@ -1,0 +1,19 @@
+{
+  "xp_per_customer": 10,
+  "levels": [
+    {"xp":0,"name":"Corner shop"},
+    {"xp":100,"name":"Neighborhood favorite"},
+    {"xp":300,"name":"Busy market"},
+    {"xp":650,"name":"Local landmark"},
+    {"xp":1100,"name":"Community grocer"},
+    {"xp":1700,"name":"Market master"}
+  ],
+  "goals": [
+    {"title":"Buy your first stock", "metric":"stock_spending", "target":1},
+    {"title":"Serve 10 customers", "metric":"customers", "target":10},
+    {"title":"Upgrade a shelf", "metric":"upgrades", "target":1},
+    {"title":"Reach shop level 3", "metric":"level", "target":3},
+    {"title":"Unlock all 10 products", "metric":"products", "target":10},
+    {"title":"Reach Market master", "metric":"level", "target":6}
+  ]
+}

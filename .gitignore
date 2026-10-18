@@ -1,0 +1,12 @@
+.godot/
+tools/
+builds/
+*.keystore
+*.jks
+export_credentials.cfg
+export_templates/
+feature_profiles/
+script_templates/
+text_editor_themes/
+.env
+.env.*
