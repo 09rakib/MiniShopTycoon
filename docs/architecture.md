@@ -134,3 +134,36 @@ Bundled launchers redirect APPDATA into `tools/profile`, so their saves live at
 `tools/profile/Godot/app_userdata/Mini Shop Tycoon/`.
 Android uses private app storage via Godot's `user://`. Clearing app data or
 uninstalling can erase progress. No cloud backup is provided or promised.
+
+
+## Phase E — bounded customers and atomic counter sales
+
+BurgerSales is owned by ShopEconomy. It registers unique monotonic runtime visit
+IDs with at most four live tickets, consumes each once, and retires on departure.
+Sold tickets remain marked until exit, preventing repeat checkout. Retired IDs
+are never reassigned within that instance; reset/restore invalidates all tickets.
+No completed-ticket history grows over time. Only current visitors are retained.
+
+BurgerCustomers owns arrival Timer and small queue FSM. BurgerCustomer bodies
+use fixed right-side approach/checkout/outer exit routes, collide against world
+layer 1 and never block the worker. State progression: ENTERING/QUEUING →
+WAITING_FOR_STOCK → BUYING → LEAVING. Only queue head enters BUYING. Empty stock
+waits, stock patience expires without a sale; blocked movement expires safely.
+Timers/body updates freeze on app background/focus loss, no offline catch-up.
+Menus block worker input while business continues, consistent with production.
+All timings/cap/route coordinates are in data/customers.json.
+
+Game.sell_burger delegates one synchronous transaction: validate live unused
+visit, counter stock, configured machine price and ledger ceilings; mark ticket,
+deduct exactly one counter burger and increase pending cash/revenue/sold count.
+No signals/awaits occur within mutation. Game persists the completed inventory
+and ledger together before publishing handling/sale signals. Production/carry
+stock, grocery ledger/XP and wallet are untouched. Zero ingredient expense means
+burger gross profit equals burger revenue for now; staff/ingredient expenses are
+not silently included. Cash accumulation is E; physical collection is F.
+
+Schema 6 adds burger_sales {uncollected_cash, sold, revenue}. Entire save validates
+before applying any field, including totals and pending <= revenue. Schemas 1–5
+initialize these to zero and preserve prior progress. Runtime customers/tickets
+are deliberately not serialized: only durable sale/inventory results survive.
+Restart does not replay purchases. Phase F will transfer cash into wallet.

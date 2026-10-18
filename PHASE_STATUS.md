@@ -1,63 +1,46 @@
 # Phase status — 19 October 2026
 
-Current checkpoint: **Transformation Phase D — carrying/delivery implemented.**
+Current checkpoint: **Transformation Phase E — customers and sales complete.**
 
-## Preserved project and workflow
+- User approved E after Phase D (e67cd06). Original grocery Phases 0–3 and
+  transformation B/C/D remain available and preserved.
+- Four-customer maximum, five-second arrival timer, spaced queue on right lane,
+  physical collision against fixtures/walls, one-second checkout, 35-second
+  stock patience, paid departure and 25-second blocked-route cleanup.
+- Each registered visit can buy one available counter burger once. Atomic
+  deduction/payment records 20 coins as uncollected cash, never wallet coins.
+- Burger sold count/revenue/cash remain separate from old grocery ledgers/XP.
+- Schema 6 migrates schemas 1–5 without resetting previous progress. Sales and
+  counter stock save together immediately; live visitors restart on relaunch.
+- Automated: 128 economy + 34 world + 32 production + 44 handling + 39 customer
+  checks = **277 passed, zero failures**, final logs have no script/runtime errors.
+- Customer tests include 10,000 duplicate attempts, 10,000 complete
+  production/carry/delivery/sale cycles, final-item contention, overflow,
+  migration, malformed save rejection, real movement/wait/sale/departure,
+  pause, stuck cleanup, solid counter collision and immediate saved checkout.
+- Rendered queue/sale inspected at 480×900 and 360×640. State labels placed to
+  the right so they do not overlap adjacent queued customers.
+- v0.7.0/code 7 APK exported successfully, signature v2/v3 verified, Android 7+,
+  ARMv7/ARM64, target 36, portrait and zero requested permissions.
+- Artifact: builds/MiniShopTycoon-phaseE.apk (57,708,489 bytes). No phone install
+  attempted because prior installation was explicitly aborted on the device.
+- Commit/push this checkpoint to the user repository and verify remote hash.
+  Stop before Phase F for user feedback. Automatic end-of-phase pushes continue.
 
-- Original numbered Phases 0–3 remain accessible through Menu with their validated
-  economy, inventory, levels, upgrades, goals and local save recovery.
-- Transformation A/B audited/backed up the project and added world/movement.
-- Phase C added automatic capped production; published as eb2c606 after the full
-  previous source checkpoint 1938b5b. Remote main hashes were verified.
-- User requested continuation into D and automatic commit/push after each phase.
-  Repository: https://github.com/09rakib/MiniShopTycoon.git
-- Engine/cache/APKs, local saves, signing secrets and phone screenshots stay local.
+## Manual acceptance pending
 
-## Phase D completed work
+Update the installed app without uninstalling. Deliver burgers; observe customers
+walk up, buy one, pay and leave. Counter decreases, cash waiting increases by 20,
+wallet stays unchanged. Empty counter produces no money; waiting visitors leave
+without purchasing after 35 seconds. Restart retains cash/counter/old progress.
+Physical joystick/multitouch, airplane mode, lifecycle and device performance are
+still user/device checks, not claimed as tested this phase.
 
-- Two-burger carry limit and separately configured eight-burger counter.
-- Pickup/delivery require proximity to the actual world station points. Button
-  presses re-evaluate the worker position; stale prompts cannot pick up remotely.
-- Atomic machine → carried → counter transfers conserve items. Full hands, empty
-  machine, empty hands and full counter are rejected without mutation.
-- Partial delivery retains leftovers. Actual pickup restarts a full machine.
-- Original visible carried stack, counter burgers, ground interaction circles,
-  contextual action button, small carry/counter HUD, feedback and desktop E.
-- Save schema 5 preserves existing data and adds carried/counter counts. Successful
-  transfers save all inventories immediately; pause/close retains carried burgers.
-- 128 economy + 34 world + 32 production + 44 handling checks pass (238 total).
-- Real rendered pickup/carry/delivery/full-counter layouts inspected at 480×900
-  and 360×640. One test-only signal cycle was disconnected; final runs are clean.
+## Limits / next phases
 
-## Checkpoint handoff
-
-- Final v0.6.0/code 6 APK exported and verified: 57,695,614 bytes, v2/v3 signature,
-  Android 7.0+, ARMv7/ARM64, portrait, target 36 and no requested permissions.
-- Publish the complete tested checkpoint via commit/push with remote hash check;
-  final commit is reported in the handoff. Stop before Phase E for feedback.
-- No automatic phone install retry: prior Android install was explicitly aborted.
-  Provide the APK for manual update; phone input/runtime acceptance is pending.
-
-## Pending
-
-E customer queue/sales; F cash collection; G machine upgrades/employees; H further
-machines/furniture; I polish; J comprehensive lifecycle/save hardening; K measured
-Android performance and release. No later-phase gameplay was implemented early.
-
-## Manual tests awaiting confirmation
-
-- Walk to machine, collect two, carry visibly, deliver to counter.
-- Repeated taps, distance limits, full hands/counter and saved held items.
-- Two-finger joystick/action use, Home/resume, Android Back and airplane mode.
-- Existing coins, inventory/upgrades/level survive installing the update.
-- Follow docs/testing.md and approve before Phase E.
-
-## Known limits
-
-- No burger customers yet, so the counter does not drain in D. No new wallet
-  earnings are generated by production or handling. Grocery gameplay is separate.
-- Worker position respawns safely; held burgers persist. No offline production.
-- Production-only writes remain batched for five seconds; successful item
-  transfers flush immediately. Unnotified process death can lose recent production.
-- Physical phone migration/touch tests, FPS, memory/battery and low-end tests
-  remain unverified. This is a staged checkpoint, not a finished release.
+F adds physical cash collection and wallet transfer. Cash cannot be spent yet.
+G upgrades/employees; H additional machines/furniture; I polish; J full lifecycle
+verification; K measured Android/release. No offline production or sales.
+Worker respawns safely; carried items persist. Live customer routes are transient.
+Successful sales/transfers save immediately; production-only writes batch five
+seconds. Abrupt process termination can lose production since the last flush.

@@ -78,7 +78,7 @@ func _run() -> void:
 	loaded.handling.transfer("deliver", delivery, loaded.production)
 	loaded.handling.transfer("pickup", pickup, loaded.production)
 	var snapshot: Dictionary = loaded.snapshot()
-	check(snapshot["schema_version"] == 5 and economy.restore(JSON.parse_string(JSON.stringify(snapshot))) and economy.production.stock == 1 and economy.handling.carried == 2 and economy.handling.counter == 2, "Schema 5 retains machine, carried and counter quantities together")
+	check(snapshot["schema_version"] == 6 and economy.restore(JSON.parse_string(JSON.stringify(snapshot))) and economy.production.stock == 1 and economy.handling.carried == 2 and economy.handling.counter == 2, "Schema 6 retains machine, carried and counter quantities together")
 	var invalid_save: Dictionary = snapshot.duplicate(true)
 	invalid_save["burger_handling"]["carried"] = 3
 	invalid_save["coins"] = 1

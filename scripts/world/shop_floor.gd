@@ -24,9 +24,9 @@ func _draw() -> void:
 	draw_style_box(style(Color("e3cfaa"), 16), Rect2(92, 490, 154, 140))
 	draw_rect(Rect2(108, 507, 122, 105), Color("d5c098"), false, 2)
 	text("SPACE TO GROW", Vector2(112, 559), 13, Color("8c815e"))
-	for y: int in [615, 683, 751]:
-		draw_arc(Vector2(675, y), 22, 0, TAU, 32, Color("c4ad82"), 2, true)
-	text("QUEUE", Vector2(649, 810), 15, Color("a29170"))
+	for y: int in [600, 664, 728, 792]:
+		draw_arc(Vector2(700, y), 22, 0, TAU, 32, Color("c4ad82"), 2, true)
+	text("QUEUE", Vector2(674, 830), 15, Color("a29170"))
 	for station: Dictionary in layout["fixtures"]:
 		if not station["id"] in ["burger_machine", "serving_counter"]:
 			continue

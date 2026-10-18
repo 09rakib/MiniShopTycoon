@@ -17,6 +17,7 @@ var progression: ShopProgression = ShopProgression.new()
 var upgrade_rules: ShelfUpgrades = ShelfUpgrades.new()
 var production: ProductionState = ProductionState.new()
 var handling: BurgerHandling = BurgerHandling.new()
+var burger_sales: BurgerSales = BurgerSales.new()
 const MAX_TOTAL: int = 1000000000000
 const LEGACY_PRODUCTS: Array[String] = ["bread", "milk", "apples"]
 
@@ -28,6 +29,7 @@ func _init() -> void:
 	reset()
 
 func reset() -> void:
+	burger_sales.reset()
 	handling.reset()
 	production.reset()
 	coins = int(catalog["starting_coins"])
@@ -147,8 +149,8 @@ func buy_upgrade(id: String) -> String:
 	return ""
 
 func snapshot() -> Dictionary:
-	return {"schema_version": 5, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
-		"burger_handling": handling.snapshot(),
+	return {"schema_version": 6, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
+		"burger_handling": handling.snapshot(), "burger_sales": burger_sales.snapshot(),
 		"production": production.snapshot(),
 		"upgrade_spending": upgrade_spending, "shelf_upgrades": shelf_upgrades.duplicate(),
 		"retained_unlocks": retained_unlocks.duplicate(),
@@ -163,7 +165,7 @@ func inventory_value() -> int:
 
 func restore(data: Dictionary) -> bool:
 	# Validate the entire record before touching working state.
-	if not _valid_integer(data.get("schema_version"), 1, 5) or not data.get("stock") is Dictionary:
+	if not _valid_integer(data.get("schema_version"), 1, 6) or not data.get("stock") is Dictionary:
 		return false
 	for key: String in ["coins", "revenue", "cost_of_goods", "customers"]:
 		if not _valid_integer(data.get(key), 0, MAX_TOTAL):
@@ -214,8 +216,13 @@ func restore(data: Dictionary) -> bool:
 	if version >= 5:
 		if not data.get("burger_handling") is Dictionary or not loaded_handling.restore(data["burger_handling"]):
 			return false
+	var loaded_sales: BurgerSales = BurgerSales.new()
+	if version >= 6:
+		if not data.get("burger_sales") is Dictionary or not loaded_sales.restore(data["burger_sales"]):
+			return false
 	# All fields have validated. Update the existing instance so controllers keep
 	# their reference across restores/resets; no partial state is applied earlier.
+	burger_sales.restore(loaded_sales.snapshot())
 	handling.restore(loaded_handling.snapshot())
 	production.restore(loaded_production.snapshot())
 	coins = int(data["coins"])

@@ -18,9 +18,9 @@ https://godotengine.org/download/windows/ and choose standard 4.7.2, then extrac
 the two executable files under `tools/godot`. No .NET edition is required.
 `tools` is excluded from Godot imports and source control.
 
-## Android testing — transformation Phase D
+## Android testing — transformation Phase E
 
-Transfer `builds/MiniShopTycoon-phaseD.apk` to your phone over USB,
+Transfer `builds/MiniShopTycoon-phaseE.apk` to your phone over USB,
 open it in Files, and allow installation from that file app only if Android asks
 and you want to install this development build. Do not disable Play Protect.
 Launch **Mini Shop Tycoon**. It requires Android 7.0+ and an OpenGL ES 3 capable phone.
@@ -48,8 +48,8 @@ Export → Android**. Set Android SDK Path to your SDK and Java SDK Path to JDK
 17 or a supported newer JDK. On this PC the inspected JDK is
 `C:/Program Files/Android/Android Studio/jbr` (21.0.10).
 Install matching **4.7.2** export templates using **Editor → Manage Export
-Templates**. Choose **Project → Export → Android Phase D → Export Project**,
-keep debug enabled, and save to `builds/MiniShopTycoon-phaseD.apk`.
+Templates**. Choose **Project → Export → Android Phase E → Export Project**,
+keep debug enabled, and save to `builds/MiniShopTycoon-phaseE.apk`.
 
 The Android preset uses both ARMv7 and ARM64, portrait configuration and package
 `com.minishoptycoon.offlinegame` (provisional; global uniqueness not verified).

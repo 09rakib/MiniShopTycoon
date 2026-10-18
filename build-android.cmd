@@ -3,5 +3,5 @@ cd /d "%~dp0"
 set "APPDATA=%~dp0tools\profile"
 set "LOCALAPPDATA=%~dp0tools\local-profile"
 set "JAVA_HOME=C:\Program Files\Android\Android Studio\jbr"
-"tools\godot\Godot_v4.7.2-stable_win64_console.exe" --headless --path . --export-debug "Android Phase D" "builds/MiniShopTycoon-phaseD.apk"
+"tools\godot\Godot_v4.7.2-stable_win64_console.exe" --headless --path . --export-debug "Android Phase E" "builds/MiniShopTycoon-phaseE.apk"
 pause

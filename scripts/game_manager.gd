@@ -4,6 +4,7 @@ signal feedback(text: String)
 signal level_up(level: int)
 signal production_changed
 signal handling_changed
+signal burger_sale_completed(amount: int)
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
@@ -63,6 +64,15 @@ func interact_burgers(action: String, worker_position: Vector2) -> bool:
 	if saved:
 		var amount: int = int(result["amount"])
 		feedback.emit(("Picked up %d burger%s." if action == "pickup" else "Delivered %d burger%s.") % [amount, "s" if amount != 1 else ""])
+	return true
+
+func sell_burger(ticket: int) -> bool:
+	var amount: int = economy.burger_sales.purchase(ticket, economy.handling, economy.production)
+	if amount == 0:
+		return false
+	persist()
+	handling_changed.emit()
+	burger_sale_completed.emit(amount)
 	return true
 
 func restart() -> void:

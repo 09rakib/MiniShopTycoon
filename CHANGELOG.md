@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.0 — Transformation Phase E — 19 October 2026
+
+- Added bounded physical customers, right-side queue, checkout, patience and exit.
+- Added one-time authoritative counter purchases; failed purchases create no money.
+- Added separate persistent pending cash, burger sold count and revenue; wallet
+  remains unchanged until Phase F. Schema 6 preserves schemas 1–5.
+- Added 39 customer checks including 10,000 complete production-to-sale cycles;
+  all 277 checks pass. Rendered normal/compact layouts and verified debug APK.
+- No phone installation or physical cash collection in this checkpoint.
+
 ## 0.6.0 — Transformation Phase D — 19 October 2026
 
 - Added proximity-checked machine pickup, two-burger carrying and counter delivery.

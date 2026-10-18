@@ -1,0 +1,22 @@
+{
+  "max_active": 4,
+  "spawn_seconds": 5.0,
+  "speed": 115.0,
+  "wait_seconds": 35.0,
+  "service_seconds": 1.0,
+  "route_timeout": 25.0,
+  "entrance": [
+    700,
+    920
+  ],
+  "queue_front": [
+    700,
+    600
+  ],
+  "queue_spacing": 64,
+  "checkout": [
+    700,
+    520
+  ],
+  "exit_lane_x": 750
+}

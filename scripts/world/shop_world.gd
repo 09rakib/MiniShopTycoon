@@ -3,6 +3,7 @@ extends Node2D
 var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world_layout.json"))
 var player: WorkerCharacter
 var camera: ShopCamera
+var actors: Node2D
 var fixtures: Array[ShopFixture] = []
 
 func _ready() -> void:
@@ -16,7 +17,7 @@ func _ready() -> void:
 		body.position = Vector2(float(wall[0]) + float(wall[2]) / 2, float(wall[1]) + float(wall[3]) / 2)
 		body.add_child(shape)
 		add_child(body)
-	var actors: Node2D = Node2D.new()
+	actors = Node2D.new()
 	actors.y_sort_enabled = true
 	add_child(actors)
 	for definition: Dictionary in layout["fixtures"]:

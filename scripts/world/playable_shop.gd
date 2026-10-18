@@ -11,6 +11,8 @@ var legacy_layer: Control
 var legacy: Control
 var suspended: bool = false
 var production_controller: ProductionController
+var customer_controller: BurgerCustomers
+var cash_label: Label
 var carry_label: Label
 var action_button: Button
 var action: String = ""
@@ -23,6 +25,9 @@ func _ready() -> void:
 	add_child(world)
 	production_controller = ProductionController.new()
 	add_child(production_controller)
+	customer_controller = BurgerCustomers.new()
+	customer_controller.actors = world.actors
+	add_child(customer_controller)
 	var layer: CanvasLayer = CanvasLayer.new()
 	add_child(layer)
 	hud = Control.new()
@@ -136,6 +141,9 @@ func _build_hud() -> void:
 	instruction.offset_top = -40
 	instruction.offset_bottom = -18
 	hud.add_child(instruction)
+	cash_label = _label("", 15)
+	cash_label.position = Vector2(24, 144)
+	hud.add_child(cash_label)
 	location_label = _label("Explore your shop", 16)
 	location_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	location_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -183,12 +191,12 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("Collect, carry, and stock your counter.", 17))
+	buttons.add_child(_label("Serve burgers to your waiting customers.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.6.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.7.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -201,6 +209,7 @@ func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
 	level_label.text = "Level %d • %s" % [Game.economy.shop_level(), Game.economy.progression.xp_text(Game.economy.customers)]
 	carry_label.text = "Carry %d/%d • Counter %d/%d" % [Game.economy.handling.carried, Game.economy.handling.carry_capacity(), Game.economy.handling.counter, Game.economy.handling.counter_capacity()]
+	cash_label.text = "Cash waiting: %d | Sales: %d" % [Game.economy.burger_sales.uncollected_cash, Game.economy.burger_sales.sold]
 	_update_location()
 
 func _update_location() -> void:
@@ -298,10 +307,12 @@ func _notification(what: int) -> void:
 		suspended = true
 		_block_controls(true)
 		production_controller.set_paused(true)
+		customer_controller.set_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
 		_block_controls(menu.visible or legacy_layer.visible)
 		production_controller.set_paused(false)
+		customer_controller.set_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if legacy_layer.visible:
 			_close_legacy()
