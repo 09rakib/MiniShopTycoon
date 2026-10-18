@@ -1,20 +1,19 @@
-# Known issues and limits — transformation Phase B
+# Known limits — transformation Phase C
 
-- This checkpoint is a playable movement foundation. Production, burger carrying,
-  new customer queue sales, uncollected cash, machine upgrades and employees are
-  future phases. The stationary machine/counter/cash tray are world fixtures.
-- Previous grocery economy/inventory/upgrades/customer features remain in Menu.
-  They operate on the original saved business and do not represent burger sales.
-- Worker position resets to a safe spawn on relaunch. Grocery progress remains
-  persisted under schema 3; movement does not write files every frame.
-- Raised 2D visuals are original procedural artwork. No dynamic shadows, complex
-  physics props, pathfinding or external dependencies were added.
-- Floor art currently targets the checked-in room dimensions. Changing room size
-  in JSON also requires adapting the authored decorative floor bounds.
-- At camera limits the worker can approach screen edges; control/equipment
-  readability and physical multitouch cancellation need user phone feedback.
-- Existing save recovery limitations still apply: unreadable/newer saves are
-  preserved and automatic writes stop until explicit reset/recovery. Clearing
-  Android data or uninstalling may erase local progress; there is no cloud backup.
-- No sustained-device FPS, memory, battery or low-end performance claim is made.
-- No reference image files were supplied with the transformation text attachment.
+- Machine production is active and capped at ten. Player pickup/carrying is Phase
+  D, so the full machine has no player-facing drain yet. Resume-on-removal is
+  implemented/tested through the shared bounded inventory primitive.
+- New customer queue sales, uncollected cash and wallet pickup are Phases E/F.
+  Machine upgrade buying/employees/furniture remain later phases. Configured
+  upgrade tiers do not imply purchasable upgrades in this checkpoint.
+- The original grocery economy remains under Menu and is independent of burger
+  production. Producing a burger never increases wallet, sales or XP.
+- Five-second batched saves plus lifecycle flushes preserve machine stock.
+  Unnotified abrupt termination may lose up to five seconds of new production.
+  Partial timer progress is restarted; no offline production/catch-up is granted.
+- Schema 4 migrates compatible prior data. Do not downgrade to earlier APKs after
+  migration. Uninstalling/clearing data can erase local progress; no cloud backup.
+- Worker position still respawns at a safe location. Room artwork is authored for
+  the checked-in layout; changing its dimensions also needs decorative-art edits.
+- Prior unreadable/newer save preservation/recovery policies remain unchanged.
+- No sustained FPS, low-end, battery, memory or airplane-mode result is claimed.

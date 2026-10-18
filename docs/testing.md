@@ -1,57 +1,41 @@
-# Transformation Phase B manual checkpoint
+# Phase C manual checkpoint — automatic burger production
 
-The game now opens directly into a walkable burger shop. This checkpoint is
-movement/layout only. The burger machine, serving counter and cash tray are
-positioned solid fixtures; production/carrying/sales/cash start in Phases C–F.
+Install builds/MiniShopTycoon-phaseC.apk over the existing app without uninstalling
+or clearing data. This update is v0.5.0/code 5. Previous grocery coins, inventory,
+levels and upgrades are retained; schema 4 adds machine stock.
 
-## Run
+1. Walk to the burger press at the upper-left of the shop.
+2. On a fresh machine, count should start at 0/10. Without tapping any action,
+   it increases by one every two seconds. Moving away must not stop production.
+3. See the actual burger stacks and COOKING label, then 10/10 and FULL after
+   roughly 20 seconds from empty. Leave it full for another 30 seconds: it must
+   remain exactly ten, without extra items or increasing wallet/XP/sales.
+4. Open Menu and close it. The machine may continue producing; the worker stays
+   stopped until a fresh joystick drag. Production pauses while backgrounded.
+5. Wait at least five seconds after a new burger appears, fully close/reopen,
+   and confirm its stock persists. Home/resume also flushes current production.
+6. Check previous grocery data in Menu. Do not reset progress unless you want
+   to erase that business and the new machine stock.
+7. Continue movement checks: all directions, diagonal speed, release outside
+   joystick, walls/equipment collision, camera bounds and Android Back.
 
-- PC: double-click play.cmd. Use WASD/arrows or drag the joystick with the mouse.
-- Android: install builds/MiniShopTycoon-phaseB.apk as an update without
-  uninstalling/clearing data. The saved grocery game remains under Menu.
-- Source snapshot before transformation: builds/backups/phase3-before-world.zip.
+There is no player pickup/carry button yet; that is Phase D. Therefore a full
+machine stays full during this checkpoint. Removing stock and automatic restart
+are verified through the authoritative inventory primitive in automated tests.
+New customers, sales, cash pickup, machine-upgrade purchasing and employees are
+not implemented early. The original grocery view remains available separately.
 
-## Movement and collision
+Production auto-saves in five-second batches, plus lifecycle/transaction flushes.
+An abrupt process kill with no pause/quit callback can lose up to five seconds of
+new burgers. There is no offline production/catch-up; each resume starts a new
+full production interval. Do not downgrade after save-schema migration.
 
-1. Drag the lower-left joystick in every direction; try diagonals. The worker
-   should face movement, walk smoothly and stop as soon as you release.
-2. Start a drag and move your finger outside the joystick circle, then release.
-   The worker must stop. A second finger touching Menu must not steal movement.
-3. Walk up to the burger machine, around both sides, then to the serving counter.
-   Walk into each solid object: the worker's feet must not pass through it.
-4. Walk along all walls and the entrance boundary. Stay inside the shop. The
-   painted expansion bay and queue circles are floor markings, not solid props.
-5. Move from one side to the other. The camera should follow gently, keep the
-   active area readable and show no unintended empty area beyond the room.
-6. Check character size, equipment labels and control visibility on your screen.
-   System bars remain visible; the joystick sits above the navigation area.
+Desktop: play.cmd, joystick drag or WASD/arrows. Automated checks: test.cmd runs
+128 economy + 34 world/input + 32 production checks (194 total). The production
+suite uses real timers and also tests 10,000 full-machine attempts, cap/resume,
+invalid data, migration and saving. Captures: tests/capture_production.gd.
 
-## Controls and old progress
-
-1. While moving, open Menu. Movement stops immediately. Return to the shop;
-   movement waits for a fresh joystick drag and the worker stays in place.
-2. Open Inventory and Shelf upgrades & goals. Confirm your previous coins,
-   products, capacity, level and upgrades are still present. Purchases continue
-   to use the original validated grocery economy.
-3. Previous grocery shop opens the original dashboard and its existing customer
-   gameplay. It is intentionally separate from the future burger loop.
-4. Use Back to Little Bun, then Back to the shop. The new world is not reloaded;
-   worker position is kept. Legacy automatic sales stop outside the grocery view.
-5. Android Back closes grocery content to management; closes management to the
-   world; and opens management when pressed in the world.
-6. Press Home during movement, then return. The joystick should be neutral and
-   the worker must not continue moving without a new touch.
-7. Close/reopen or force stop. Grocery progress persists; the worker starts at a
-   safe spawn. No new movement-only save data is introduced in this checkpoint.
-8. Test airplane mode and several minutes of walking. Report input lag, crashes,
-   heat, camera problems, clipping or routes that feel too tight.
-
-## Automated checks and evidence
-
-- test.cmd runs the original 128 regression checks plus 31 world/input/physics
-  checks and flags engine script errors in the logs.
-- tests/capture_world.gd renders screenshots at 480×900, 360×640 and 480×1040.
-- docs/test_report_phaseB.md records actual results and connected-device status.
-
-Please report your phone observations before Phase C begins. No production,
-carrying, new customer sales, employees or furniture expansion is implemented yet.
+Report phone model, exact steps, expected/actual behavior and any clipping or
+input issue. No sustained FPS/battery/memory or airplane-mode result is claimed.
+Approve this checkpoint before Phase D begins. Source is published to:
+https://github.com/09rakib/MiniShopTycoon

@@ -1,6 +1,6 @@
 # Architecture
 
-## Current entry: transformation Phase B
+## Current entry: transformation Phases B/C
 
 `scenes/playable_shop.tscn` is now the entry; the previous `scenes/main.tscn`
 remains unchanged apart from an embedded-mode Back-event guard. The new
@@ -23,10 +23,26 @@ remains unchanged apart from an embedded-mode Back-event guard. The new
 - `shop_floor.gd` / `shop_fixture.gd`: original raised 2D art and static footprints;
   depth sorting places the worker in front of or behind equipment as appropriate.
 
-No new saved gameplay field or currency source exists in Phase B. Movement does
-not write saves; relaunch starts the worker at a valid spawn while all schema-3
-progress stays intact. No production, burger transfer, new sales, cash collection,
-machine upgrades, employees or furniture purchase is implemented early.
+Phase B introduced no new saved gameplay field/currency source. Phase C adds
+`ProductionState`, owned by ShopEconomy, and `ProductionController`, a one-shot
+timer in the playable world. The model is authoritative; stock changes emit
+signals to restart/stop the timer and update visuals. Full/inactive machines
+have no production wakeups. Timer callbacks create at most one bounded item.
+Machine configuration includes future upgrade tiers; upgrade buying is Phase G.
+
+Schema 4 stores machine ID, stock, level and active state alongside the previous
+economy. Schemas 1–3 initialize production empty/active at level 1. Validation
+finishes before applying any field, including machine stock, so invalid new
+fields cannot partially overwrite a valid wallet. Old backup behavior remains.
+Production dirties state; a five-second timer batches writes, and normal
+transactions/pause/focus-loss/quit flush immediately. An abrupt kill without
+lifecycle callbacks can lose up to five seconds of newly produced items; Phase J
+will harden process-death behavior. Partial production time is not persisted:
+resuming/relaunch starts a fresh interval, with no offline catch-up.
+
+Movement does not write saves; relaunch starts the worker at a valid spawn.
+No burger transfer, new sales, cash collection, machine-upgrade purchases,
+employees or furniture purchase is implemented early.
 Those systems are scoped in the new A–K roadmap and the Phase A audit.
 See `transformation_audit.md` for reuse decisions and future transaction flow.
 

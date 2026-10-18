@@ -10,11 +10,14 @@ var menu: Control
 var legacy_layer: Control
 var legacy: Control
 var suspended: bool = false
+var production_controller: ProductionController
 
 func _ready() -> void:
 	Game.running = false
 	world = ShopWorld.new()
 	add_child(world)
+	production_controller = ProductionController.new()
+	add_child(production_controller)
 	var layer: CanvasLayer = CanvasLayer.new()
 	add_child(layer)
 	hud = Control.new()
@@ -140,12 +143,12 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("Your shop, one step at a time.", 17))
+	buttons.add_child(_label("The burger press runs automatically.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.4.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.5.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -219,9 +222,11 @@ func _notification(what: int) -> void:
 	if what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT]:
 		suspended = true
 		_block_controls(true)
+		production_controller.set_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
 		_block_controls(menu.visible or legacy_layer.visible)
+		production_controller.set_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if legacy_layer.visible:
 			_close_legacy()

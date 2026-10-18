@@ -1,26 +1,26 @@
-# Development roadmap — gameplay transformation
+# Roadmap — gameplay transformation
 
-The original numbered Phases 0–3 remain completed and preserved. The user has
-changed the gameplay direction; the following A–K roadmap now controls new work.
+Original numbered Phases 0–3 remain preserved. New A–K phases control expansion.
 
-- A — Audit existing systems, choose additive architecture, back up Phase 3.
-  Completed; see transformation_audit.md.
-- B — Walkable shop, worker, joystick, collision, camera and compact HUD.
-  Implemented and tested; current manual checkpoint. STOP for user feedback.
-- C — Automatic burger production: 2 seconds, capped machine stock, full/resume.
-- D — Carry up to two burgers; proximity pickup, visual stack and counter delivery.
-- E — Bounded customers, queues, one counter-stock sale per customer, cash accrued.
-- F — Proximity cash pickup; atomic uncollected-cash → wallet transfer and save.
-- G — Real production/capacity/price upgrades and one reliable employee type.
-- H — Additional machine framework and valid fixed furniture placements.
-- I — Visual/audio/animation polish and mobile menu refinement.
-- J — Complete save/migration/progression and lifecycle verification.
-- K — Real-device performance, final Android export/release and current policy QA.
+- A: audit/reuse/backup — completed.
+- B: world, worker, joystick, collision, camera, compact HUD — completed.
+  Full source published as 1938b5b before starting the next phase.
+- C: automatic two-second burger production, capped machine, full/resume,
+  configuration and local machine state — current tested checkpoint.
+- D: carry up to two, proximity pickup, visual stack and counter delivery.
+- E: bounded customers, queue, one valid counter sale per customer, cash accrued.
+- F: aggregated cash pickup with atomic transfer to wallet and safe save.
+- G: real machine upgrades and one reliable employee type.
+- H: further machine content and fixed valid furniture placement.
+- I: visuals/audio/animation and mobile refinement.
+- J: comprehensive save/migration/lifecycle and progression verification.
+- K: measured Android performance, final AAB/release and current policy checks.
 
-Build a single authoritative burger transaction pipeline in C–F. Prior automatic
-sales remain confined to the preserved grocery view until explicitly replaced.
-Keep wallet, sales/profit, machine/carried/counter stock and uncollected cash
-separate. No ads, accounts, servers, networking or mandatory external services.
+At each approved phase: inspect → implement → test/fix → update docs/status →
+commit and push to https://github.com/09rakib/MiniShopTycoon → stop for feedback.
+The user explicitly requires the push at the end of each future phase. Do not
+force-push or discard remote work. See repository_workflow.md.
 
-Advance only when the user approves the current checkpoint or explicitly asks
-to continue. Later phases are not implicitly authorized by finishing Phase B.
+Only C was authorized after the initial upload. Stop before D until the user
+approves or explicitly requests continuation. Keep offline play, no ads/accounts/
+servers, and one authoritative pipeline for machine/carried/counter/cash/wallet.

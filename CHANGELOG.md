@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0 — Transformation Phase C — 19 October 2026
+
+- Uploaded the complete prior source checkpoint to the user's GitHub repository
+  before starting Phase C. Future checkpoints are committed/pushed after testing.
+- Added automatic 2-second burger production with a capacity of ten.
+- Added actual burger-stack visuals, live stock count and COOKING/FULL status.
+- Production stops its timer while full/inactive and resumes on bounded removal.
+- Added reusable machine state/configuration and future upgrade tiers; pickup,
+  selling and machine-upgrade purchases are not implemented early.
+- Added save schema 4 migration and five-second batched production saving with
+  lifecycle flush. Existing wallet, inventory, levels and upgrades are preserved.
+- Added 32 production checks including real timers, cap/resume, corruption and
+  save migration; retained all prior 162 checks.
+
 ## 0.4.0 — Transformation Phase B — 18 October 2026
 
 - Audited the existing Phase 3 project and backed up its source before changes.

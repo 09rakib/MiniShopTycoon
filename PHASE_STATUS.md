@@ -1,67 +1,58 @@
-# Phase status — 18 October 2026
+# Phase status — 19 October 2026
 
-Current checkpoint: **Transformation Phase B — movement foundation implemented.**
+Current checkpoint: **Transformation Phase C — automatic production implemented.**
 
-## Existing project preserved
+## Preserved project and Git workflow
 
-- Original Phases 0–3: Godot 4.7.2 project, ten-product grocery economy,
-  stockroom, upgrades, XP/levels, goals and versioned local saves.
-- Source backup created before changing the entry point:
-  builds/backups/phase3-before-world.zip (946,065 bytes). Prior APKs retained.
-- New scene and scripts are additive. Previous grocery gameplay remains under
-  Menu. Its only code change is an embedded-mode Android Back guard.
-- Save schema remains 3; no reset/conversion or new currency source introduced.
+- Existing numbered Phases 0–3 remain available under Menu; original economy,
+  grocery inventory/upgrades, levels and local saves are retained.
+- Phase A audit/source backup completed; Phase B world and movement completed.
+- The user requested a GitHub upload before C, then automatic commit/push at each
+  completed phase. Prior full source was pushed as 1938b5b and remote hash verified.
+- Repository: https://github.com/09rakib/MiniShopTycoon.git
+- Engine downloads, APKs, local saves, screenshots from the phone and signing
+  secrets remain excluded; source, original assets, tests and docs are included.
 
-## Completed transformation work
+## Phase C completed work
 
-- Phase A: inspected scripts, scenes, economy, upgrades, persistence and tooling;
-  documented audit/reuse/risks/architecture in docs/transformation_audit.md.
-- Phase B: original elevated 2D shop; controllable chef; joystick; normalized
-  motion; walking/facing; static collision walls, machine, counter and props;
-  bounded smooth camera; compact wallet/level HUD and management overlay.
-- Controls clear on release/cancel/pause/focus loss and menu entry. Keyboard/mouse
-  support desktop development; Android uses the joystick.
-- New world disables old automatic grocery sales unless explicitly entering the
-  preserved grocery shop. Returning does not reload the new world.
-- 128 previous regression checks plus 34 new world checks pass (162 total).
-- Actual rendered scene captures inspected at 480×900, 360×640 and 480×1040.
+- Configured burger press: active, one burger per two seconds, maximum ten.
+- One-shot production timer stops when full/inactive; removing stock through the
+  authoritative bounded primitive automatically restarts a full cycle.
+- Actual burger-stack visuals and live count/COOKING/FULL label in the world.
+- Common machine definitions with future upgrade tiers; no upgrade purchases yet.
+- Schema 4 persists machine ID, stock, level and active state. Previous schemas
+  migrate safely to an empty machine while keeping grocery progress.
+- Five-second batched production save; important transactions/pause/focus loss/
+  close flush immediately. No offline production or timer catch-up.
+- 128 economy, 34 world/input and 32 production checks pass: **194 total**.
+- Production checks include real engine timers, idle/full/resume, corruption,
+  migration, reset, pause saves and 10,000 full-machine attempts.
+- Rendered production and full-state previews inspected.
 
-## Android build and current work
+## Checkpoint handoff
 
-- Built builds/MiniShopTycoon-phaseB.apk, v0.4.0/code 4, 57,682,656 bytes.
-- Verified APK v2/v3 signatures, Android 7.0 minimum, target SDK 36, ARMv7/ARM64
-  and absence of requested permissions. Same package identity and debug key.
-- Installed/started on vivo V2405A; actual screen inspected and two joystick
-  smoke-test gestures performed. Prior 129 coins and level 2 remained visible.
-- Real viewport-routed joystick press/drag/release checks pass; physical input
-  comfort, multitouch and sustained phone play still await user confirmation.
-- User requested GitHub upload before continuing, then automatic commit/push at
-  every subsequent phase checkpoint. Repository: github.com/09rakib/MiniShopTycoon.
+- Final APK exported and verified: v0.5.0/code 5, 57,687,179 bytes; v2/v3 signing,
+  Android 7.0+, ARMv7/ARM64, target 36 and no requested permissions.
+- Source checkpoint commit/push follows verification, as required by user.
+- Phone update was aborted by Android with INSTALL_FAILED_ABORTED: User rejected
+  permissions. Existing v0.4.0 remains installed; no data reset or bypass attempted.
+  Phase C phone runtime is unverified. Manual APK installation awaits user action.
+- User manual confirmation before Phase D. Tests: docs/testing.md.
 
-## Awaiting user testing
+## Pending phases
 
-- Joystick comfort, responsiveness, diagonal movement and immediate stopping.
-- Machine/counter/wall collision and camera framing on the portrait phone.
-- Dragging outside joystick, second-finger input, Home/resume and Android Back.
-- Preserved grocery data and return from management without movement resets.
-- Airplane mode and several minutes of use; report clipping, lag or tight paths.
-- Exact instructions: docs/testing.md. STOP before Phase C until approved.
-
-## Pending transformation phases
-
-C production; D carrying/delivery; E customers/sales; F cash pickup; G machine
-upgrades/employees; H more machines/furniture; I polish; J save verification;
-K measured Android performance and release preparation. None implemented early.
-The new A–K roadmap supersedes pending numbered phases for future development.
+D pickup/carrying/counter delivery; E queue customers/sales; F cash pickup; G
+machine upgrades/employees; H new machines/furniture; I polish; J save/lifecycle
+hardening; K measured performance and final Android release. None implemented early.
 
 ## Known limits
 
-- Machine/counter/cash tray are positioned fixtures, not working burger systems
-  yet. No fake pickup button, generated sale or immediate wallet increase added.
-- Worker position intentionally respawns on relaunch; existing business progress
-  remains persisted. No walking-triggered disk writes.
-- Camera limits and original raised 2D artwork are lightweight; no measured FPS,
-  memory/battery or low-end performance result is claimed.
-- Physical multitouch, cancellation, lifecycle and sustained play need user QA.
-- Reference images were not present in the supplied attachment; written design
-  directed the original visuals. See docs/known_issues.md.
+- No player pickup yet, so a full machine remains full in C. Stock removal/resume
+  is tested through the model; the physical carrying loop is the next checkpoint.
+- Production never credits wallet/sales/XP. Old grocery simulation is separate.
+- Worker position respawns on relaunch. There is no offline production.
+- An abrupt kill with no lifecycle notification can lose up to five seconds of
+  new production; general process-death hardening is Phase J.
+- No sustained device FPS, memory/battery, low-end or airplane-mode claim.
+- Physical touch comfort/cancellation still needs user feedback, despite actual
+  phone launch/layout checks and viewport-routed input regression coverage.

@@ -24,6 +24,7 @@ func _ready() -> void:
 		fixture.definition = definition
 		actors.add_child(fixture)
 		fixtures.append(fixture)
+	Game.production_changed.connect(_refresh_machine)
 	player = WorkerCharacter.new()
 	player.speed = float(layout["player_speed"])
 	player.radius = float(layout["player_radius"])
@@ -35,6 +36,13 @@ func _ready() -> void:
 	camera.base_zoom = float(layout["camera_zoom"])
 	camera.follow_speed = float(layout["camera_follow_speed"])
 	add_child(camera)
+	_refresh_machine()
+
+func _refresh_machine() -> void:
+	for fixture: ShopFixture in fixtures:
+		if fixture.definition["id"] == "burger_machine":
+			fixture.production = Game.economy.production
+			fixture.queue_redraw()
 
 func location_hint() -> String:
 	for definition: Dictionary in layout["fixtures"]:

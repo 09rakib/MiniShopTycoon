@@ -15,6 +15,7 @@ var shelf_upgrades: Dictionary = {}
 var retained_unlocks: Array[String] = []
 var progression: ShopProgression = ShopProgression.new()
 var upgrade_rules: ShelfUpgrades = ShelfUpgrades.new()
+var production: ProductionState = ProductionState.new()
 const MAX_TOTAL: int = 1000000000000
 const LEGACY_PRODUCTS: Array[String] = ["bread", "milk", "apples"]
 
@@ -26,6 +27,7 @@ func _init() -> void:
 	reset()
 
 func reset() -> void:
+	production.reset()
 	coins = int(catalog["starting_coins"])
 	revenue = 0
 	cost_of_goods = 0
@@ -143,7 +145,8 @@ func buy_upgrade(id: String) -> String:
 	return ""
 
 func snapshot() -> Dictionary:
-	return {"schema_version": 3, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
+	return {"schema_version": 4, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
+		"production": production.snapshot(),
 		"upgrade_spending": upgrade_spending, "shelf_upgrades": shelf_upgrades.duplicate(),
 		"retained_unlocks": retained_unlocks.duplicate(),
 		"cost_of_goods": cost_of_goods, "customers": customers,
@@ -157,7 +160,7 @@ func inventory_value() -> int:
 
 func restore(data: Dictionary) -> bool:
 	# Validate the entire record before touching working state.
-	if not _valid_integer(data.get("schema_version"), 1, 3) or not data.get("stock") is Dictionary:
+	if not _valid_integer(data.get("schema_version"), 1, 4) or not data.get("stock") is Dictionary:
 		return false
 	for key: String in ["coins", "revenue", "cost_of_goods", "customers"]:
 		if not _valid_integer(data.get(key), 0, MAX_TOTAL):
@@ -175,7 +178,7 @@ func restore(data: Dictionary) -> bool:
 	var loaded_upgrades: Dictionary = {}
 	var loaded_retained: Array[String] = []
 	var loaded_upgrade_spending: Variant = 0
-	if version == 3:
+	if version >= 3:
 		if not data.get("shelf_upgrades") is Dictionary or not data.get("retained_unlocks") is Array:
 			return false
 		loaded_upgrade_spending = data.get("upgrade_spending")
@@ -200,6 +203,13 @@ func restore(data: Dictionary) -> bool:
 		var max_stock: int = int(product["capacity"]) + upgrade_rules.bonus(int(product["shelf"]), loaded_upgrades)
 		if not _valid_integer(loaded_stock.get(product["id"], fallback), 0, max_stock):
 			return false
+	var loaded_production: ProductionState = ProductionState.new()
+	if version == 4:
+		if not data.get("production") is Dictionary or not loaded_production.restore(data["production"]):
+			return false
+	# All fields have validated. Update the existing instance so controllers keep
+	# their reference across restores/resets; no partial state is applied earlier.
+	production.restore(loaded_production.snapshot())
 	coins = int(data["coins"])
 	revenue = int(data["revenue"])
 	cost_of_goods = int(data["cost_of_goods"])

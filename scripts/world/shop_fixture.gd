@@ -2,6 +2,7 @@ class_name ShopFixture
 extends StaticBody2D
 var definition: Dictionary
 var footprint: Vector2
+var production: ProductionState
 
 func _ready() -> void:
 	var values: Array = definition["rect"]
@@ -29,10 +30,13 @@ func _draw() -> void:
 	panel(Rect2(-w / 2, -h - lift, w, h), Color("83ad91") if type == "machine" else Color("fff0cf"), 10)
 	if type == "machine":
 		panel(Rect2(-w / 2 + 12, -h - lift + 12, w - 24, h - 26), Color("42675b"), 8)
-		for x: int in [-43, -13, 17, 47]:
-			draw_line(Vector2(x, -h - lift + 23), Vector2(x, -lift - 27), Color("91aaa0"), 6)
-		panel(Rect2(-w / 2 + 12, -43, w - 24, 25), Color("244c40"), 5)
-		text("BURGER PRESS", Vector2(-64, -25), 16, Color("f8e7bf"))
+		if production != null:
+			for unit: int in mini(production.stock, 10):
+				burger(Vector2(-w / 2 + 25 + (unit % 5) * 25, -h - lift + 29 + (unit / 5) * 28))
+			panel(Rect2(-w / 2 + 10, -49, w - 20, 41), Color("244c40"), 5)
+			text("%d / %d" % [production.stock, production.capacity()], Vector2(-33, -29), 19, Color("fff1c8"))
+			var status: String = "FULL" if production.stock >= production.capacity() else "COOKING" if production.active else "OFF"
+			text(status, Vector2(-27, -h - lift + 86), 11, Color("edc16b"))
 		# A sign, not produced stock. Production belongs to Phase C.
 		draw_circle(Vector2(0, -h - lift - 19), 29, Color("faf0cd"))
 		draw_arc(Vector2(0, -h - lift - 17), 17, PI, TAU, 20, Color("d7a057"), 11, true)
@@ -54,3 +58,9 @@ func panel(rect: Rect2, color: Color, radius: int) -> void:
 
 func text(value: String, point: Vector2, font_size: int, color: Color) -> void:
 	draw_string(ThemeDB.fallback_font, point, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+
+func burger(point: Vector2) -> void:
+	draw_line(point + Vector2(-9, 6), point + Vector2(9, 6), Color("d7a057"), 5, true)
+	draw_line(point + Vector2(-10, 1), point + Vector2(10, 1), Color("945c36"), 5, true)
+	draw_line(point + Vector2(-11, -2), point + Vector2(11, -2), Color("91b762"), 3, true)
+	draw_arc(point + Vector2(0, -2), 9, PI, TAU, 12, Color("e7b364"), 7, true)

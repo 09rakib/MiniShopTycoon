@@ -18,9 +18,9 @@ https://godotengine.org/download/windows/ and choose standard 4.7.2, then extrac
 the two executable files under `tools/godot`. No .NET edition is required.
 `tools` is excluded from Godot imports and source control.
 
-## Android testing — transformation Phase B
+## Android testing — transformation Phase C
 
-Transfer `builds/MiniShopTycoon-phaseB.apk` to your phone over USB,
+Transfer `builds/MiniShopTycoon-phaseC.apk` to your phone over USB,
 open it in Files, and allow installation from that file app only if Android asks
 and you want to install this development build. Do not disable Play Protect.
 Launch **Mini Shop Tycoon**. It requires Android 7.0+ and an OpenGL ES 3 capable phone.
@@ -29,8 +29,9 @@ installation uses the `.apk` file.
 
 If Phase 1 or Phase 2 is installed, install this as an **update**. Do not uninstall or
 clear data: that can erase local progress. The package ID and debug signing
-key are retained, with version code increased to 4. Existing coins, stock,
-levels and upgrades stay intact. This movement-only update still uses schema 3.
+key are retained, with version code increased to 5. Existing coins, stock,
+levels and upgrades stay intact. Schema 4 additionally saves burger machine
+inventory; old saves start it empty. Do not downgrade after migration.
 It launches into the new world; Menu opens the preserved grocery business.
 
 This is a locally signed debug build, not a Play Store release. It does not
@@ -47,8 +48,8 @@ Export → Android**. Set Android SDK Path to your SDK and Java SDK Path to JDK
 17 or a supported newer JDK. On this PC the inspected JDK is
 `C:/Program Files/Android/Android Studio/jbr` (21.0.10).
 Install matching **4.7.2** export templates using **Editor → Manage Export
-Templates**. Choose **Project → Export → Android Phase B → Export Project**,
-keep debug enabled, and save to `builds/MiniShopTycoon-phaseB.apk`.
+Templates**. Choose **Project → Export → Android Phase C → Export Project**,
+keep debug enabled, and save to `builds/MiniShopTycoon-phaseC.apk`.
 
 The Android preset uses both ARMv7 and ARM64, portrait configuration and package
 `com.minishoptycoon.offlinegame` (provisional; global uniqueness not verified).

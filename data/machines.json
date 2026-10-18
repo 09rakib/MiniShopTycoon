@@ -1,0 +1,18 @@
+{
+  "autosave_seconds":5.0,
+  "machines":[
+    {
+      "id":"burger_press",
+      "product_id":"burger",
+      "name":"Burger machine",
+      "selling_price":20,
+      "levels":[
+        {"interval":2.0,"capacity":10,"upgrade_cost":0},
+        {"interval":1.7,"capacity":12,"upgrade_cost":180},
+        {"interval":1.4,"capacity":15,"upgrade_cost":360},
+        {"interval":1.1,"capacity":18,"upgrade_cost":720},
+        {"interval":0.9,"capacity":22,"upgrade_cost":1440}
+      ]
+    }
+  ]
+}

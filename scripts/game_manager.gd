@@ -2,10 +2,12 @@ extends Node
 signal changed
 signal feedback(text: String)
 signal level_up(level: int)
+signal production_changed
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
 var running: bool = false
+var production_dirty: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -47,11 +49,14 @@ func persist() -> bool:
 	if not storage.write(economy):
 		feedback.emit(storage.message)
 		return false
+	production_dirty = false
 	return true
 
 func restart() -> void:
 	if storage.reset_with(economy):
+		production_dirty = false
 		changed.emit()
+		production_changed.emit()
 		feedback.emit("A fresh start — stock your first shelf!")
 	else:
 		feedback.emit(storage.message)
