@@ -1,0 +1,5 @@
+{
+  "interaction_radius": 46.0,
+  "poll_seconds": 0.15,
+  "retry_seconds": 3.0
+}

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.0 — Transformation Phase F — 19 October 2026
+
+- Added automatic proximity cash collection at the existing cash station.
+- Added atomic pending-cash/wallet transfer, ceiling protection, durable save
+  before reward, file-failure rollback and bounded retry cooldown.
+- Added capped original cash stacks, exact amount/empty state, ground marker,
+  reusable floating +amount effect and cash indicator inside the HUD panel.
+- Preserved save schema 6, old progress and separate burger/grocery ledgers.
+- Added 34 cash checks; all 311 checks pass. Rendered normal/compact cash states
+  and prepared v0.8.0/code 8 APK. No phone install attempted.
+
 ## 0.7.0 — Transformation Phase E — 19 October 2026
 
 - Added bounded physical customers, right-side queue, checkout, patience and exit.

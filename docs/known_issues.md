@@ -1,23 +1,24 @@
-# Known limits — transformation Phase E
+# Known limits — transformation Phase F
 
-- Sales accumulate pending cash, separately from wallet. Physical cash collection
-  is Phase F, so these proceeds cannot yet be spent. No forced collection/reset.
-- Burger transactions have their own sold/revenue ledger. Old grocery customers,
-  XP, cost/profit and wallet logic are preserved. Automatic burger production has
-  no ingredient expense yet, so burger gross profit equals burger revenue; this
-  is not spendable cash. Employees/upgrade expenses come in later phases.
-- Live visitors/tickets/routes restart on relaunch. Completed stock/cash records
-  persist, so restarting does not repeat purchases. No offline sales/production.
-- Maximum four customers includes customers leaving. New arrivals may wait for a
-  slot. Fixed routes use the right lane; customers collide with walls/fixtures,
-  but do not physically block the worker. Changed/blocked routes expire safely.
-- Customer art/state labels are simple original procedural shapes. Audio, richer
-  reactions, furniture, employees and machine purchases remain later phases.
-- Worker position respawns safely; held items persist. Save schema 6 retains old
-  records. Avoid downgrades, uninstall/data clearing; no cloud backup.
-- Sales/transfers write immediately. Production batches five seconds and flushes
-  on lifecycle events. Abrupt termination can lose the latest unsaved production.
-- A failed disk write reports an error and retains in-memory progress for retry;
-  no crash-durability claim is made for a device whose storage cannot be written.
-- No automatic install retry after prior device refusal. Phone touch/multitouch,
-  airplane mode, lifecycle, memory/FPS/heat and low-end performance remain pending.
+- Core loop is playable: automatic production → manual carry/delivery → customer
+  purchase → pending cash → physical proximity collection → spendable wallet.
+- Burger machine upgrades and employees are Phase G; existing grocery inventory,
+  upgrades and goals still accept the same wallet through Menu.
+- Collection radius is 46 units around the cash fixture approach marker, polled
+  every 150 ms. Menu, blocked controls and background/focus loss prevent pickup.
+  A full wallet retains all pending cash. Storage failure rolls back both fields,
+  shows an error and retries no sooner than three seconds while near the plate.
+- One cash fixture draws at most three stacks. One reusable reward label replaces
+  its previous animation when another pickup occurs. Visual effect, no sound yet.
+- Burger sold/revenue/profit/collected totals remain separate from grocery XP and
+  ledgers. Free automatic production has zero ingredient cost, so burger gross
+  profit equals revenue; collection changes wallet/pending, not historical sales.
+- Customer tickets/routes restart on relaunch; committed purchases are not replayed.
+  Worker respawns safely, held stock persists. No offline production or earnings.
+- No new schema required for F: schema 6 retains wallet and pending cash together,
+  with earlier migrations preserved. Avoid downgrade/uninstall/data clearing.
+- Sales/transfers/collections save immediately. Production batches five seconds
+  and lifecycle flushes; abrupt termination may lose recent unsaved production.
+- No automatic phone install retry after earlier refusal. Physical touch,
+  multitouch, device lifecycle/migration, airplane mode, FPS/memory/heat and low-end
+  performance remain pending. No measured device performance result is claimed.

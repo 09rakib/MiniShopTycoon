@@ -18,6 +18,7 @@ var upgrade_rules: ShelfUpgrades = ShelfUpgrades.new()
 var production: ProductionState = ProductionState.new()
 var handling: BurgerHandling = BurgerHandling.new()
 var burger_sales: BurgerSales = BurgerSales.new()
+var cash_pickup: CashPickup = CashPickup.new()
 const MAX_TOTAL: int = 1000000000000
 const LEGACY_PRODUCTS: Array[String] = ["bread", "milk", "apples"]
 
@@ -147,6 +148,15 @@ func buy_upgrade(id: String) -> String:
 	upgrade_spending += cost
 	shelf_upgrades[id] = current + 1
 	return ""
+
+func collect_cash(worker_position: Vector2) -> int:
+	var amount: int = burger_sales.uncollected_cash
+	if amount <= 0 or not cash_pickup.is_near(worker_position) or coins > MAX_TOTAL - amount:
+		return 0
+	# Both ledgers change synchronously, without callbacks or intermediate saves.
+	burger_sales.uncollected_cash = 0
+	coins += amount
+	return amount
 
 func snapshot() -> Dictionary:
 	return {"schema_version": 6, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,

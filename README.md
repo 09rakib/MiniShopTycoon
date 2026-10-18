@@ -1,7 +1,7 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: transformation **Phase E — customers, queues and sales**.
+Current checkpoint: transformation **Phase F — proximity cash collection and wallet**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
 bottom-left joystick (or WASD/arrows on desktop). Camera follows within the room;
 walls, machine and counter are solid. The world occupies the main screen.
@@ -12,7 +12,9 @@ to DELIVER and place them on the eight-item counter. Full counters preserve any
 leftover burger in your hands. Desktop E also interacts. Counts, visible stacks
 and machine production update together. Up to four customers queue on the right,
 buy one available counter burger each and leave. Each sale adds 20 to Cash waiting;
-wallet coins do not increase until Phase F cash collection.
+wallet coins increase only when the chef walks to the CASH circle. One aggregate
+pickup transfers the exact amount, clears the cash plate and shows +amount.
+Collection saves immediately and cannot pay twice.
 Existing grocery inventory, economy, levels and upgrades remain available through
 Menu; no saved progress is reset. Source backup: `builds/backups/phase3-before-world.zip`.
 
@@ -20,7 +22,7 @@ Double-click **play.cmd** to play on this PC. Double-click **editor.cmd** to ope
 the Godot project, then press F6/F5 to run (F5 runs the main scene).
 Double-click **test.cmd** for the automated checks.
 
-Android: transfer `builds/MiniShopTycoon-phaseE.apk` to an Android 7.0+ phone
+Android: transfer `builds/MiniShopTycoon-phaseF.apk` to an Android 7.0+ phone
 and install it using Files. Update the existing app without uninstalling to
 retain progress. Schema 6 preserves grocery/machine progress and also saves carried
 and counter burgers, plus pending cash and burger sales. Source and tests: https://github.com/09rakib/MiniShopTycoon.

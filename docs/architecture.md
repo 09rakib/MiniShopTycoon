@@ -167,3 +167,32 @@ before applying any field, including totals and pending <= revenue. Schemas 1–
 initialize these to zero and preserve prior progress. Runtime customers/tickets
 are deliberately not serialized: only durable sale/inventory results survive.
 Restart does not replay purchases. Phase F will transfer cash into wallet.
+
+
+## Phase F — authoritative proximity cash collection
+
+CashPickup reads data/cash_pickup.json and the existing cash fixture hint point
+from world_layout.json. Its finite-vector distance check is authoritative for
+ShopEconomy.collect_cash. Radius 46 keeps worker spawn and delivery station out
+of range. The scene's nearby timer polls at 150 ms, while menu/legacy overlay,
+blocked controls, suspension or paused tree prevent auto pickup. Actual worker
+position is supplied anew for each transaction; no cached UI prompt grants cash.
+
+ShopEconomy transfers all pending cash synchronously into wallet if positive,
+nearby and fully within MAX_TOTAL. No partial ceiling payout: failure preserves
+both balances. Sold count, revenue, gross profit, food inventories and grocery
+XP/ledgers do not change. BurgerSales.gross_profit derives revenue because current
+automatic burgers have zero ingredient cost; collected_cash derives revenue minus
+pending cash. Neither is confused with current wallet after spending.
+
+Game.collect_cash writes the combined snapshot before signals/reward; it rolls
+back both in-memory fields before publishing failure if storage.write fails.
+Success clears production_dirty, emits changed then cash_collected(amount).
+No new persistent field/schema is needed: schema 6 already stores both sides.
+Save callbacks see a fully committed transaction and rewards only follow a
+successful write. Failed attempts use a three-second nearby retry cooldown.
+
+Cash fixture draws actual pending amount and at most three note stacks; zero
+shows EMPTY. ShopWorld updates fixture on inventory/wallet events and uses one
+reusable Label/Tween for floating +amount; replacement kills the old tween.
+No unbounded money/reward nodes, no per-frame scans or extra permission required.

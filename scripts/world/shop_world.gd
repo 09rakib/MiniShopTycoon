@@ -5,6 +5,8 @@ var player: WorkerCharacter
 var camera: ShopCamera
 var actors: Node2D
 var fixtures: Array[ShopFixture] = []
+var cash_reward: Label
+var reward_tween: Tween
 
 func _ready() -> void:
 	add_child(ShopFloor.new())
@@ -27,6 +29,8 @@ func _ready() -> void:
 		fixtures.append(fixture)
 	Game.production_changed.connect(_refresh_machine)
 	Game.handling_changed.connect(_refresh_handling)
+	Game.changed.connect(_refresh_cash)
+	Game.cash_collected.connect(_show_cash_reward)
 	player = WorkerCharacter.new()
 	player.speed = float(layout["player_speed"])
 	player.radius = float(layout["player_radius"])
@@ -40,6 +44,16 @@ func _ready() -> void:
 	add_child(camera)
 	_refresh_machine()
 	_refresh_handling()
+	_refresh_cash()
+	cash_reward = Label.new()
+	cash_reward.z_index = 50
+	cash_reward.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cash_reward.add_theme_font_size_override("font_size", 27)
+	cash_reward.add_theme_color_override("font_color", Color("265d42"))
+	cash_reward.add_theme_color_override("font_outline_color", Color("fff4da"))
+	cash_reward.add_theme_constant_override("outline_size", 7)
+	cash_reward.hide()
+	add_child(cash_reward)
 
 func _refresh_machine() -> void:
 	for fixture: ShopFixture in fixtures:
@@ -62,3 +76,22 @@ func _refresh_handling() -> void:
 		if fixture.definition["id"] == "serving_counter":
 			fixture.handling = Game.economy.handling
 			fixture.queue_redraw()
+	_refresh_cash()
+
+func _refresh_cash() -> void:
+	for fixture: ShopFixture in fixtures:
+		if fixture.definition["id"] == "cash_point":
+			fixture.sales = Game.economy.burger_sales
+			fixture.queue_redraw()
+
+func _show_cash_reward(amount: int) -> void:
+	if reward_tween != null:
+		reward_tween.kill()
+	cash_reward.text = "+%d" % amount
+	cash_reward.position = player.position + Vector2(-40, -100)
+	cash_reward.modulate.a = 1
+	cash_reward.show()
+	reward_tween = create_tween().set_parallel(true)
+	reward_tween.tween_property(cash_reward, "position:y", cash_reward.position.y - 42, 1.1)
+	reward_tween.tween_property(cash_reward, "modulate:a", 0.0, 0.5).set_delay(0.6)
+	reward_tween.chain().tween_callback(cash_reward.hide)

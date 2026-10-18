@@ -19,6 +19,13 @@ func register_customer() -> int:
 func retire(ticket: int) -> void:
 	tickets.erase(ticket)
 
+func gross_profit() -> int:
+	# Automatic burgers currently have zero ingredient cost; collecting is not a sale.
+	return revenue
+
+func collected_cash() -> int:
+	return revenue - uncollected_cash
+
 func purchase(ticket: int, handling: BurgerHandling, machine: ProductionState) -> int:
 	if not tickets.has(ticket) or tickets[ticket] or handling.counter <= 0:
 		return 0

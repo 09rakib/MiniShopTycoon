@@ -5,6 +5,7 @@ signal level_up(level: int)
 signal production_changed
 signal handling_changed
 signal burger_sale_completed(amount: int)
+signal cash_collected(amount: int)
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
@@ -74,6 +75,23 @@ func sell_burger(ticket: int) -> bool:
 	handling_changed.emit()
 	burger_sale_completed.emit(amount)
 	return true
+
+func collect_cash(worker_position: Vector2) -> int:
+	var amount: int = economy.collect_cash(worker_position)
+	if amount == 0:
+		if economy.cash_pickup.is_near(worker_position) and economy.burger_sales.uncollected_cash > 0:
+			feedback.emit("Wallet limit reached. Spend coins before collecting cash.")
+		return 0
+	# Publish a reward only after the combined wallet/cash record is durable.
+	if not storage.write(economy):
+		economy.coins -= amount
+		economy.burger_sales.uncollected_cash += amount
+		feedback.emit(storage.message)
+		return 0
+	production_dirty = false
+	changed.emit()
+	cash_collected.emit(amount)
+	return amount
 
 func restart() -> void:
 	if storage.reset_with(economy):

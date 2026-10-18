@@ -4,6 +4,7 @@ var definition: Dictionary
 var footprint: Vector2
 var production: ProductionState
 var handling: BurgerHandling
+var sales: BurgerSales
 
 func _ready() -> void:
 	var values: Array = definition["rect"]
@@ -53,7 +54,17 @@ func _draw() -> void:
 		text(stock_label, Vector2(-65, -16), 18, Color("fff1cf"))
 	else:
 		panel(Rect2(-w / 2 + 8, -h - lift + 6, w - 16, h - 12), Color("d6b470"), 5)
-		text("CASH", Vector2(-24, -12), 14, Color("fff1cf"))
+		var cash: int = sales.uncollected_cash if sales != null else 0
+		if cash > 0:
+			for stack: int in mini(3, 1 + cash / 60):
+				var origin: Vector2 = Vector2(-22 + stack * 12, -h - lift + 14 - stack * 6)
+				panel(Rect2(origin, Vector2(34, 18)), Color("458b64"), 3)
+				draw_line(origin + Vector2(17, 2), origin + Vector2(17, 16), Color("f4dfa4"), 6)
+		text("CASH" if cash > 0 else "EMPTY", Vector2(-24, -12), 14, Color("fff1cf"))
+		if cash > 0:
+			var amount_text: String = str(cash)
+			var font_size: int = 16 if amount_text.length() <= 6 else 11
+			text(amount_text, Vector2(-w / 2, -h - lift - 12), font_size, Color("255d42"))
 
 func panel(rect: Rect2, color: Color, radius: int) -> void:
 	var value: StyleBoxFlat = StyleBoxFlat.new()

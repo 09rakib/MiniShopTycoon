@@ -1,38 +1,42 @@
-# Phase E manual checkpoint — customers and sales
+# Phase F manual checkpoint — collect cash into wallet
 
-Update with builds/MiniShopTycoon-phaseE.apk (v0.7.0/code 7). Do not uninstall or
-clear app data. Existing grocery/machine/carried/counter progress migrates to
-schema 6; new sales/cash default to zero. Avoid downgrading after migration.
+Update with builds/MiniShopTycoon-phaseF.apk (v0.8.0/code 8). Do not uninstall or
+clear app data. Existing schema 6 already supports cash/wallet; prior progress,
+carried/counter stock, accumulated cash and grocery upgrades are retained.
 
-1. Move to COLLECT; take up to two burgers, carry to DELIVER, stock the counter.
-2. Customers arrive every five seconds, at most four active including departures.
-   They walk in the right lane and form a spaced queue. The head approaches the
-   right side of the counter when food exists, buys one, then leaves via the
-   outer lane. Keep delivering to see continuous turnover.
-3. Each purchase deducts one counter burger, increments Sales by one and Cash
-   waiting by 20. Wallet must remain unchanged: collection is Phase F.
-4. Leave the counter empty. Customers wait, earn nothing, and leave after their
-   35-second queue patience. No burgers are taken from the press or worker.
-5. Deliver a single burger with several customers waiting. Exactly one buys it;
-   the rest must wait. Repeated Collect/Deliver taps must not duplicate food.
-6. Close and reopen after a sale. Pending cash, sold count, machine/counter/held
-   quantities and old wallet/upgrades persist. Visitors start fresh, no sale is
-   replayed and no offline income is granted.
-7. Open/close Menu and grocery panels. Player remains blocked in overlays; burger
-   business continues while menus are open, pauses on app focus loss/background.
-8. Test two-finger joystick/action use, Home/resume, Android Back and airplane
-   mode. Watch for blocked customers, overlapping queue or unintended wallet gains.
+1. Collect up to two burgers at the press, carry to DELIVER and stock the counter.
+2. Let customers buy. Each sale removes one counter burger and adds 20 to Cash
+   waiting. Wallet stays unchanged while the chef is away from CASH.
+3. Let several sales accumulate. One cash plate shows the combined amount and a
+   small stack of notes. There should never be hundreds of separate cash objects.
+4. Walk to the CASH ground circle beside the plate. No tap is required: within
+   46 world units, collection occurs at the next 150 ms proximity poll. Pending
+   cash becomes zero, wallet increases by the exact previous amount, +amount
+   floats above the chef and the plate shows EMPTY.
+5. Remain standing there or walk in/out repeatedly. No additional coins/reward
+   until another customer makes a successful purchase. A new sale can then be
+   collected automatically while you remain near the plate.
+6. Try from the machine, delivery circle and across the shop: cash cannot be
+   collected remotely. Carrying burgers does not prevent a valid cash pickup.
+7. Open Menu/grocery panel while near cash; collection is blocked until returning
+   to gameplay. App focus loss/background pauses collection and business.
+8. Close/reopen after collection. Wallet retains the new amount and collected
+   cash does not reappear. Historical sales/revenue do not increase on collection.
+9. Use collected coins in the existing grocery inventory/upgrades menu to verify
+   they are spendable. Burger machine upgrades/employees come in Phase G.
+10. Test two-finger movement/action, Home/resume, Back, airplane mode and APK update
+    preserving old progress. Do not clear data to test this update.
 
 ## Actual automated/visual checks
 
-277 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers.
-Run test.cmd for all suites (it also rejects script/runtime errors in logs).
-Customer tests cover duplicate/empty/unknown transactions, last-item contention,
-active bounds, 10,000 full inventory-to-cash cycles, save migration/validation,
-real physics queue/checkout/departure, timeout/blocked cleanup, pause and collision.
-Customer queue/sale images inspected at 480×900 and 360×640.
-See test_report_phaseE.md for APK verification and limits.
+311 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
+34 cash. test.cmd runs all six suites and rejects script/runtime errors in logs.
+Cash checks cover exact aggregation, distance/NaN/infinity, empty/repeat pickup,
+10,000 sale/collection cycles, wallet ceiling, actual proximity timer, blocked
+controls, immediate durable observers, old schema 6 continuity, real file-open
+failure, rollback, cooldown/retry and pause/restart. Cash waiting/collected layouts
+rendered and inspected at 480×900 and 360×640.
 
-No phone installation, touch acceptance, airplane-mode or measured performance
-result is claimed for this checkpoint. Prior phone install was explicitly aborted;
-provide this APK for manual update and wait for feedback before Phase F.
+No phone installation, physical touch, airplane-mode or measured performance test
+was run this checkpoint. Prior installation was explicitly aborted on the phone.
+See test_report_phaseF.md. Stop for feedback before Phase G.

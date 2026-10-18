@@ -17,6 +17,7 @@ var carry_label: Label
 var action_button: Button
 var action: String = ""
 var feedback_label: Label
+var cash_retry_at: int = 0
 var feedback_timer: Timer
 
 func _ready() -> void:
@@ -47,8 +48,8 @@ func _ready() -> void:
 	Game.production_changed.connect(_update_location)
 	Game.feedback.connect(_feedback)
 	var hint_timer: Timer = Timer.new()
-	hint_timer.wait_time = 0.15
-	hint_timer.timeout.connect(_update_location)
+	hint_timer.wait_time = float(Game.economy.cash_pickup.config["poll_seconds"])
+	hint_timer.timeout.connect(_check_nearby)
 	add_child(hint_timer)
 	hint_timer.start()
 	_refresh()
@@ -123,6 +124,8 @@ func _build_hud() -> void:
 	stats.add_child(level_label)
 	carry_label = _label("", 14)
 	stats.add_child(carry_label)
+	cash_label = _label("", 14)
+	stats.add_child(cash_label)
 	wallet.add_child(stats)
 	row.add_child(wallet)
 	row.add_child(_button("Menu", open_menu))
@@ -141,9 +144,6 @@ func _build_hud() -> void:
 	instruction.offset_top = -40
 	instruction.offset_bottom = -18
 	hud.add_child(instruction)
-	cash_label = _label("", 15)
-	cash_label.position = Vector2(24, 144)
-	hud.add_child(cash_label)
 	location_label = _label("Explore your shop", 16)
 	location_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	location_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -191,12 +191,12 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("Serve burgers to your waiting customers.", 17))
+	buttons.add_child(_label("Serve burgers, then walk to collect cash.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.7.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.8.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -209,8 +209,20 @@ func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
 	level_label.text = "Level %d • %s" % [Game.economy.shop_level(), Game.economy.progression.xp_text(Game.economy.customers)]
 	carry_label.text = "Carry %d/%d • Counter %d/%d" % [Game.economy.handling.carried, Game.economy.handling.carry_capacity(), Game.economy.handling.counter, Game.economy.handling.counter_capacity()]
-	cash_label.text = "Cash waiting: %d | Sales: %d" % [Game.economy.burger_sales.uncollected_cash, Game.economy.burger_sales.sold]
+	cash_label.text = "Cash waiting: %d" % Game.economy.burger_sales.uncollected_cash
 	_update_location()
+
+func _check_nearby() -> void:
+	_update_location()
+	_try_collect_cash()
+
+func _try_collect_cash() -> void:
+	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or legacy_layer.visible or Time.get_ticks_msec() < cash_retry_at:
+		return
+	if Game.economy.burger_sales.uncollected_cash <= 0 or not Game.economy.cash_pickup.is_near(world.player.position):
+		return
+	if Game.collect_cash(world.player.position) == 0:
+		cash_retry_at = Time.get_ticks_msec() + int(float(Game.economy.cash_pickup.config["retry_seconds"]) * 1000)
 
 func _update_location() -> void:
 	if not is_instance_valid(action_button) or menu.visible or legacy_layer.visible or suspended:
@@ -221,7 +233,10 @@ func _update_location() -> void:
 	action = handling.nearby_action(world.player.position)
 	action_button.visible = not action.is_empty()
 	if action.is_empty():
-		location_label.text = "Deliver to the counter" if handling.carried > 0 else "Collect from the press"
+		if Game.economy.cash_pickup.is_near(world.player.position):
+			location_label.text = "Cash collects automatically" if Game.economy.burger_sales.uncollected_cash > 0 else "Cash collected • keep serving"
+		else:
+			location_label.text = "Deliver to the counter" if handling.carried > 0 else "Walk to CASH to collect" if Game.economy.burger_sales.uncollected_cash > 0 else "Collect from the press"
 		return
 	var amount: int = handling.available_amount(action, Game.economy.production)
 	action_button.disabled = amount <= 0
