@@ -1,58 +1,63 @@
 # Phase status — 19 October 2026
 
-Current checkpoint: **Transformation Phase C — automatic production implemented.**
+Current checkpoint: **Transformation Phase D — carrying/delivery implemented.**
 
-## Preserved project and Git workflow
+## Preserved project and workflow
 
-- Existing numbered Phases 0–3 remain available under Menu; original economy,
-  grocery inventory/upgrades, levels and local saves are retained.
-- Phase A audit/source backup completed; Phase B world and movement completed.
-- The user requested a GitHub upload before C, then automatic commit/push at each
-  completed phase. Prior full source was pushed as 1938b5b and remote hash verified.
-- Repository: https://github.com/09rakib/MiniShopTycoon.git
-- Engine downloads, APKs, local saves, screenshots from the phone and signing
-  secrets remain excluded; source, original assets, tests and docs are included.
+- Original numbered Phases 0–3 remain accessible through Menu with their validated
+  economy, inventory, levels, upgrades, goals and local save recovery.
+- Transformation A/B audited/backed up the project and added world/movement.
+- Phase C added automatic capped production; published as eb2c606 after the full
+  previous source checkpoint 1938b5b. Remote main hashes were verified.
+- User requested continuation into D and automatic commit/push after each phase.
+  Repository: https://github.com/09rakib/MiniShopTycoon.git
+- Engine/cache/APKs, local saves, signing secrets and phone screenshots stay local.
 
-## Phase C completed work
+## Phase D completed work
 
-- Configured burger press: active, one burger per two seconds, maximum ten.
-- One-shot production timer stops when full/inactive; removing stock through the
-  authoritative bounded primitive automatically restarts a full cycle.
-- Actual burger-stack visuals and live count/COOKING/FULL label in the world.
-- Common machine definitions with future upgrade tiers; no upgrade purchases yet.
-- Schema 4 persists machine ID, stock, level and active state. Previous schemas
-  migrate safely to an empty machine while keeping grocery progress.
-- Five-second batched production save; important transactions/pause/focus loss/
-  close flush immediately. No offline production or timer catch-up.
-- 128 economy, 34 world/input and 32 production checks pass: **194 total**.
-- Production checks include real engine timers, idle/full/resume, corruption,
-  migration, reset, pause saves and 10,000 full-machine attempts.
-- Rendered production and full-state previews inspected.
+- Two-burger carry limit and separately configured eight-burger counter.
+- Pickup/delivery require proximity to the actual world station points. Button
+  presses re-evaluate the worker position; stale prompts cannot pick up remotely.
+- Atomic machine → carried → counter transfers conserve items. Full hands, empty
+  machine, empty hands and full counter are rejected without mutation.
+- Partial delivery retains leftovers. Actual pickup restarts a full machine.
+- Original visible carried stack, counter burgers, ground interaction circles,
+  contextual action button, small carry/counter HUD, feedback and desktop E.
+- Save schema 5 preserves existing data and adds carried/counter counts. Successful
+  transfers save all inventories immediately; pause/close retains carried burgers.
+- 128 economy + 34 world + 32 production + 44 handling checks pass (238 total).
+- Real rendered pickup/carry/delivery/full-counter layouts inspected at 480×900
+  and 360×640. One test-only signal cycle was disconnected; final runs are clean.
 
 ## Checkpoint handoff
 
-- Final APK exported and verified: v0.5.0/code 5, 57,687,179 bytes; v2/v3 signing,
-  Android 7.0+, ARMv7/ARM64, target 36 and no requested permissions.
-- Source checkpoint commit/push follows verification, as required by user.
-- Phone update was aborted by Android with INSTALL_FAILED_ABORTED: User rejected
-  permissions. Existing v0.4.0 remains installed; no data reset or bypass attempted.
-  Phase C phone runtime is unverified. Manual APK installation awaits user action.
-- User manual confirmation before Phase D. Tests: docs/testing.md.
+- Final v0.6.0/code 6 APK exported and verified: 57,695,614 bytes, v2/v3 signature,
+  Android 7.0+, ARMv7/ARM64, portrait, target 36 and no requested permissions.
+- Publish the complete tested checkpoint via commit/push with remote hash check;
+  final commit is reported in the handoff. Stop before Phase E for feedback.
+- No automatic phone install retry: prior Android install was explicitly aborted.
+  Provide the APK for manual update; phone input/runtime acceptance is pending.
 
-## Pending phases
+## Pending
 
-D pickup/carrying/counter delivery; E queue customers/sales; F cash pickup; G
-machine upgrades/employees; H new machines/furniture; I polish; J save/lifecycle
-hardening; K measured performance and final Android release. None implemented early.
+E customer queue/sales; F cash collection; G machine upgrades/employees; H further
+machines/furniture; I polish; J comprehensive lifecycle/save hardening; K measured
+Android performance and release. No later-phase gameplay was implemented early.
+
+## Manual tests awaiting confirmation
+
+- Walk to machine, collect two, carry visibly, deliver to counter.
+- Repeated taps, distance limits, full hands/counter and saved held items.
+- Two-finger joystick/action use, Home/resume, Android Back and airplane mode.
+- Existing coins, inventory/upgrades/level survive installing the update.
+- Follow docs/testing.md and approve before Phase E.
 
 ## Known limits
 
-- No player pickup yet, so a full machine remains full in C. Stock removal/resume
-  is tested through the model; the physical carrying loop is the next checkpoint.
-- Production never credits wallet/sales/XP. Old grocery simulation is separate.
-- Worker position respawns on relaunch. There is no offline production.
-- An abrupt kill with no lifecycle notification can lose up to five seconds of
-  new production; general process-death hardening is Phase J.
-- No sustained device FPS, memory/battery, low-end or airplane-mode claim.
-- Physical touch comfort/cancellation still needs user feedback, despite actual
-  phone launch/layout checks and viewport-routed input regression coverage.
+- No burger customers yet, so the counter does not drain in D. No new wallet
+  earnings are generated by production or handling. Grocery gameplay is separate.
+- Worker position respawns safely; held burgers persist. No offline production.
+- Production-only writes remain batched for five seconds; successful item
+  transfers flush immediately. Unnotified process death can lose recent production.
+- Physical phone migration/touch tests, FPS, memory/battery and low-end tests
+  remain unverified. This is a staged checkpoint, not a finished release.

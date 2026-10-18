@@ -7,6 +7,11 @@ var radius: float = 15.0
 var facing: Vector2 = Vector2.DOWN
 var walk_phase: float = 0.0
 var was_walking: bool = false
+var carried_count: int = 0
+
+func set_carried_count(value: int) -> void:
+	carried_count = value
+	queue_redraw()
 
 func _ready() -> void:
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -68,6 +73,15 @@ func _draw() -> void:
 	draw_style_box(_style(Color("fffaf0"), 8), Rect2(-19, -70 - bounce, 38, 17))
 	draw_style_box(_style(Color("fffaf0"), 9), Rect2(-12, -79 - bounce, 24, 17))
 	draw_line(Vector2(-17, -55 - bounce), Vector2(17, -55 - bounce), Color("e9d8b9"), 3)
+	if carried_count > 0:
+		draw_line(Vector2(-16, -31 - bounce), Vector2(-10, -20 - bounce), Color("f2c597"), 10, true)
+		draw_line(Vector2(16, -31 - bounce), Vector2(10, -20 - bounce), Color("f2c597"), 10, true)
+		for index: int in mini(carried_count, 4):
+			var point: Vector2 = Vector2(facing.x * 5, -18 - index * 12 - bounce)
+			draw_line(point + Vector2(-12, 5), point + Vector2(12, 5), Color("dca65b"), 6, true)
+			draw_line(point + Vector2(-13, 0), point + Vector2(13, 0), Color("976039"), 6, true)
+			draw_line(point + Vector2(-14, -3), point + Vector2(14, -3), Color("91b762"), 3, true)
+			draw_arc(point + Vector2(0, -3), 12, PI, TAU, 14, Color("e7b364"), 8, true)
 
 func _style(color: Color, radius: int) -> StyleBoxFlat:
 	var value: StyleBoxFlat = StyleBoxFlat.new()

@@ -3,6 +3,7 @@ extends StaticBody2D
 var definition: Dictionary
 var footprint: Vector2
 var production: ProductionState
+var handling: BurgerHandling
 
 func _ready() -> void:
 	var values: Array = definition["rect"]
@@ -43,9 +44,13 @@ func _draw() -> void:
 		draw_line(Vector2(-19, -h - lift - 13), Vector2(19, -h - lift - 13), Color("71a065"), 6)
 		draw_line(Vector2(-17, -h - lift - 6), Vector2(17, -h - lift - 6), Color("ad6c43"), 7)
 	elif type == "counter":
+		if handling != null:
+			for unit: int in mini(handling.counter, 9):
+				burger(Vector2(-w / 2 + 23 + (unit % 3) * 23, -h - lift + 25 + (unit / 3) * 22))
 		panel(Rect2(-12, -h - lift + 8, 62, 44), Color("345b4c"), 6)
 		panel(Rect2(-6, -h - lift + 14, 50, 27), Color("a7c9aa"), 3)
-		text("SERVE", Vector2(-30, -16), 21, Color("fff1cf"))
+		var stock_label: String = "SERVE %d / %d" % [handling.counter, handling.counter_capacity()] if handling != null else "SERVE"
+		text(stock_label, Vector2(-65, -16), 18, Color("fff1cf"))
 	else:
 		panel(Rect2(-w / 2 + 8, -h - lift + 6, w - 16, h - 12), Color("d6b470"), 5)
 		text("CASH", Vector2(-24, -12), 14, Color("fff1cf"))

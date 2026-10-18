@@ -63,7 +63,7 @@ func _run() -> void:
 	migrated.production.produce_one()
 	var current: Dictionary = migrated.snapshot()
 	var loaded: ShopEconomy = ShopEconomy.new()
-	check(current["schema_version"] == 4 and loaded.restore(JSON.parse_string(JSON.stringify(current))) and loaded.production.stock == 1, "Schema 4 preserves machine alongside existing economy")
+	check(current["schema_version"] == 5 and loaded.restore(JSON.parse_string(JSON.stringify(current))) and loaded.production.stock == 1, "Current schema preserves machine alongside existing economy")
 	current["production"]["stock"] = 500
 	check(not loaded.restore(current) and loaded.production.stock == 1 and loaded.coins == 340, "Malformed machine record rejects entire save without partial mutation")
 	var folder: String = "user://production-tests-" + str(Time.get_ticks_usec())

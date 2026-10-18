@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0 — Transformation Phase D — 19 October 2026
+
+- Added proximity-checked machine pickup, two-burger carrying and counter delivery.
+- Added atomic bounded transfers; partial/full counters retain carried leftovers.
+- Added original carried/counter burger stacks, ground markers, carry/counter HUD,
+  contextual Collect/Deliver controls, feedback and desktop E interaction.
+- Actual worker position is rechecked at action time; menu/background block actions.
+- Added save schema 5 for carried/counter stock with compatible prior migrations
+  and immediate persistence after successful transfers.
+- Added 44 handling checks, including 10,000 repeated invalid transfers and actual
+  UI/save/production integration. Previous 194 checks retained.
+- Prepared separate v0.6.0/code 6 Android checkpoint; no customers or cash yet.
+
 ## 0.5.0 — Transformation Phase C — 19 October 2026
 
 - Uploaded the complete prior source checkpoint to the user's GitHub repository

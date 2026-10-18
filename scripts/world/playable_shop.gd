@@ -1,5 +1,5 @@
 extends Node2D
-## Movement-only Phase B entry scene. Previous gameplay remains intact in a sheet.
+## Playable burger shop. Previous grocery gameplay remains intact in a sheet.
 var world: ShopWorld
 var joystick: ShopJoystick
 var hud: Control
@@ -11,6 +11,11 @@ var legacy_layer: Control
 var legacy: Control
 var suspended: bool = false
 var production_controller: ProductionController
+var carry_label: Label
+var action_button: Button
+var action: String = ""
+var feedback_label: Label
+var feedback_timer: Timer
 
 func _ready() -> void:
 	Game.running = false
@@ -27,7 +32,14 @@ func _ready() -> void:
 	layer.add_child(hud)
 	_build_hud()
 	_build_menu()
+	feedback_timer = Timer.new()
+	feedback_timer.one_shot = true
+	feedback_timer.wait_time = 2.7
+	feedback_timer.timeout.connect(func() -> void: feedback_label.hide())
+	add_child(feedback_timer)
 	Game.changed.connect(_refresh)
+	Game.handling_changed.connect(_refresh)
+	Game.production_changed.connect(_update_location)
 	Game.feedback.connect(_feedback)
 	var hint_timer: Timer = Timer.new()
 	hint_timer.wait_time = 0.15
@@ -35,6 +47,9 @@ func _ready() -> void:
 	add_child(hint_timer)
 	hint_timer.start()
 	_refresh()
+	_update_location()
+	if not Game.storage.message.is_empty():
+		_feedback(Game.storage.message)
 
 func _make_theme() -> Theme:
 	var value: Theme = Theme.new()
@@ -43,6 +58,8 @@ func _make_theme() -> Theme:
 	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
 		var box: StyleBoxFlat = StyleBoxFlat.new()
 		box.bg_color = Color("2e765a") if state != "pressed" else Color("245840")
+		if state == "disabled":
+			box.bg_color = Color("b5c5b3")
 		box.set_corner_radius_all(15)
 		box.content_margin_left = 16
 		box.content_margin_right = 16
@@ -52,6 +69,7 @@ func _make_theme() -> Theme:
 			box.set_border_width_all(3)
 		value.set_stylebox(state, "Button", box)
 	value.set_color("font_color", "Button", Color("fff8df"))
+	value.set_color("font_disabled_color", "Button", Color("254e40"))
 	return value
 
 func _label(text: String, font_size: int) -> Label:
@@ -98,6 +116,8 @@ func _build_hud() -> void:
 	level_label = _label("", 14)
 	stats.add_child(wallet_label)
 	stats.add_child(level_label)
+	carry_label = _label("", 14)
+	stats.add_child(carry_label)
 	wallet.add_child(stats)
 	row.add_child(wallet)
 	row.add_child(_button("Menu", open_menu))
@@ -124,6 +144,26 @@ func _build_hud() -> void:
 	location_label.offset_top = -116
 	location_label.offset_bottom = -58
 	hud.add_child(location_label)
+	action_button = _button("Collect", _interact)
+	action_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	action_button.offset_left = -214
+	action_button.offset_right = -22
+	action_button.offset_top = -192
+	action_button.offset_bottom = -124
+	hud.add_child(action_button)
+	action_button.hide()
+	feedback_label = _label("", 17)
+	feedback_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	feedback_label.offset_left = 24
+	feedback_label.offset_right = -24
+	feedback_label.offset_top = -280
+	feedback_label.offset_bottom = -224
+	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	feedback_label.add_theme_color_override("font_outline_color", Color("fff4da"))
+	feedback_label.add_theme_constant_override("outline_size", 6)
+	hud.add_child(feedback_label)
+	feedback_label.hide()
 
 func _build_menu() -> void:
 	menu = Control.new()
@@ -143,12 +183,12 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("The burger press runs automatically.", 17))
+	buttons.add_child(_label("Collect, carry, and stock your counter.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.5.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.6.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -160,14 +200,47 @@ func _build_menu() -> void:
 func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
 	level_label.text = "Level %d • %s" % [Game.economy.shop_level(), Game.economy.progression.xp_text(Game.economy.customers)]
+	carry_label.text = "Carry %d/%d • Counter %d/%d" % [Game.economy.handling.carried, Game.economy.handling.carry_capacity(), Game.economy.handling.counter, Game.economy.handling.counter_capacity()]
+	_update_location()
 
 func _update_location() -> void:
-	if not menu.visible and not legacy_layer.visible:
-		location_label.text = world.location_hint()
+	if not is_instance_valid(action_button) or menu.visible or legacy_layer.visible or suspended:
+		if is_instance_valid(action_button):
+			action_button.hide()
+		return
+	var handling: BurgerHandling = Game.economy.handling
+	action = handling.nearby_action(world.player.position)
+	action_button.visible = not action.is_empty()
+	if action.is_empty():
+		location_label.text = "Deliver to the counter" if handling.carried > 0 else "Collect from the press"
+		return
+	var amount: int = handling.available_amount(action, Game.economy.production)
+	action_button.disabled = amount <= 0
+	if action == "pickup":
+		location_label.text = "Machine %d/%d" % [Game.economy.production.stock, Game.economy.production.capacity()]
+		action_button.text = "Collect %d" % amount if amount > 0 else "Hands full" if handling.carried >= handling.carry_capacity() else "Cooking…"
+	else:
+		location_label.text = "Counter %d/%d" % [handling.counter, handling.counter_capacity()]
+		action_button.text = "Deliver %d" % amount if amount > 0 else "Counter full" if handling.counter >= handling.counter_capacity() else "Hands empty"
 
 func _feedback(message: String) -> void:
-	if not Game.storage.message.is_empty():
-		location_label.text = message
+	feedback_label.text = message
+	feedback_label.show()
+	feedback_timer.start()
+
+func _interact() -> void:
+	if suspended or world.player.controls_blocked or menu.visible or legacy_layer.visible:
+		return
+	# Re-evaluate distance and action at press time; never trust a stale HUD prompt.
+	var current: String = Game.economy.handling.nearby_action(world.player.position)
+	if not current.is_empty():
+		Game.interact_burgers(current, world.player.position)
+	_update_location()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not OS.has_feature("android") and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_E:
+		_interact()
+		get_viewport().set_input_as_handled()
 
 func _block_controls(value: bool) -> void:
 	world.player.controls_blocked = value
@@ -177,11 +250,13 @@ func _block_controls(value: bool) -> void:
 func open_menu() -> void:
 	menu.show()
 	_block_controls(true)
+	_update_location()
 
 func close_menu() -> void:
 	menu.hide()
 	Game.running = false
 	_block_controls(suspended)
+	_update_location()
 
 func _open_legacy(screen: String) -> void:
 	menu.hide()

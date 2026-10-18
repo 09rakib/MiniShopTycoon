@@ -1,5 +1,6 @@
 class_name ShopFloor
 extends Node2D
+var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world_layout.json"))
 ## Static original artwork. Repaint only when its geometry changes.
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 820, 1200), Color("e5d7b8"))
@@ -26,6 +27,12 @@ func _draw() -> void:
 	for y: int in [615, 683, 751]:
 		draw_arc(Vector2(675, y), 22, 0, TAU, 32, Color("c4ad82"), 2, true)
 	text("QUEUE", Vector2(649, 810), 15, Color("a29170"))
+	for station: Dictionary in layout["fixtures"]:
+		if not station["id"] in ["burger_machine", "serving_counter"]:
+			continue
+		var point: Vector2 = Vector2(station["hint_point"][0], station["hint_point"][1])
+		draw_arc(point, 29, 0, TAU, 36, Color("8ca67e"), 2, true)
+		text("COLLECT" if station["id"] == "burger_machine" else "DELIVER", point + Vector2(-26, 46), 12, Color("698361"))
 	draw_style_box(style(Color("4d8b70"), 14), Rect2(302, 872, 216, 75))
 	text("WELCOME", Vector2(342, 917), 24, Color("ecedcf"))
 	draw_style_box(style(Color("9bbcad"), 8), Rect2(325, 990, 170, 50))

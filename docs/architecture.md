@@ -1,6 +1,6 @@
 # Architecture
 
-## Current entry: transformation Phases B/C
+## Current entry: transformation Phases B/C/D
 
 `scenes/playable_shop.tscn` is now the entry; the previous `scenes/main.tscn`
 remains unchanged apart from an embedded-mode Back-event guard. The new
@@ -41,8 +41,24 @@ will harden process-death behavior. Partial production time is not persisted:
 resuming/relaunch starts a fresh interval, with no offline catch-up.
 
 Movement does not write saves; relaunch starts the worker at a valid spawn.
-No burger transfer, new sales, cash collection, machine-upgrade purchases,
-employees or furniture purchase is implemented early.
+Phase D adds `BurgerHandling`, owned by ShopEconomy, with separate carried and
+counter stock. Configured limits are two/eight; interaction points come from the
+same world-layout JSON used by fixtures/markers. Transfer methods recheck distance,
+calculate the bounded amount and reject empty/full/far interactions without any
+mutation. Pickup credits carried stock before the machine emits stock_changed,
+so observers see both sides completed. Partial delivery retains the remainder.
+Game immediately persists every successful transfer in one complete save, then
+updates visible carried/counter stacks and HUD. Button actions re-read the real
+worker position instead of trusting a potentially stale proximity prompt. Menu,
+focus-loss and background state block actions as well as movement.
+
+Schema 5 stores both carried and counter quantities. Schemas 1–4 initialize them
+to zero while preserving previously valid fields, including existing machine
+stock from schema 4. All fields validate before state changes. Relaunch moves
+the worker to its safe spawn but keeps burgers in hand. Full-counter items are
+not discarded on shutdown. Invalid counts cannot partially apply a wallet.
+There are no burger sales, cash collection, machine-upgrade purchases, employees
+or furniture purchases before their intended phases.
 Those systems are scoped in the new A–K roadmap and the Phase A audit.
 See `transformation_audit.md` for reuse decisions and future transaction flow.
 

@@ -3,6 +3,7 @@ signal changed
 signal feedback(text: String)
 signal level_up(level: int)
 signal production_changed
+signal handling_changed
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
@@ -52,11 +53,24 @@ func persist() -> bool:
 	production_dirty = false
 	return true
 
+func interact_burgers(action: String, worker_position: Vector2) -> bool:
+	var result: Dictionary = economy.handling.transfer(action, worker_position, economy.production)
+	if int(result["amount"]) <= 0:
+		feedback.emit(result["error"])
+		return false
+	var saved: bool = persist()
+	handling_changed.emit()
+	if saved:
+		var amount: int = int(result["amount"])
+		feedback.emit(("Picked up %d burger%s." if action == "pickup" else "Delivered %d burger%s.") % [amount, "s" if amount != 1 else ""])
+	return true
+
 func restart() -> void:
 	if storage.reset_with(economy):
 		production_dirty = false
 		changed.emit()
 		production_changed.emit()
+		handling_changed.emit()
 		feedback.emit("A fresh start — stock your first shelf!")
 	else:
 		feedback.emit(storage.message)

@@ -25,6 +25,7 @@ func _ready() -> void:
 		actors.add_child(fixture)
 		fixtures.append(fixture)
 	Game.production_changed.connect(_refresh_machine)
+	Game.handling_changed.connect(_refresh_handling)
 	player = WorkerCharacter.new()
 	player.speed = float(layout["player_speed"])
 	player.radius = float(layout["player_radius"])
@@ -37,6 +38,7 @@ func _ready() -> void:
 	camera.follow_speed = float(layout["camera_follow_speed"])
 	add_child(camera)
 	_refresh_machine()
+	_refresh_handling()
 
 func _refresh_machine() -> void:
 	for fixture: ShopFixture in fixtures:
@@ -52,3 +54,10 @@ func location_hint() -> String:
 		if player.position.distance_to(point) < 100:
 			return definition["name"]
 	return "Explore your shop"
+
+func _refresh_handling() -> void:
+	player.set_carried_count(Game.economy.handling.carried)
+	for fixture: ShopFixture in fixtures:
+		if fixture.definition["id"] == "serving_counter":
+			fixture.handling = Game.economy.handling
+			fixture.queue_redraw()
