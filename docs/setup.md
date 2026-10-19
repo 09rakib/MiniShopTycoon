@@ -18,20 +18,21 @@ https://godotengine.org/download/windows/ and choose standard 4.7.2, then extrac
 the two executable files under `tools/godot`. No .NET edition is required.
 `tools` is excluded from Godot imports and source control.
 
-## Android testing — transformation Phase F
+## Android testing — transformation Phase G
 
-Transfer `builds/MiniShopTycoon-phaseF.apk` to your phone over USB,
+Transfer `builds/MiniShopTycoon-phaseG.apk` to your phone over USB,
 open it in Files, and allow installation from that file app only if Android asks
 and you want to install this development build. Do not disable Play Protect.
 Launch **Mini Shop Tycoon**. It requires Android 7.0+ and an OpenGL ES 3 capable phone.
 The `.apk.idsig` file is an auxiliary signing output; ordinary file-based
 installation uses the `.apk` file.
 
-If Phase 1 or Phase 2 is installed, install this as an **update**. Do not uninstall or
+If an earlier checkpoint is installed, install this as an **update**. Do not uninstall or
 clear data: that can erase local progress. The package ID and debug signing
-key are retained, with version code increased to 6. Existing coins, stock,
-levels/upgrades and machine inventory stay intact. Schema 5 adds carried/counter
-burgers, initially zero for previous versions. Do not downgrade after migration.
+key are retained, with version code increased to 9. Existing coins, stock,
+levels/upgrades, machine/carried/counter inventory and cash stay intact. Schema 7
+adds independent machine tiers, a hired stocker, staff-held items and business
+spending. Older saves initialize staff safely. Do not downgrade after migration.
 It launches into the new world; Menu opens the preserved grocery business.
 
 This is a locally signed debug build, not a Play Store release. It does not
@@ -48,8 +49,8 @@ Export → Android**. Set Android SDK Path to your SDK and Java SDK Path to JDK
 17 or a supported newer JDK. On this PC the inspected JDK is
 `C:/Program Files/Android/Android Studio/jbr` (21.0.10).
 Install matching **4.7.2** export templates using **Editor → Manage Export
-Templates**. Choose **Project → Export → Android Phase F → Export Project**,
-keep debug enabled, and save to `builds/MiniShopTycoon-phaseF.apk`.
+Templates**. Choose **Project → Export → Android Phase G → Export Project**,
+keep debug enabled, and save to `builds/MiniShopTycoon-phaseG.apk`.
 
 The Android preset uses both ARMv7 and ARM64, portrait configuration and package
 `com.minishoptycoon.offlinegame` (provisional; global uniqueness not verified).

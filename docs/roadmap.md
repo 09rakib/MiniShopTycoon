@@ -12,8 +12,9 @@ Original numbered Phases 0–3 remain preserved. New A–K phases control expans
 - E: bounded customers, queue, one valid counter sale per customer, cash accrued
   — completed and published as 06ac018.
 - F: aggregated proximity cash pickup, atomic wallet transfer, immediate save,
-  rollback/retry and floating reward — current tested checkpoint. Stop before G.
-- G: real machine upgrades and one reliable employee type.
+  rollback/retry and floating reward — completed and published as 594ff82.
+- G: independent speed/capacity/price upgrades, compact workshop and one visible
+  stocker with shared transactions — current tested checkpoint. Stop before H.
 - H: further machine content and fixed valid furniture placement.
 - I: visuals/audio/animation and mobile refinement.
 - J: comprehensive save/migration/lifecycle and progression verification.
@@ -24,6 +25,6 @@ commit and push to https://github.com/09rakib/MiniShopTycoon → stop for feedba
 The user explicitly requires the push at the end of each future phase. Do not
 force-push or discard remote work. See repository_workflow.md.
 
-User authorized F after the Phase E checkpoint. Stop before G until the user
+User authorized G after the Phase F checkpoint. Stop before H until the user
 approves or explicitly requests continuation. Keep offline play, no ads/accounts/
 servers, and one authoritative pipeline for machine/carried/counter/cash/wallet.

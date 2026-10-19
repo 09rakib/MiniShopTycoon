@@ -6,6 +6,7 @@ signal production_changed
 signal handling_changed
 signal burger_sale_completed(amount: int)
 signal cash_collected(amount: int)
+signal machine_upgraded(kind: String)
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
@@ -91,6 +92,39 @@ func collect_cash(worker_position: Vector2) -> int:
 	production_dirty = false
 	changed.emit()
 	cash_collected.emit(amount)
+	return amount
+
+func purchase_operation(kind: String) -> bool:
+	var previous_coins: int = economy.coins
+	var previous_operations: Dictionary = economy.operations.snapshot()
+	var previous_machine: Dictionary = economy.production.snapshot()
+	var error: String = economy.purchase_operation(kind)
+	if not error.is_empty():
+		feedback.emit(error)
+		return false
+	if not storage.write(economy):
+		economy.coins = previous_coins
+		economy.operations.restore(previous_operations)
+		economy.production.level = int(previous_machine["level"])
+		economy.production.capacity_level = int(previous_machine["capacity_level"])
+		economy.production.price_level = int(previous_machine["price_level"])
+		feedback.emit(storage.message)
+		return false
+	production_dirty = false
+	if kind != "stocker":
+		machine_upgraded.emit(kind)
+		production_changed.emit()
+	changed.emit()
+	feedback.emit("Stocker hired! Two burgers per trip." if kind == "stocker" else "Burger machine upgraded!")
+	return true
+
+func stocker_transfer(action: String, worker_position: Vector2) -> int:
+	var result: Dictionary = economy.handling.transfer(action, worker_position, economy.production, economy.operations)
+	var amount: int = int(result["amount"])
+	if amount > 0:
+		production_dirty = true
+		persist()
+		handling_changed.emit()
 	return amount
 
 func restart() -> void:

@@ -196,3 +196,50 @@ Cash fixture draws actual pending amount and at most three note stacks; zero
 shows EMPTY. ShopWorld updates fixture on inventory/wallet events and uses one
 reusable Label/Tween for floating +amount; replacement kills the old tween.
 No unbounded money/reward nodes, no per-frame scans or extra permission required.
+
+
+## Phase G — independent upgrades and a stocker
+
+ProductionState.level now means speed tier. capacity_level and price_level are
+independent persisted tiers; capacity(), interval(), selling_price() return the
+actual active values from machines.json. Existing levels array retains its speed
+and capacity examples. Separate capacity costs and price tiers configure purchases.
+A speed purchase restarts the engine cycle at its new interval, without producing
+an item. Capacity preserves stock/resumes full machines. Price is sampled at each
+successful checkout, even for previously produced burgers; old cash is never
+repriced. All tiers cap at five, costs grow progressively.
+
+ShopEconomy.purchase_operation validates action, maximum level, wallet funds and
+business expense ceiling before changing anything. ShopOperations stores one
+hired flag, staff carried items and aggregate business spending separate from
+legacy shelf upgrades. Game saves the combined purchase before broadcasting effects
+or creating an employee; failure restores old wallet/tiers/hire/spending first.
+No pending cash can finance purchases. Cash collection remains separate.
+
+BurgerHandling.transfer and available_amount accept an optional ShopOperations
+carrier. Player and stocker use the SAME capacity/proximity/source/destination
+rules; the destination carry credit precedes machine stock-change signals. One
+shared counter avoids competing independent inventories. Staff pickup/delivery
+saves all inventories immediately and marks dirty for retry after storage failure.
+
+StockerController owns one WorkerCharacter with blue uniform/cap and a bounded
+fixed waypoint route from operations.json. Decisions use a 350 ms Timer; physics
+only steers the actor along its route. Pickup/delivery happens at arrival and
+rechecks actual world proximity. Full counter retains held food, partial delivery
+retains remainder, empty press waits, no stock teleports. Worker speed is 135,
+carry capacity uses the same two-item configuration as the player. Menus leave
+business running; focus loss/pause blocks movement and stops decision timers.
+World fixtures are layer 1; workers layer 2 and all characters test only layer 1,
+so staff/customers cannot trap the player. Future furniture must preserve this aisle.
+
+BurgerOperationsPanel is a compact modal workshop under Menu. It shows actual
+wallet/current/next stats/costs, disables unaffordable/maxed/duplicate-hire actions,
+and updates existing controls on events. Back closes workshop before menu.
+
+Schema 7 adds operations {hired, carried, spending} and requires machine
+capacity_level/price_level. All fields validate before applying any saved value.
+Schemas 1–6 keep previous wallet, groceries, upgrades, machine/held/counter stock
+and cash; legacy machine level supplies both speed/capacity, price starts at 1.
+Old saves initialize no employee or business spending. Employee-held food persists;
+position/task path restarts safely at the press and resumes delivery. No offline
+employee work, wages, cashier or dismissal are introduced in this checkpoint.

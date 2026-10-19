@@ -8,12 +8,15 @@ var facing: Vector2 = Vector2.DOWN
 var walk_phase: float = 0.0
 var was_walking: bool = false
 var carried_count: int = 0
+var staff_style: bool = false
 
 func set_carried_count(value: int) -> void:
 	carried_count = value
 	queue_redraw()
 
 func _ready() -> void:
+	# Characters do not obstruct each other; all still collide with world layer 1.
+	collision_layer = 2
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	var shape: CollisionShape2D = CollisionShape2D.new()
 	var circle: CircleShape2D = CircleShape2D.new()
@@ -34,7 +37,7 @@ func input_direction() -> Vector2:
 	if controls_blocked:
 		return Vector2.ZERO
 	var result: Vector2 = move_vector
-	if not OS.has_feature("android") and result.is_zero_approx():
+	if not staff_style and not OS.has_feature("android") and result.is_zero_approx():
 		result = Vector2(float(Input.is_physical_key_pressed(KEY_D) or Input.is_physical_key_pressed(KEY_RIGHT)) - float(Input.is_physical_key_pressed(KEY_A) or Input.is_physical_key_pressed(KEY_LEFT)), float(Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN)) - float(Input.is_physical_key_pressed(KEY_W) or Input.is_physical_key_pressed(KEY_UP)))
 	return result.limit_length(1.0)
 
@@ -59,7 +62,7 @@ func _draw() -> void:
 	draw_set_transform(Vector2.ZERO)
 	draw_style_box(_style(Color("244e43"), 5), Rect2(-13, -11 + step, 11, 16))
 	draw_style_box(_style(Color("244e43"), 5), Rect2(2, -11 - step, 11, 16))
-	draw_style_box(_style(Color("f0b66a"), 10), Rect2(-18, -42 - bounce, 36, 34))
+	draw_style_box(_style(Color("6c9ab2") if staff_style else Color("f0b66a"), 10), Rect2(-18, -42 - bounce, 36, 34))
 	draw_style_box(_style(Color("f9ead0"), 5), Rect2(-10, -33 - bounce, 20, 25))
 	draw_line(Vector2(-15, -32 - bounce), Vector2(-21, -15 - bounce - step), Color("f2c597"), 10, true)
 	draw_line(Vector2(15, -32 - bounce), Vector2(21, -15 - bounce + step), Color("f2c597"), 10, true)
@@ -70,8 +73,9 @@ func _draw() -> void:
 		var eye_offset: float = facing.x * 4
 		draw_circle(Vector2(-5 + eye_offset, -49 - bounce), 1.8, Color("385045"))
 		draw_circle(Vector2(5 + eye_offset, -49 - bounce), 1.8, Color("385045"))
-	draw_style_box(_style(Color("fffaf0"), 8), Rect2(-19, -70 - bounce, 38, 17))
-	draw_style_box(_style(Color("fffaf0"), 9), Rect2(-12, -79 - bounce, 24, 17))
+	draw_style_box(_style(Color("477b96") if staff_style else Color("fffaf0"), 8), Rect2(-19, -70 - bounce, 38, 17))
+	if not staff_style:
+		draw_style_box(_style(Color("fffaf0"), 9), Rect2(-12, -79 - bounce, 24, 17))
 	draw_line(Vector2(-17, -55 - bounce), Vector2(17, -55 - bounce), Color("e9d8b9"), 3)
 	if carried_count > 0:
 		draw_line(Vector2(-16, -31 - bounce), Vector2(-10, -20 - bounce), Color("f2c597"), 10, true)

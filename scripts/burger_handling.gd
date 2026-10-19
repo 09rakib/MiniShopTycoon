@@ -43,33 +43,43 @@ func nearby_action(position: Vector2) -> String:
 			return action
 	return ""
 
-func available_amount(action: String, machine: ProductionState) -> int:
+func available_amount(action: String, machine: ProductionState, carrier: ShopOperations = null) -> int:
+	var held: int = carried if carrier == null else carrier.carried
 	if action == "pickup":
-		return mini(machine.stock, carry_capacity() - carried)
+		return mini(machine.stock, carry_capacity() - held)
 	if action == "deliver":
-		return mini(carried, counter_capacity() - counter)
+		return mini(held, counter_capacity() - counter)
 	return 0
 
-func transfer(action: String, position: Vector2, machine: ProductionState) -> Dictionary:
+func transfer(action: String, position: Vector2, machine: ProductionState, carrier: ShopOperations = null) -> Dictionary:
+	if carrier != null and not carrier.hired:
+		return {"amount": 0, "error": "Hire a stocker first."}
+	var held: int = carried if carrier == null else carrier.carried
 	if not action in ["pickup", "deliver"]:
 		return {"amount": 0, "error": "Unknown burger interaction."}
 	if not is_near(action, position):
 		return {"amount": 0, "error": "Move closer to the machine." if action == "pickup" else "Move closer to the serving counter."}
-	var amount: int = available_amount(action, machine)
+	var amount: int = available_amount(action, machine, carrier)
 	if amount <= 0:
 		var message: String
 		if action == "pickup":
-			message = "Hands full — deliver your burgers." if carried >= carry_capacity() else "The machine is cooking. Wait for a burger."
+			message = "Hands full — deliver your burgers." if held >= carry_capacity() else "The machine is cooking. Wait for a burger."
 		else:
 			message = "Counter full — your burgers stay in your hands." if counter >= counter_capacity() else "Collect burgers from the machine first."
 		return {"amount": 0, "error": message}
 	if action == "pickup":
 		# Credit the destination before take() emits stock_changed, so every
 		# observer/save sees both sides of the same completed transfer.
-		carried += amount
+		if carrier == null:
+			carried += amount
+		else:
+			carrier.carried += amount
 		machine.take(amount)
 	else:
-		carried -= amount
+		if carrier == null:
+			carried -= amount
+		else:
+			carrier.carried -= amount
 		counter += amount
 	return {"amount": amount, "error": ""}
 

@@ -1,42 +1,49 @@
-# Phase F manual checkpoint — collect cash into wallet
+# Phase G manual checkpoint — upgrades and a working stocker
 
-Update with builds/MiniShopTycoon-phaseF.apk (v0.8.0/code 8). Do not uninstall or
-clear app data. Existing schema 6 already supports cash/wallet; prior progress,
-carried/counter stock, accumulated cash and grocery upgrades are retained.
+Update builds/MiniShopTycoon-phaseG.apk (v0.9.0/code 9) over the installed game.
+Do not uninstall/clear data or downgrade after schema 7 migration. Prior coins,
+grocery upgrades/inventory, machine/counter/held stock, revenue and cash migrate.
 
-1. Collect up to two burgers at the press, carry to DELIVER and stock the counter.
-2. Let customers buy. Each sale removes one counter burger and adds 20 to Cash
-   waiting. Wallet stays unchanged while the chef is away from CASH.
-3. Let several sales accumulate. One cash plate shows the combined amount and a
-   small stack of notes. There should never be hundreds of separate cash objects.
-4. Walk to the CASH ground circle beside the plate. No tap is required: within
-   46 world units, collection occurs at the next 150 ms proximity poll. Pending
-   cash becomes zero, wallet increases by the exact previous amount, +amount
-   floats above the chef and the plate shows EMPTY.
-5. Remain standing there or walk in/out repeatedly. No additional coins/reward
-   until another customer makes a successful purchase. A new sale can then be
-   collected automatically while you remain near the plate.
-6. Try from the machine, delivery circle and across the shop: cash cannot be
-   collected remotely. Carrying burgers does not prevent a valid cash pickup.
-7. Open Menu/grocery panel while near cash; collection is blocked until returning
-   to gameplay. App focus loss/background pauses collection and business.
-8. Close/reopen after collection. Wallet retains the new amount and collected
-   cash does not reappear. Historical sales/revenue do not increase on collection.
-9. Use collected coins in the existing grocery inventory/upgrades menu to verify
-   they are spendable. Burger machine upgrades/employees come in Phase G.
-10. Test two-finger movement/action, Home/resume, Back, airplane mode and APK update
-    preserving old progress. Do not clear data to test this update.
+1. Open Menu → Burger machine & stocker. The compact workshop shows wallet,
+   current/next stats and exact costs. Back to shop resumes the same world.
+   Android Back first closes workshop, then menu. World business keeps running
+   while menus are open; player movement/cash pickup is blocked in menus.
+2. Speed 1 → 2 costs 180 coins, changes 2.0s → 1.7s and leaves capacity at 10.
+   A fresh cycle starts at the new speed; buying does not create free burgers.
+3. Capacity 1 → 2 costs 120 coins, changes 10 → 12 without losing existing food.
+   A full machine resumes because the new capacity has room. Speed stays the same.
+4. Price 1 → 2 costs 140 coins, changes 20 → 25. Subsequent successful customer
+   purchases pay 25; existing pending cash/revenue does not change retroactively.
+5. Only wallet coins can buy upgrades. Pending cash cannot be spent; walk to CASH
+   and collect it first. Unaffordable/maxed buttons disable; repeated hiring must
+   never create multiple stockers or charge after the first successful purchase.
+6. Hire stocker for 300 coins. A blue-capped worker appears at the press, picks up
+   at most two and visibly walks through the middle aisle to DELIVER. The counter
+   changes only at delivery, not immediately when pickup occurs.
+7. Help the stocker by collecting/delivering yourself. Shared stock must not go
+   negative or duplicate. Full counter: employee waits and keeps the carried food.
+   Partial space: only fitting burgers move; remainder stays held until a sale.
+8. Continue selling and collecting cash. Employee stocks the counter but never
+   creates products/money or collects cash for you. No staff wages in this version.
+9. Close/reopen while stocker carries food. Hired status, exact held items, machine
+   tiers, business expenses, wallet and cash persist. Employee respawns safely and
+   resumes delivery. Do not reset progress just to test upgrades.
+10. Test joystick/menu/two-finger controls, Home/resume, Back and airplane mode.
+    Confirm staff/production/customer activity pauses in background, with no
+    offline catch-up. Character positions are transient; inventories are durable.
 
-## Actual automated/visual checks
+## Actual automated and visual verification
 
-311 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
-34 cash. test.cmd runs all six suites and rejects script/runtime errors in logs.
-Cash checks cover exact aggregation, distance/NaN/infinity, empty/repeat pickup,
-10,000 sale/collection cycles, wallet ceiling, actual proximity timer, blocked
-controls, immediate durable observers, old schema 6 continuity, real file-open
-failure, rollback, cooldown/retry and pause/restart. Cash waiting/collected layouts
-rendered and inspected at 480×900 and 360×640.
+380 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
+34 cash, 69 operations. test.cmd runs all seven suites and rejects runtime errors.
+The new suite tests all upgrade tiers/caps/costs, fund checks, price timing, schema
+migration and malformed records, single hire/save failure rollback, player/staff
+stock contention, 10,000 rejected full-counter transfers, actual machine timer,
+real worker travel/partial delivery, saved in-transit items, pause/reset and a
+10.5-second full production → stocker → customer → cash collection loop.
+Workshop/default/hired and employee carry images rendered and inspected at
+480×900 and 360×640. See test_report_phaseG.md for exact build verification.
 
-No phone installation, physical touch, airplane-mode or measured performance test
-was run this checkpoint. Prior installation was explicitly aborted on the phone.
-See test_report_phaseF.md. Stop for feedback before Phase G.
+Phase F was installed/launched in the previous turn. G phone installation was not
+run: ADB USB and wireless discovery found no phone at this checkpoint. No G device
+migration/touch/airplane/performance acceptance claimed. Stop before Phase H.

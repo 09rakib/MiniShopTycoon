@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0 — Transformation Phase G — 19 October 2026
+
+- Added independent speed, capacity and selling-price upgrades with five tiers.
+- Added wallet-funded purchase validation, immediate save and failure rollback.
+- Added compact Burger Workshop with current/next stats, costs and single hire.
+- Added one visible stocker walking a fixed aisle, carrying two, sharing bounded
+  player transfer rules, and retaining full-counter leftovers/in-transit food.
+- Added schema 7 and prior coupled-level migration; preserves previous progress.
+- Updated character layers so staff/customers cannot block the player.
+- Added 69 operations checks including a full real-time shop loop; all 380 checks
+  pass. New v0.9.0/code 9 APK verified; phone unavailable for this update.
+
 ## 0.8.0 — Transformation Phase F — 19 October 2026
 
 - Added automatic proximity cash collection at the existing cash station.

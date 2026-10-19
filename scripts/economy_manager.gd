@@ -19,6 +19,7 @@ var production: ProductionState = ProductionState.new()
 var handling: BurgerHandling = BurgerHandling.new()
 var burger_sales: BurgerSales = BurgerSales.new()
 var cash_pickup: CashPickup = CashPickup.new()
+var operations: ShopOperations = ShopOperations.new()
 const MAX_TOTAL: int = 1000000000000
 const LEGACY_PRODUCTS: Array[String] = ["bread", "milk", "apples"]
 
@@ -30,6 +31,7 @@ func _init() -> void:
 	reset()
 
 func reset() -> void:
+	operations.reset()
 	burger_sales.reset()
 	handling.reset()
 	production.reset()
@@ -149,6 +151,30 @@ func buy_upgrade(id: String) -> String:
 	shelf_upgrades[id] = current + 1
 	return ""
 
+func purchase_operation(kind: String) -> String:
+	var cost: int
+	if kind == "stocker":
+		if operations.hired:
+			return "Your stocker is already hired."
+		cost = int(operations.config["hire_cost"])
+	elif kind in ["speed", "capacity", "price"]:
+		cost = production.upgrade_cost(kind)
+		if cost < 0:
+			return "This upgrade is at its maximum."
+	else:
+		return "Unknown shop purchase."
+	if coins < cost:
+		return "Not enough wallet coins. Collect cash first."
+	if operations.spending > MAX_TOTAL - cost:
+		return "Shop spending limit reached."
+	coins -= cost
+	operations.spending += cost
+	if kind == "stocker":
+		operations.hired = true
+	else:
+		production.apply_upgrade(kind)
+	return ""
+
 func collect_cash(worker_position: Vector2) -> int:
 	var amount: int = burger_sales.uncollected_cash
 	if amount <= 0 or not cash_pickup.is_near(worker_position) or coins > MAX_TOTAL - amount:
@@ -159,9 +185,9 @@ func collect_cash(worker_position: Vector2) -> int:
 	return amount
 
 func snapshot() -> Dictionary:
-	return {"schema_version": 6, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
+	return {"schema_version": 7, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
 		"burger_handling": handling.snapshot(), "burger_sales": burger_sales.snapshot(),
-		"production": production.snapshot(),
+		"production": production.snapshot(), "operations": operations.snapshot(),
 		"upgrade_spending": upgrade_spending, "shelf_upgrades": shelf_upgrades.duplicate(),
 		"retained_unlocks": retained_unlocks.duplicate(),
 		"cost_of_goods": cost_of_goods, "customers": customers,
@@ -175,7 +201,7 @@ func inventory_value() -> int:
 
 func restore(data: Dictionary) -> bool:
 	# Validate the entire record before touching working state.
-	if not _valid_integer(data.get("schema_version"), 1, 6) or not data.get("stock") is Dictionary:
+	if not _valid_integer(data.get("schema_version"), 1, 7) or not data.get("stock") is Dictionary:
 		return false
 	for key: String in ["coins", "revenue", "cost_of_goods", "customers"]:
 		if not _valid_integer(data.get(key), 0, MAX_TOTAL):
@@ -230,8 +256,15 @@ func restore(data: Dictionary) -> bool:
 	if version >= 6:
 		if not data.get("burger_sales") is Dictionary or not loaded_sales.restore(data["burger_sales"]):
 			return false
+	var loaded_operations: ShopOperations = ShopOperations.new()
+	if version >= 7:
+		if not data.get("operations") is Dictionary or not loaded_operations.restore(data["operations"]):
+			return false
+		if not data["production"].has("capacity_level") or not data["production"].has("price_level"):
+			return false
 	# All fields have validated. Update the existing instance so controllers keep
 	# their reference across restores/resets; no partial state is applied earlier.
+	operations.restore(loaded_operations.snapshot())
 	burger_sales.restore(loaded_sales.snapshot())
 	handling.restore(loaded_handling.snapshot())
 	production.restore(loaded_production.snapshot())

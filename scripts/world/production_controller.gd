@@ -18,6 +18,13 @@ func _ready() -> void:
 	Game.economy.production.stock_changed.connect(_state_changed)
 	Game.production_changed.connect(sync)
 	Game.changed.connect(sync)
+	Game.machine_upgraded.connect(_upgrade_cycle)
+	sync()
+
+func _upgrade_cycle(kind: String) -> void:
+	# A bought speed tier starts a fresh cycle at the new interval; no free item.
+	if kind == "speed":
+		cycle_timer.stop()
 	sync()
 
 func sync() -> void:

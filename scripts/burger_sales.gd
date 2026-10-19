@@ -29,7 +29,7 @@ func collected_cash() -> int:
 func purchase(ticket: int, handling: BurgerHandling, machine: ProductionState) -> int:
 	if not tickets.has(ticket) or tickets[ticket] or handling.counter <= 0:
 		return 0
-	var price: int = int(machine.definition()["selling_price"])
+	var price: int = machine.selling_price()
 	if uncollected_cash > LIMIT - price or revenue > LIMIT - price or sold >= LIMIT:
 		return 0
 	# No signals or awaits until both inventory and cash have been committed.

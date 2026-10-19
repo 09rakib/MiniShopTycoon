@@ -14,7 +14,7 @@ Never force-push or overwrite unrelated remote work; inspect remote state first.
 If authentication/network blocks a push, preserve the local commit and report
 the exact blocker. Do not claim an upload succeeded without remote verification.
 
-Current transformation scope: B/C/D/E published as 1938b5b/eb2c606/e67cd06/06ac018.
-The user explicitly authorized Phase F. Complete proximity cash/wallet transfer,
-visual feedback and persistence, test, update docs, commit/push and stop before G.
-Read PHASE_STATUS.md for the newest checkpoint before continuing.
+Current transformation scope: B/C/D/E/F were published as
+1938b5b/eb2c606/e67cd06/06ac018/594ff82. User explicitly authorized Phase G.
+Complete machine upgrades and one stocker, test, update docs, commit/push and
+stop before H. Read PHASE_STATUS.md for the newest checkpoint before continuing.

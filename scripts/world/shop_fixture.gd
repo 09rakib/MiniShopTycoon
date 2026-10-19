@@ -38,6 +38,7 @@ func _draw() -> void:
 			panel(Rect2(-w / 2 + 10, -49, w - 20, 41), Color("244c40"), 5)
 			text("%d / %d" % [production.stock, production.capacity()], Vector2(-33, -29), 19, Color("fff1c8"))
 			var status: String = "FULL" if production.stock >= production.capacity() else "COOKING" if production.active else "OFF"
+			status += " +UP" if production.upgrade_cost("speed") >= 0 or production.upgrade_cost("capacity") >= 0 or production.upgrade_cost("price") >= 0 else " MAX"
 			text(status, Vector2(-27, -h - lift + 86), 11, Color("edc16b"))
 		# A sign, not produced stock. Production belongs to Phase C.
 		draw_circle(Vector2(0, -h - lift - 19), 29, Color("faf0cd"))

@@ -1,54 +1,63 @@
 # Phase status — 19 October 2026
 
-Current checkpoint: **Transformation Phase F — physical cash collection complete.**
+Current checkpoint: **Transformation Phase G — machine upgrades and stocker complete.**
 
-- User authorized F after published E (06ac018). Original grocery Phases 0–3
-  and burger world/production/carrying/customers remain preserved.
-- One aggregated cash pickup at the existing cash fixture. Original cash stacks
-  capped at three, exact amount displayed; empty plate after collection.
-- Walk within 46 world units to automatically collect on a 150 ms proximity poll.
-  Worker spawn and delivery point are outside this radius. Uses actual worker
-  position, rejects non-finite/distant positions and blocked/menu/paused input.
-- Atomic all-or-nothing pending-cash → wallet transaction, with wallet ceiling
-  protection. Repeated pickup cannot pay again. New sales permit new collections.
-- Wallet/pending cash saved together before signals/reward. File failure rolls
-  back both fields and shows error; nearby retries wait three seconds.
-- Floating +amount reward uses one reusable label/tween. Wallet/cash HUD and world
-  stack refresh together. Cash HUD moved inside its panel for clear mobile layout.
-- Burger sales/revenue/gross profit remain historical, collection does not change
-  them. Derived collected total = revenue minus pending cash. Zero ingredient
-  cost still means burger gross profit equals revenue. Old grocery ledger/XP
-  remains separate; collected money is genuinely spendable wallet currency.
-- No new persistent field needed: schema 6 already stores wallet and pending
-  cash. Existing schemas 1–6 remain supported without resetting progress.
-- Automated: 128 economy + 34 world + 32 production + 44 handling + 39 customer
-  + 34 cash checks = **311 passed, zero failures**. Final logs clean.
-- Cash tests include 10,000 duplicate pickups, 10,000 sale/collection cycles,
-  radius boundaries, non-finite input, aggregation, wallet ceiling, actual timer,
-  menu/suspension blocking, saved observer state, repeat/new sales, actual file
-  failure/rollback, retry cooldown and pause/restart persistence.
-- Real cash waiting/collected previews inspected at 480×900 and 360×640.
+- User authorized G after Phase F (594ff82). Original grocery Phases 0–3 and all
+  burger production/carry/counter/customers/cash features remain preserved.
+- Independent speed/capacity/price levels, five tiers each; current/next values
+  and wallet costs shown in Menu → Burger machine & stocker. Machine +UP/MAX
+  indicator. Speed starts a fresh real timer cycle; capacity preserves all stock;
+  new price applies at the next successful checkout, never retroactively.
+- One stocker hired for 300 wallet coins, distinct blue cap/uniform. Walks at
+  135 units/sec along a configured clear aisle, carries at most two burgers,
+  shares the player's actual proximity/bounded inventory transaction code.
+- Full counter retains employee's carried items. Partial delivery retains the
+  remainder and waits for space. No stock teleport, instant restocking or wages.
+- Menus block player input while business continues. App pause/focus loss freezes
+  production/customers/stocker. Characters ignore each other but collide with
+  solid world fixtures, preserving player/customer/stocker paths.
+- Single validated economy purchase method uses spendable wallet only; maximum
+  tiers, insufficient funds, unknown purchases and expense ceiling reject safely.
+  Purchases persist before effect signals/spawn; write failure restores wallet,
+  tiers and hire state. Staff transfers persist immediately and mark dirty for
+  retry if save fails.
+- Schema 7 adds operations {hired, carried, spending} and independent capacity/
+  price levels. Old schemas 1–6 migrate; prior machine level retains matching
+  speed/capacity, price defaults to base, no employee. Old wallet/inventory/
+  upgrades/cash remain intact. Employee's carried food survives relaunch.
+- 128 economy + 34 world + 32 production + 44 handling + 39 customers + 34 cash
+  + 69 operations = **380 checks passed, zero failures**; final logs clean.
+- New checks cover upgrades/max/insufficient funds, no spending pending cash,
+  single hire, save rollback/migration, shared staff/player contention, 10,000
+  full-counter attempts, real timer, visible travel/partial delivery, saved staff
+  carry and full timed production → stocker → sale → proximity cash loop.
+- Workshop/default/hired and stocker-carry render captures inspected at 480×900
+  and 360×640. APK v0.9.0/code 9 debug exported and signature/manifest verified.
 
 ## Checkpoint handoff
 
-v0.8.0/code 8 APK: builds/MiniShopTycoon-phaseF.apk. See test_report_phaseF.md
-for actual export/signature/manifest verification and SHA256. No phone install
-attempted after the previous explicit device refusal; provide APK for update.
-Commit/push complete checkpoint, verify remote hash, then stop before G for
-feedback. User requires automatic commit/push after each completed phase.
+Artifact: builds/MiniShopTycoon-phaseG.apk; see test_report_phaseG.md for size,
+hash and verification. Phase F was successfully installed/launched on the phone
+in the prior turn. Phone now absent from ADB USB/wireless discovery, so G was not
+installed or tested on-device. Update the existing app without uninstall/data reset.
+Commit/push all tested source/assets/docs and verify remote hash. Stop before H
+for feedback; user requires a GitHub push at the end of each completed phase.
 
 ## Manual acceptance pending
 
-Deliver burgers, let customers buy, observe pending cash with unchanged wallet.
-Walk to CASH circle: exact aggregate moves into wallet, cash stack clears, +amount
-floats above chef. Stay there: no repeat payout. New sales can be collected.
-Restart preserves wallet and zero collected cash. Test joystick/multitouch,
-Home/resume, Android Back, airplane mode and update migration on the phone.
+Menu → Burger machine & stocker. Try the 180-coin speed, 120-coin capacity,
+140-coin price upgrades or hire the 300-coin stocker. Each must spend wallet once,
+show new actual values and persist. Stocker physically carries at most two and
+waits with leftovers at a full counter. Collect customer cash yourself as before.
+Restart while employee carries food: hired worker and exact carried amount remain.
+Test small-screen touch, Back/menu, Home/resume and airplane mode on phone.
 
 ## Limits / next phases
 
-G machine upgrades/employees; H further machines/furniture; I polish; J complete
-lifecycle hardening; K measured Android/release. No offline production/sales.
-Visitors/worker position restart safely, held stock persists. Production writes
-batch five seconds; abrupt termination can lose latest unsaved production.
-No on-device performance or physical touch acceptance claimed this checkpoint.
+One useful stocker only; cashier/general assistant, additional food machines,
+furniture and content expansion remain later scope. No staff wages or dismissal
+this checkpoint. Staff uses fixed valid aisle; future placement must preserve it.
+No offline work/income. Worker/customer/staff positions restart safely; inventories
+persist. Production-only writes batch five seconds; sudden kill can lose latest
+unsaved production. No measured Android FPS/memory/heat or low-end claims.
+H additional machines/furniture; I polish; J full lifecycle; K release/performance.

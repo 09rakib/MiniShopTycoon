@@ -11,6 +11,9 @@ var legacy_layer: Control
 var legacy: Control
 var suspended: bool = false
 var production_controller: ProductionController
+var stocker_controller: StockerController
+var operations_layer: Control
+var operations_panel: BurgerOperationsPanel
 var customer_controller: BurgerCustomers
 var cash_label: Label
 var carry_label: Label
@@ -29,6 +32,9 @@ func _ready() -> void:
 	customer_controller = BurgerCustomers.new()
 	customer_controller.actors = world.actors
 	add_child(customer_controller)
+	stocker_controller = StockerController.new()
+	stocker_controller.actors = world.actors
+	add_child(stocker_controller)
 	var layer: CanvasLayer = CanvasLayer.new()
 	add_child(layer)
 	hud = Control.new()
@@ -191,15 +197,38 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("Serve burgers, then walk to collect cash.", 17))
+	buttons.add_child(_label("Upgrade your press and hire a helping hand.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
+	buttons.add_child(_button("Burger machine & stocker", _open_operations))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.8.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.9.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
+	operations_layer = Control.new()
+	operations_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	menu.add_child(operations_layer)
+	var workshop_shade: ColorRect = ColorRect.new()
+	workshop_shade.color = Color(0.1, 0.2, 0.15, 0.88)
+	workshop_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	operations_layer.add_child(workshop_shade)
+	var workshop_center: CenterContainer = CenterContainer.new()
+	workshop_center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	operations_layer.add_child(workshop_center)
+	operations_panel = BurgerOperationsPanel.new()
+	operations_panel.custom_minimum_size.x = 408
+	var workshop_style: StyleBoxFlat = StyleBoxFlat.new()
+	workshop_style.bg_color = Color("fff4da")
+	workshop_style.set_corner_radius_all(16)
+	for side: String in ["left", "right", "top", "bottom"]:
+		workshop_style.set("content_margin_" + side, 16.0)
+	operations_panel.add_theme_stylebox_override("panel", workshop_style)
+	operations_panel.closed.connect(operations_layer.hide)
+	operations_panel.return_to_shop.connect(close_menu)
+	workshop_center.add_child(operations_panel)
+	operations_layer.hide()
 	legacy_layer = Control.new()
 	legacy_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud.add_child(legacy_layer)
@@ -271,12 +300,18 @@ func _block_controls(value: bool) -> void:
 	world.player.stop()
 	joystick.set_enabled(not value)
 
+func _open_operations() -> void:
+	operations_panel.refresh()
+	operations_layer.show()
+
 func open_menu() -> void:
+	operations_layer.hide()
 	menu.show()
 	_block_controls(true)
 	_update_location()
 
 func close_menu() -> void:
+	operations_layer.hide()
 	menu.hide()
 	Game.running = false
 	_block_controls(suspended)
@@ -323,14 +358,18 @@ func _notification(what: int) -> void:
 		_block_controls(true)
 		production_controller.set_paused(true)
 		customer_controller.set_paused(true)
+		stocker_controller.set_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
 		_block_controls(menu.visible or legacy_layer.visible)
 		production_controller.set_paused(false)
 		customer_controller.set_paused(false)
+		stocker_controller.set_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if legacy_layer.visible:
 			_close_legacy()
+		elif operations_layer.visible:
+			operations_layer.hide()
 		elif menu.visible:
 			close_menu()
 		else:

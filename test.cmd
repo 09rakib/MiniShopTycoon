@@ -26,6 +26,10 @@ if not errorlevel 1 set "testResult=1"
 if errorlevel 1 set "testResult=1"
 findstr /C:"SCRIPT ERROR:" /C:"ERROR:" tools\cash-test-run.log >nul
 if not errorlevel 1 set "testResult=1"
+"tools\godot\Godot_v4.7.2-stable_win64_console.exe" --headless --path . --log-file tools/operations-test-run.log --script tests/run_operations_tests.gd
+if errorlevel 1 set "testResult=1"
+findstr /C:"SCRIPT ERROR:" /C:"ERROR:" tools\operations-test-run.log >nul
+if not errorlevel 1 set "testResult=1"
 if not "%testResult%"=="0" echo Tests failed. See tools\*-test-run.log.
 pause
 exit /b %testResult%
