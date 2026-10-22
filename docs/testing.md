@@ -1,47 +1,42 @@
-# Phase H manual checkpoint — fries machine and furniture
+# User touch/control update — manual checkpoint
 
-Install builds/MiniShopTycoon-phaseH.apk (v0.10.0/code 10) as an update. Do not
-uninstall/clear data or downgrade after schema 8 migration. Existing coins,
-grocery upgrades, burger tiers/stock, held food, staff and pending cash remain.
+Install builds/MiniShopTycoon-touch-update.apk (v0.10.1/code 11) as an update.
+Keep app data; schema 8 and all previous progress remain compatible.
 
-1. Collect wallet cash, then open Menu → New machines & furniture. Pending cash
-   is not spendable. Unlock fries costs 400; table + two chairs costs 180. Owned
-   buttons disable. Repeated taps must not double-charge or duplicate fixtures.
-2. Unlocked fries press appears in the left expansion bay. It produces one fries
-   serving every three seconds, stops at eight, resumes after collection. Before
-   unlock it must not produce anything or obstruct the bay.
-3. Walk to FRIES, tap Collect fries 2 when at least two exist. The machine loses
-   exactly two and visible cups appear in the chef's hands. Pickup is local only.
-4. Player carries at most two items and one product type per trip. Carrying a
-   burger blocks fries pickup and vice versa, retaining held food. Deliver first.
-5. Walk to DELIVER. Fries move to four dedicated trays; burger counter still has
-   its separate eight slots. HUD/world show B and F counts. Full or partial fries
-   shelf retains leftovers in the chef's hands, never deletes/retypes food.
-6. Customers buy food at the counter, never the machines. They alternate when
-   both foods are stocked; otherwise buy what exists. One visit buys once total.
-   Base burgers pay 20 (or upgraded price), fries 16. Cash waits until collected.
-7. Walk to CASH: combined proceeds enter wallet exactly once. Burger upgrades and
-   stocker remain intact; stocker still carries burgers only, player handles fries.
-8. Buy the table set. One original table/two chairs appears in the lower-left bay,
-   seating capacity becomes 2. It is solid but leaves worker/customer/entrance
-   paths open. This checkpoint has no dining or seating revenue bonus yet.
-9. Restart while carrying fries and with both counter products stocked. Owned
-   machine/furniture, food, cash/wallet and old progress persist. Saved objects
-   must appear exactly once on relaunch, never duplicate on menu refresh.
-10. Test small-screen joystick/actions, Home/resume, Back/menu and airplane mode.
-    Both machines pause in background; no offline production or income.
+1. Start game without touching. No joystick should be visible. HUD shows compact
+   wallet/level and a slim carry/counter/cash line; the world stays prominent.
+2. Touch empty left/right/upper/lower gameplay area. Joystick should appear under
+   that finger at low opacity. Initial press alone must not make worker jump.
+3. Drag to move, including diagonals; diagonal speed must stay normalized. Release
+   anywhere: movement stops and joystick disappears. Touch another position:
+   next joystick appears there. Small finger jitter should not move the worker.
+4. Use another finger while moving. It must not recenter/release the first gesture.
+   Tap Menu: controls stop and hide, no accidental movement. Back/close works as
+   before; return to shop requires a fresh gameplay touch.
+5. Walk near burger press: automatically pick up available food to maximum two.
+   No Collect button or repeated taps. Remain there: no duplication with full hands.
+6. Walk to serving counter: automatically deliver into correct shelf. Full counter
+   retains carried food; partial space delivers only what fits, keeps the rest.
+7. Unlocked fries works the same: automatic pickup at FRIES and service at DELIVER,
+   one food type per trip. Stocker/upgrade/furniture behavior remains unchanged.
+8. Let customers buy. Walk to CASH: exact pending amount enters wallet automatically,
+   once. Leaving/returning to empty plate must not grant extra coins.
+9. Open management while near stations, Home/resume, Back, multitouch cancellation.
+   No movement/transfer during blocked menu or suspension; no stuck joystick.
+10. Restart after auto pickup/service/cash. Items and balances persist, no duplication.
+    If the safe spawn is inside a station, the restored food may auto-deliver there.
 
-## Actual verification
+## Automated / rendered verification actually run
 
-430 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
-34 cash, 69 operations, 50 expansion. test.cmd runs all eight suites and flags
-script/runtime errors. New cases cover purchase funds/repeats/rollback, locked
-production, shared two-item handling, full/partial shelf retention, alternating
-payments and last-item claim, schema 7 migration/8 validation, actual production,
-UI pickup/delivery, customer fries purchase/cash collection, placement margins,
-solid furniture, relaunch/reset and 10,000 complete fries-to-sale cycles.
-Five real render previews inspected at 480×900 and 360×640.
+459 checks pass across all nine suites: 128 economy, 34 world, 32 production,
+44 handling, 39 customers, 34 cash, 69 operations, 50 expansion, 29 touch.
+Existing input/handling tests were adapted from removed fixed-button interactions
+into floating and automatic interaction checks; underlying conservation tests stay.
+test.cmd flags script/runtime errors as failures. Touch tests route actual events,
+check finger ownership/UI blocking/opacity/HUD height, drive real worker movement
+and real 150 ms pickup/service/cash timers, limits and persistent exact quantities.
+Idle/floating/auto pickup/serve/compact layouts rendered and inspected at 480×900
+and 360×640. See test_report_touch.md for actual APK and phone verification.
 
-No Phase H phone installation, physical touch/airplane-mode/device migration or
-measured performance run is claimed. APK signature/manifest are verified; see
-test_report_phaseH.md. Stop for feedback before Phase I.
+No full Phase I audio/polish, measured FPS, low-end/heat or release acceptance
+claim. Further phase work waits for user continuation.

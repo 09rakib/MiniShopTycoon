@@ -36,18 +36,18 @@ func _run() -> void:
 	var press: InputEventScreenTouch = InputEventScreenTouch.new()
 	press.index = 1
 	press.pressed = true
-	press.position = joystick.size / 2 + Vector2(54, 0)
-	joystick._gui_input(press)
-	check(joystick.finger == 1 and joystick.direction.is_equal_approx(Vector2.RIGHT), "Joystick captures touch beginning inside its control")
+	press.position = Vector2(140, 640)
+	joystick._unhandled_input(press)
+	check(joystick.finger == 1 and joystick.direction.is_zero_approx() and joystick.center == press.position, "Floating joystick starts centered on initial touch without unintended movement")
 	var second: InputEventScreenTouch = InputEventScreenTouch.new()
 	second.index = 2
 	second.pressed = true
 	second.position = Vector2.ZERO
 	joystick._input(second)
-	check(joystick.finger == 1 and joystick.direction == Vector2.RIGHT, "Unrelated UI touch does not steal joystick")
+	check(joystick.finger == 1 and joystick.direction.is_zero_approx(), "Unrelated UI touch does not steal joystick")
 	var drag: InputEventScreenDrag = InputEventScreenDrag.new()
 	drag.index = 1
-	drag.position = joystick.get_global_transform_with_canvas() * (joystick.size / 2 + Vector2(200, 200))
+	drag.position = joystick.get_global_transform_with_canvas() * (joystick.center + Vector2(200, 200))
 	joystick._input(drag)
 	check(is_equal_approx(joystick.direction.length(), 1.0) and joystick.direction.x > 0 and joystick.direction.y > 0, "Diagonal drag clamps to unit magnitude")
 	var release: InputEventScreenTouch = InputEventScreenTouch.new()
@@ -59,12 +59,12 @@ func _run() -> void:
 	joystick._input(release)
 	await frames(2)
 	check(joystick.direction == Vector2.ZERO and player.velocity.is_zero_approx(), "Release outside joystick stops worker")
-	joystick._gui_input(press)
+	joystick._unhandled_input(press)
 	release.pressed = true
 	release.canceled = true
 	joystick._input(release)
 	check(joystick.finger == -1 and joystick.direction == Vector2.ZERO, "Touch cancellation releases captured input")
-	joystick._gui_input(press)
+	joystick._unhandled_input(press)
 	joystick._notification(Node.NOTIFICATION_APPLICATION_PAUSED)
 	check(joystick.direction == Vector2.ZERO, "Joystick releases on application pause")
 	# Exercise actual viewport dispatch, not only direct method calls.
@@ -143,7 +143,7 @@ func _run() -> void:
 	player.position = Vector2(600, 600)
 	camera.update_follow(1.0 / 60.0)
 	check(camera.position.x > previous_camera.x and camera.position.x < camera.desired_position().x, "Camera follows smoothly without snapping")
-	joystick._gui_input(press)
+	joystick._unhandled_input(press)
 	scene.open_menu()
 	check(player.controls_blocked and joystick.direction == Vector2.ZERO and scene.menu.visible, "Menu immediately releases and blocks movement")
 	var stationary: Vector2 = player.position

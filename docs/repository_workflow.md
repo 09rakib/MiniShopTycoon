@@ -14,7 +14,7 @@ Never force-push or overwrite unrelated remote work; inspect remote state first.
 If authentication/network blocks a push, preserve the local commit and report
 the exact blocker. Do not claim an upload succeeded without remote verification.
 
-Current transformation scope: B/C/D/E/F/G published as
-1938b5b/eb2c606/e67cd06/06ac018/594ff82/dff71d8. User explicitly authorized H.
-Complete shared additional machine/furniture and persistence, test, update docs,
-commit/push and stop before I. Read PHASE_STATUS.md for the newest checkpoint.
+Current scope: H published as be2891d after G dff71d8. User now explicitly
+requested floating joystick, compact HUD and automatic item pickup/service/cash.
+Complete this control patch, test/build/update phone when connected, document,
+commit/push and stop for feedback. Do not infer approval for all Phase I content.

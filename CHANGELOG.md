@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.10.1 — User-requested touch/control update — 22 October 2026
+
+- Replaced fixed visible joystick with low-opacity floating touch control: hidden
+  when idle, starts at touch location, releases/cancels safely, protects menu UI.
+- Reorganized top wallet/level/carry/counter/cash into a compact two-line HUD.
+- Removed Collect/Deliver buttons and action-key requirement; proximity now auto
+  picks burger/fries, serves counter food and collects cash without tapping.
+- Retained capacity/distance/conservation/save rules, schema 8 and existing progress.
+- Added 29 real input/timer checks and adapted interaction regressions; 459 pass.
+- Exported v0.10.1/code 11 touch-update APK; see test_report_touch.md for device status.
+
 ## 0.10.0 — Transformation Phase H — 22 October 2026
 
 - Added unlockable fries press using shared production/handling/controller code.

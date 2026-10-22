@@ -16,8 +16,10 @@ Original numbered Phases 0–3 remain preserved. New A–K phases control expans
 - G: independent speed/capacity/price upgrades, compact workshop and one visible
   stocker with shared transactions — completed and published as dff71d8.
 - H: fries using shared production/transfer/sales, fixed table + two chairs and
-  persistent purchases — current tested checkpoint. Stop before I.
-- I: visuals/audio/animation and mobile refinement.
+  persistent purchases — completed as be2891d.
+- User-requested touch patch after H: floating hidden joystick, compact HUD, auto
+  pickup/service/cash — current checkpoint. No full I expansion authorized.
+- I: remaining visuals/audio/animation and mobile refinement.
 - J: comprehensive save/migration/lifecycle and progression verification.
 - K: measured Android performance, final AAB/release and current policy checks.
 

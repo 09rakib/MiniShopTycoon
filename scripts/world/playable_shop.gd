@@ -19,7 +19,8 @@ var operations_panel: BurgerOperationsPanel
 var customer_controller: BurgerCustomers
 var cash_label: Label
 var carry_label: Label
-var action_button: Button
+var menu_button: Button
+var top_hud: MarginContainer
 var action: String = ""
 var feedback_label: Label
 var cash_retry_at: int = 0
@@ -103,80 +104,81 @@ func _button(text: String, callback: Callable) -> Button:
 	value.pressed.connect(callback)
 	return value
 
-func _panel() -> PanelContainer:
+func _panel(compact: bool = false) -> PanelContainer:
 	var value: PanelContainer = PanelContainer.new()
 	var box: StyleBoxFlat = StyleBoxFlat.new()
 	box.bg_color = Color("fff4da")
 	box.set_corner_radius_all(16)
 	for side: String in ["left", "right", "top", "bottom"]:
-		box.set("content_margin_" + side, 14.0)
+		box.set("content_margin_" + side, 8.0 if compact else 14.0)
 	value.add_theme_stylebox_override("panel", box)
 	return value
 
 func _build_hud() -> void:
-	var top: MarginContainer = MarginContainer.new()
-	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	top.offset_left = 20
-	top.offset_top = 18
-	top.offset_right = -20
-	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(top)
+	top_hud = MarginContainer.new()
+	top_hud.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top_hud.offset_left = 12
+	top_hud.offset_top = 12
+	top_hud.offset_right = -12
+	top_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top_hud)
+	var lines: VBoxContainer = VBoxContainer.new()
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_theme_constant_override("separation", 5)
+	top_hud.add_child(lines)
 	var row: HBoxContainer = HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	top.add_child(row)
-	var wallet: PanelContainer = _panel()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 8)
+	lines.add_child(row)
+	var wallet: PanelContainer = _panel(true)
 	wallet.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	wallet.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var stats: VBoxContainer = VBoxContainer.new()
+	var stats: HBoxContainer = HBoxContainer.new()
 	stats.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	wallet_label = _label("", 24)
-	level_label = _label("", 14)
+	stats.add_theme_constant_override("separation", 12)
+	wallet_label = _label("", 22)
+	wallet_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	level_label = _label("", 13)
+	level_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats.add_child(wallet_label)
 	stats.add_child(level_label)
-	carry_label = _label("", 14)
-	stats.add_child(carry_label)
-	cash_label = _label("", 14)
-	stats.add_child(cash_label)
 	wallet.add_child(stats)
 	row.add_child(wallet)
-	row.add_child(_button("Menu", open_menu))
+	menu_button = _button("Menu", open_menu)
+	menu_button.custom_minimum_size = Vector2(72, 44)
+	row.add_child(menu_button)
+	var status: HBoxContainer = HBoxContainer.new()
+	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_child(status)
+	carry_label = _label("", 13)
+	carry_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cash_label = _label("", 13)
+	status.add_child(carry_label)
+	status.add_child(cash_label)
+	for value: Label in [carry_label, cash_label]:
+		value.add_theme_color_override("font_outline_color", Color("fff4da"))
+		value.add_theme_constant_override("outline_size", 4)
 	joystick = ShopJoystick.new()
-	joystick.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	joystick.offset_left = 16
-	joystick.offset_right = 180
-	joystick.offset_top = -208
-	joystick.offset_bottom = -44
+	joystick.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	joystick.blocked_regions.append(menu_button)
 	joystick.direction_changed.connect(world.player.set_move_vector)
 	hud.add_child(joystick)
-	var instruction: Label = _label("DRAG TO MOVE", 12)
-	instruction.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	instruction.offset_left = 43
-	instruction.offset_right = 190
-	instruction.offset_top = -40
-	instruction.offset_bottom = -18
-	hud.add_child(instruction)
-	location_label = _label("Explore your shop", 16)
-	location_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	location_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	location_label.offset_left = -270
-	location_label.offset_right = -22
-	location_label.offset_top = -116
-	location_label.offset_bottom = -58
+	location_label = _label("Touch & drag anywhere", 14)
+	location_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	location_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	location_label.offset_left = 16
+	location_label.offset_right = -16
+	location_label.offset_top = -56
+	location_label.offset_bottom = -24
+	location_label.add_theme_color_override("font_outline_color", Color("fff4da"))
+	location_label.add_theme_constant_override("outline_size", 4)
 	hud.add_child(location_label)
-	action_button = _button("Collect", _interact)
-	action_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	action_button.offset_left = -214
-	action_button.offset_right = -22
-	action_button.offset_top = -192
-	action_button.offset_bottom = -124
-	hud.add_child(action_button)
-	action_button.hide()
-	feedback_label = _label("", 17)
+	feedback_label = _label("", 16)
 	feedback_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	feedback_label.offset_left = 24
 	feedback_label.offset_right = -24
-	feedback_label.offset_top = -280
-	feedback_label.offset_bottom = -224
+	feedback_label.offset_top = -124
+	feedback_label.offset_bottom = -78
 	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	feedback_label.add_theme_color_override("font_outline_color", Color("fff4da"))
@@ -209,7 +211,7 @@ func _build_menu() -> void:
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.10.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.10.1 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -248,7 +250,8 @@ func _build_menu() -> void:
 
 func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
-	level_label.text = "Level %d • %s" % [Game.economy.shop_level(), Game.economy.progression.xp_text(Game.economy.customers)]
+	level_label.text = "Lv %d" % Game.economy.shop_level()
+	level_label.tooltip_text = Game.economy.progression.xp_text(Game.economy.customers)
 	carry_label.text = "Carry %d/%d • Counter %d/%d" % [Game.economy.handling.carried, Game.economy.handling.carry_capacity(), Game.economy.handling.counter, Game.economy.handling.counter_capacity()]
 	if Game.economy.expansion.unlocked:
 		carry_label.text = "Carry %d/2 • B %d/8 • F %d/4" % [Game.economy.handling.carried + Game.economy.expansion.handling.carried, Game.economy.handling.counter, Game.economy.expansion.handling.counter]
@@ -256,8 +259,9 @@ func _refresh() -> void:
 	_update_location()
 
 func _check_nearby() -> void:
-	_update_location()
+	_auto_transfer_food()
 	_try_collect_cash()
+	_update_location()
 
 func _try_collect_cash() -> void:
 	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or legacy_layer.visible or Time.get_ticks_msec() < cash_retry_at:
@@ -268,52 +272,39 @@ func _try_collect_cash() -> void:
 		cash_retry_at = Time.get_ticks_msec() + int(float(Game.economy.cash_pickup.config["retry_seconds"]) * 1000)
 
 func _update_location() -> void:
-	if not is_instance_valid(action_button) or menu.visible or legacy_layer.visible or suspended:
-		if is_instance_valid(action_button):
-			action_button.hide()
+	if menu.visible or legacy_layer.visible or suspended:
+		location_label.text = ""
 		return
-	var handling: BurgerHandling = Game.economy.handling
-	action = Game.economy.food_action(world.player.position)
-	action_button.visible = not action.is_empty()
-	if action.is_empty():
-		if Game.economy.cash_pickup.is_near(world.player.position):
-			location_label.text = "Cash collects automatically" if Game.economy.burger_sales.uncollected_cash > 0 else "Cash collected • keep serving"
-		else:
-			location_label.text = "Deliver to the counter" if handling.carried + Game.economy.expansion.handling.carried > 0 else "Walk to CASH to collect" if Game.economy.burger_sales.uncollected_cash > 0 else "Collect from the press"
-		return
-	var amount: int = Game.economy.food_amount(action)
-	action_button.disabled = amount <= 0
-	if action == "fries":
-		var fries: ShopExpansion = Game.economy.expansion
-		location_label.text = "Fries %d/%d" % [fries.production.stock, fries.production.capacity()]
-		action_button.text = "Collect fries %d" % amount if amount > 0 else "Deliver burgers first" if handling.carried > 0 else "Hands full" if fries.handling.carried >= 2 else "Cooking…"
-	elif action == "pickup":
-		location_label.text = "Machine %d/%d" % [Game.economy.production.stock, Game.economy.production.capacity()]
-		action_button.text = "Collect %d" % amount if amount > 0 else "Hands full" if Game.economy.expansion.handling.carried > 0 or handling.carried >= handling.carry_capacity() else "Cooking…"
+	var economy: ShopEconomy = Game.economy
+	var held: int = economy.handling.carried + economy.expansion.handling.carried
+	action = economy.food_action(world.player.position)
+	if action in ["pickup", "fries"]:
+		var machine: ProductionState = economy.expansion.production if action == "fries" else economy.production
+		var food: String = "Fries" if action == "fries" else "Burgers"
+		location_label.text = "%s %d/%d • Auto collect" % [food, machine.stock, machine.capacity()]
+		if economy.food_amount(action) == 0 and held > 0:
+			location_label.text = "Hands full • Walk to the counter"
+	elif action == "deliver":
+		location_label.text = "Counter full • Keep carrying" if held > 0 and economy.food_amount(action) == 0 else "Auto serve • Counter %d/8" % economy.handling.counter
+		if economy.expansion.unlocked:
+			location_label.text += " • Fries %d/4" % economy.expansion.handling.counter
+	elif economy.cash_pickup.is_near(world.player.position):
+		location_label.text = "Cash collects automatically" if economy.burger_sales.uncollected_cash > 0 else "Keep serving • No cash waiting"
 	else:
-		location_label.text = "Counter %d/%d" % [handling.counter, handling.counter_capacity()]
-		if Game.economy.expansion.unlocked:
-			location_label.text = "B %d/8 • F %d/4" % [handling.counter, Game.economy.expansion.handling.counter]
-		action_button.text = "Deliver %d" % amount if amount > 0 else "Counter full" if handling.carried + Game.economy.expansion.handling.carried > 0 else "Hands empty"
+		location_label.text = "Walk to the counter to serve" if held > 0 else "Walk to CASH to collect" if economy.burger_sales.uncollected_cash > 0 else "Touch & drag anywhere"
+
+func _auto_transfer_food() -> void:
+	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or legacy_layer.visible:
+		return
+	# Re-read position on every poll; a previous hint never authorizes a transfer.
+	var current: String = Game.economy.food_action(world.player.position)
+	if not current.is_empty() and Game.economy.food_amount(current) > 0:
+		Game.interact_burgers(current, world.player.position)
 
 func _feedback(message: String) -> void:
 	feedback_label.text = message
 	feedback_label.show()
 	feedback_timer.start()
-
-func _interact() -> void:
-	if suspended or world.player.controls_blocked or menu.visible or legacy_layer.visible:
-		return
-	# Re-evaluate distance and action at press time; never trust a stale HUD prompt.
-	var current: String = Game.economy.food_action(world.player.position)
-	if not current.is_empty():
-		Game.interact_burgers(current, world.player.position)
-	_update_location()
-
-func _unhandled_key_input(event: InputEvent) -> void:
-	if not OS.has_feature("android") and event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_E:
-		_interact()
-		get_viewport().set_input_as_handled()
 
 func _block_controls(value: bool) -> void:
 	world.player.controls_blocked = value

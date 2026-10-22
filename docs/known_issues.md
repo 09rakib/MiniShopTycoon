@@ -1,26 +1,20 @@
-# Known limits — transformation Phase H
+# Known limits — touch/control update on Phase H
 
-- Burger and fries loops are playable with separate machine/counter inventories.
-  Player carries at most two items of one product type per trip; deliver before
-  switching foods. Counter capacity: 8 burgers + 4 purchased fries trays.
-- Stocker handles burgers only. Fries is manually carried. Burger speed/capacity/
-  price upgrades are preserved; fries has a single initial 3s/8/16 tier. Shared
-  production interface supports future configuration without copied scripts.
-- Customers alternate when both foods are stocked, otherwise buy available food.
-  One purchase per visit across both products. Revenue/sold/pending totals now
-  represent all food; cash collection/old grocery ledgers remain separate.
-- Table and two chairs are one fixed 180-coin bundle with two seats. Solid valid
-  placement is persistent, but dining/seating bonuses/dragging are later scope.
-  Do not assume customers will sit or furniture itself generates money.
-- Fixed employee aisle, customer lane and entrance must stay clear in future
-  placement changes. Current placements include character-radius safety margins.
-- Schema 8 retains all inventories, owned content and money. Worker/customer/
-  stocker positions restart safely; food persists. No offline production/work/
-  sales. Avoid downgrade/uninstall/data clearing; no cloud backup.
-- Purchases persist before creating objects; failure rolls back flags/wallet.
-  Food transfers preserve coherent memory and lifecycle flushes on storage
-  failure. Production batches five seconds; abrupt termination can lose recent
-  unsaved production. Durable play requires working local storage.
-- New art remains lightweight procedural 2D. No Phase H phone install/touch,
-  device migration/lifecycle, airplane-mode, FPS/memory/heat/low-end result claimed.
-  Visual/audio polish is I, comprehensive lifecycle J, Android release checks K.
+- Floating joystick stays centered on the initial touch for one gesture; next
+  touch relocates it. Idle/release/cancel/menu/focus loss draws nothing. Buttons
+  and management overlays are excluded from movement capture.
+- Joystick opacity: base 14%, thumb 32%. Near screen edges part of the ring may
+  clip, while movement still uses the exact touch origin and normalized direction.
+- Automatic pickup/service/cash checks use current worker position every 150 ms.
+  Full hands/shelves and wrong product type retain food; no repeated empty/full
+  save spam. Menu/blocked/suspended controls prevent transfer. Worker respawns
+  safely on reload; if already near an eligible station it can interact there.
+- Schema 8, old upgrades/staff/fries/furniture and financial rules stay intact.
+  Immediate transfer saves; production batches five seconds and lifecycle flushes.
+  Sudden process kill can lose newest unsaved production; no offline income.
+- Burger stocker handles burgers only; player carries fries automatically near
+  its stations. Table/two chairs are fixed with two seats, no dining bonus yet.
+- Full audio/animation polish, comprehensive lifecycle/release checks remain later
+  phases. No measured Android FPS/memory/heat or low-end result is claimed here.
+- Exact phone install/runtime observations are recorded in test_report_touch.md;
+  scripted touch checks do not replace the user's physical feel/multitouch review.

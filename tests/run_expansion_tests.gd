@@ -132,13 +132,13 @@ func _run() -> void:
 	game.economy.expansion.production.produce_one()
 	scene.world.player.position = pickup
 	scene._update_location()
-	check(scene.action_button.text == "Collect fries 2" and not scene.action_button.disabled, "Fries source offers actual contextual collection")
-	scene.action_button.pressed.emit()
+	check(scene.location_label.text.contains("Fries") and scene.location_label.text.contains("Auto collect"), "Fries source offers actual contextual collection")
+	scene._check_nearby()
 	check(game.economy.expansion.handling.carried == 2 and scene.world.player.fries_count == 2 and scene.world.player.carried_count == 0, "Real action updates separate carried fries art")
 	scene.world.player.position = delivery
 	scene._update_location()
-	scene.action_button.pressed.emit()
-	check(game.economy.expansion.handling.counter == 2 and scene.world.player.fries_count == 0 and scene.carry_label.text.contains("F 2/4") and scene.location_label.text.contains("F 2/4"), "Delivery updates fries shelf and HUD")
+	scene._check_nearby()
+	check(game.economy.expansion.handling.counter == 2 and scene.world.player.fries_count == 0 and scene.carry_label.text.contains("F 2/4") and scene.location_label.text.contains("Fries 2/4"), "Delivery updates fries shelf and HUD")
 	# Real queue buys fries even when no burger is present.
 	scene.customer_controller.set_paused(false)
 	scene.customer_controller.spawn_timer.stop()

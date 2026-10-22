@@ -1,20 +1,22 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: transformation **Phase H — fries machine and fixed furniture**.
+Current checkpoint: **Phase H + requested floating touch controls (v0.10.1)**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
-bottom-left joystick (or WASD/arrows on desktop). Camera follows within the room;
+floating joystick: touch and drag anywhere in gameplay (or WASD/arrows on desktop).
+Joystick starts hidden, appears faintly at your touch and hides on release. Camera follows within the room;
 walls, machine and counter are solid. The world occupies the main screen.
 
 The initial burger press produces one burger every two seconds and stores ten.
-Walk to COLLECT and tap the contextual button to carry up to two burgers. Walk
-to DELIVER and place them on the eight-item counter. Full counters preserve any
-leftover burger in your hands. Desktop E also interacts. Counts, visible stacks
+Walk to COLLECT to automatically carry up to two burgers. Walk
+to DELIVER to automatically place them on the eight-item counter. Full counters preserve any
+leftover burger in your hands. Counts, visible stacks
 and machine production update together. Up to four customers queue on the right,
 buy one available counter burger each and leave. Each sale starts at 20 coins added to Cash waiting;
 wallet coins increase only when the chef walks to the CASH circle. One aggregate
 pickup transfers the exact amount, clears the cash plate and shows +amount.
-Collection saves immediately and cannot pay twice.
+Collection saves immediately and cannot pay twice. The top wallet/level HUD is
+compact, with carry/counter/pending cash arranged on a slim second line.
 
 Menu → Burger machine & stocker opens independent speed/capacity/price upgrades
 and a 300-coin stocker hire. Current/next values and wallet costs are shown.
@@ -24,7 +26,7 @@ Only collected wallet coins fund purchases; no offline staff work or wages.
 
 Menu → New machines & furniture unlocks a 400-coin fries press (3s, storage 8,
 price 16, four counter trays) and a 180-coin table + two-chair set. Collect fries
-at FRIES, deliver at DELIVER; player carries two of one product per trip.
+automatically at FRIES, auto-serve at DELIVER; player carries two of one product per trip.
 Customers alternate foods when both are stocked. Stocker handles burgers only.
 Furniture adds two persistent seats; dining comes later.
 Existing grocery inventory, economy, levels and upgrades remain available through
@@ -34,7 +36,7 @@ Double-click **play.cmd** to play on this PC. Double-click **editor.cmd** to ope
 the Godot project, then press F6/F5 to run (F5 runs the main scene).
 Double-click **test.cmd** for the automated checks.
 
-Android: transfer `builds/MiniShopTycoon-phaseH.apk` to an Android 7.0+ phone
+Android: transfer `builds/MiniShopTycoon-touch-update.apk` to an Android 7.0+ phone
 and install it using Files. Update the existing app without uninstalling to
 retain progress. Schema 8 preserves grocery/machine progress and also saves carried
 and counter burgers, pending cash/sales, independent upgrades, stocker state, fries and purchased furniture. Source and tests: https://github.com/09rakib/MiniShopTycoon.

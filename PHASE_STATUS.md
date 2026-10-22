@@ -1,63 +1,54 @@
 # Phase status — 22 October 2026
 
-Current checkpoint: **Transformation Phase H — fries machine and furniture complete.**
+Current checkpoint: **User-requested touch/control update on completed Phase H.**
 
-- User approved H after published G (dff71d8). Existing grocery Phases 0–3 and
-  burger world/production/carry/customers/cash/upgrades/stocker remain intact.
-- Added unlockable fries press: 400 wallet coins, 3-second production, storage 8,
-  selling price 16 and four dedicated fries trays at the existing serving counter.
-- ProductionState and ProductionController are reused by both machines, not
-  copied scripts. Locked machine has no world fixture, stock or active timer.
-- Player collects at FRIES and delivers at DELIVER. Maximum two items, one product
-  type per trip; existing carried food is retained when another type is rejected.
-  Burger and fries inventories stay separate. Partial/full shelves preserve held
-  food. Shared transfer code enforces source stock, capacity and proximity.
-- Customers buy available counter food; alternate when both shelves have stock.
-  One live visit buys exactly once across all products. Payment uses the selected
-  product price and enters the same pending cash ledger, collected as before.
-- 180-coin table + two chairs bundle adds seating capacity 2 in a fixed valid bay.
-  Purchased geometry is solid and deterministic. Dining behavior is later scope;
-  no unimplemented seating bonus or extra cash is granted. Stocker handles burgers.
-- Menu → New machines & furniture shows costs, owned states and seating. Purchase
-  funds use wallet only, reject repeats, persist before object creation and roll
-  back on storage failure. Original visuals show fries machine/cups/carried cups,
-  counter product counts, furniture and collection marker.
-- Schema 8 adds expansion {unlocked, furniture, spending, production, handling}.
-  Schemas 1–7 retain previous progress, initialize expansions locked/unowned.
-  Validate all fields before applying any; reject locked stock, bad capacities,
-  invalid flags and saved mixed product carrying. Sale rotation also persists.
-- 128 economy + 34 world + 32 production + 44 handling + 39 customer + 34 cash
-  + 69 operations + 50 expansion = **430 checks passed, zero failures**.
-- Tests include 10,000 rejected full-fries-counter attempts, 10,000 complete fries
-  production/carry/delivery/sale cycles, payment/rotation/last-stock contention,
-  migration, failure rollback, actual timers/buttons/customer/cash, placement
-  margins, furniture collision, relaunch and non-duplicating world recreation.
-- Rendered/inspected expansion panel, carried fries and expanded shop at 480×900
-  and 360×640. See test_report_phaseH.md for actual APK verification and hash.
+- H was published as be2891d (fries and fixed furniture). User then installed H
+  on phone and requested floating joystick, compact HUD and automatic handling.
+- Implemented those specific updates, not the whole later Phase I audio/polish.
+- Joystick is invisible when idle. Touch on free gameplay screen starts it at
+  that location; drag moves the worker, release/cancel hides and stops it.
+  14% base/32% thumb opacity; new gestures can start anywhere. No fixed control
+  area. Menu/management input is protected and cannot start worker movement.
+- Captured finger owns a gesture; other fingers do not recenter/release it.
+  Diagonals normalize, small jitter stays in dead zone. Focus/pause/menu clears
+  touch and movement; resume requires a fresh touch. Mouse drag works on desktop.
+- Compact top HUD has one horizontal wallet/level row and a slim carry/counter/
+  pending-cash line. Content height under 80 logical px, Menu at least 44 high.
+- No Collect/Deliver buttons or desktop action-key requirement. Nearby poll every
+  150 ms automatically picks available burger/fries into hands, delivers fitting
+  food at counter and collects eligible cash. Current position is rechecked.
+- Existing two-item/one-product carry, separate shelves, full/partial leftover,
+  cash accounting, upgrades/stocker/furniture and saves remain intact. Empty/full
+  interactions do not spam transactions; menus/blocked controls/pause prevent them.
+- Schema remains 8; no migration/reset needed for this patch. Automatic food/cash
+  transfers save immediately using existing authoritative transaction methods.
+- 128 economy + 34 world + 32 production + 44 handling + 39 customers + 34 cash
+  + 69 operations + 50 expansion + 29 touch = **459 checks passed, zero failures**.
+- Touch suite uses actual viewport events and real nearby timer for movement,
+  UI exclusion, lifecycle, automatic pickup/serve/full shelves, fries/cash/save.
+- New idle/floating/automatic pickup/serve/compact previews rendered and inspected
+  at 480×900 and 360×640. APK v0.10.1/code 11 debug exported and verified.
 
-## Checkpoint handoff
+## Handoff
 
-APK: builds/MiniShopTycoon-phaseH.apk, v0.10.0/code 10. Update the existing app
-without uninstalling/clearing data. G and H were not installed on the phone in
-this work; F was installed/launched earlier. Device touch/migration/performance
-acceptance remains pending. Commit/push this completed phase, verify remote hash,
-then stop before I for feedback. Keep the user-required automatic phase pushes.
+Artifact: builds/MiniShopTycoon-touch-update.apk. See test_report_touch.md for
+exact verification and phone status. Update without uninstalling or clearing data.
+Commit/push the user-requested patch and verify remote hash, as with phase work.
+Wait for user testing; do not silently expand into the remaining I/J/K scope.
 
-## Manual acceptance pending
+## Manual acceptance
 
-Collect cash → Menu → New machines & furniture → unlock fries/table set.
-At FRIES collect two, walk to DELIVER, observe correct fries shelf. Let customers
-buy both foods at their prices, then collect exact combined cash. Full fries
-shelf keeps leftovers; another product pickup cannot overwrite held food.
-Restart retains purchased objects, inventories, wallet and old upgrades/staffer.
-Verify customer, player and stocker routes, phone controls, Back/Home and airplane
-mode. Table creates two seats; customers do not dine in this checkpoint.
+Touch different empty screen positions, drag, release; joystick appears there,
+remains faint, disappears on release. Menu must never start movement. Walk to
+press/FRIES: food is picked automatically, up to two. Walk to DELIVER: food serves
+automatically; full/partial shelves retain leftovers. Walk to CASH: exact proceeds
+collect once. Test Home/resume, second finger, small-screen readability and old
+progress after update. Worker/customer positions remain transient; food is saved.
 
-## Limits / next phases
+## Known limits
 
-Fries has one configured tier; burger upgrades remain available. Stocker transports
-burgers only. Furniture is a fixed bundle, no drag/dining yet. Character positions
-restart safely; food persists. No offline production/work/sales. Production-only
-saves batch five seconds; sudden kill can lose newest unsaved production.
-I visuals/audio/UI polish; J comprehensive save/lifecycle verification; K measured
-Android performance/release. Do not begin I without user continuation/approval.
+A joystick base stays at the initial touch for that gesture; next touch relocates
+it. Interactive menu controls are excluded. Full counter keeps held food. A newly
+loaded worker who is already inside an eligible station can interact automatically.
+Stocker handles burgers; fries and dining limits are unchanged from H. Production
+batches five seconds, no offline production/income or measured Android FPS claim.

@@ -284,3 +284,27 @@ active/unlock disagreement, wrong limits and saved mixed player carrying. Schema
 Own machine/furniture reconciles once on relaunch. Worker positions are transient,
 held food is durable. No offline work/income, seating behavior or fries upgrades
 introduced beyond the initial configurable tier in this checkpoint.
+
+
+## User-requested touch update (after H)
+
+ShopJoystick is now a full-viewport Control with mouse_filter IGNORE. It starts a
+new gesture only in _unhandled_input after GUI processing and explicitly excludes
+Menu's actual transformed rectangle. Captured drag/release/cancel is handled in
+_input, so leaving the original point does not lose control. The first touch
+becomes the local center through the canvas transform; initial direction is zero.
+Only one finger owns the gesture. Direction clamps/dead-zone rules are retained.
+_draw emits nothing while idle; base/thumb alpha 0.14/0.32. Disabled/menu/pause/
+focus loss calls release and resume requires a new touch. Desktop mouse drag works.
+
+HUD is a compact horizontal wallet/level row plus slim carry/counter/pending cash
+row, with a 44px Menu target. There is no fixed joystick instruction/control zone
+or Collect/Deliver button. Context text and short feedback retain world focus.
+
+The existing 150 ms nearby Timer calls _auto_transfer_food, _try_collect_cash and
+updates location text. Both operations reject blocked/menu/suspended/paused state,
+re-read worker position and only transact positive available quantities. Economy
+food routing/limits/persistence remain authoritative, including fries, partial
+shelves and one food type per trip. Empty/full polls do not mutate/save. Automatic
+cash behavior and safe persistence are preserved. Schema 8 needs no new field.
+The requested control patch does not authorize all remaining Phase I content.
