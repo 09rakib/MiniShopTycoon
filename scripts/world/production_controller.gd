@@ -40,7 +40,9 @@ func sync() -> void:
 func _produce() -> void:
 	if paused:
 		return
-	state.produce_one()
+	if state.produce_one():
+		var point: Vector2 = Game.economy.handling.station_point("pickup") if state == Game.economy.production else Game.economy.expansion.handling.station_point("pickup")
+		Game.presentation.emit("produce", point, 1)
 	sync()
 
 func _state_changed() -> void:

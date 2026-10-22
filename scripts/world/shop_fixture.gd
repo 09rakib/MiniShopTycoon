@@ -5,6 +5,8 @@ var footprint: Vector2
 var production: ProductionState
 var handling: BurgerHandling
 var fries_handling: BurgerHandling
+var animation_clock: float = 0
+var redraw_clock: float = 0
 var sales: BurgerSales
 
 func _ready() -> void:
@@ -17,6 +19,14 @@ func _ready() -> void:
 	shape.position = Vector2(0, -footprint.y / 2)
 	shape.shape = rectangle
 	add_child(shape)
+	set_process(false)
+
+func _process(delta: float) -> void:
+	animation_clock += delta
+	redraw_clock += delta
+	if redraw_clock >= 0.1:
+		redraw_clock = 0
+		queue_redraw()
 
 func _draw() -> void:
 	var type: String = definition["type"]
@@ -54,6 +64,14 @@ func _draw() -> void:
 			if type == "machine":
 				status += " +UP" if production.upgrade_cost("speed") >= 0 or production.upgrade_cost("capacity") >= 0 or production.upgrade_cost("price") >= 0 else " MAX"
 			text(status, Vector2(-27, -h - lift + 86), 11, Color("edc16b"))
+			var light: Color = Color("94bb78") if production.can_produce() else Color("e2b664")
+			if is_processing():
+				light.a = 0.55 + 0.4 * absf(sin(animation_clock * 3))
+			draw_circle(Vector2(-w / 2 + 13, -h - lift + 86), 4, light)
+			if is_processing():
+				for index: int in 3:
+					var phase: float = fmod(animation_clock * 0.6 + index * 0.33, 1)
+					draw_circle(Vector2(-20 + index * 20, -h - lift + 7 - phase * 15), 2 + phase * 2, Color(1, 0.97, 0.85, (1 - phase) * 0.35))
 		# A sign, not produced stock. Production belongs to Phase C.
 		draw_circle(Vector2(0, -h - lift - 19), 29, Color("faf0cd"))
 		if type == "fries":

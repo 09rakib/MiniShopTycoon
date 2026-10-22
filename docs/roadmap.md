@@ -18,8 +18,9 @@ Original numbered Phases 0–3 remain preserved. New A–K phases control expans
 - H: fries using shared production/transfer/sales, fixed table + two chairs and
   persistent purchases — completed as be2891d.
 - User-requested touch patch after H: floating hidden joystick, compact HUD, auto
-  pickup/service/cash — current checkpoint. No full I expansion authorized.
-- I: remaining visuals/audio/animation and mobile refinement.
+  pickup/service/cash — completed as b9fc270, phone verification 26a6dd5.
+- I: visual/audio/animation and menu refinement — completed, user authorized
+  continuation on 22 October. See test_report_phaseI.md.
 - J: comprehensive save/migration/lifecycle and progression verification.
 - K: measured Android performance, final AAB/release and current policy checks.
 
@@ -28,6 +29,6 @@ commit and push to https://github.com/09rakib/MiniShopTycoon → stop for feedba
 The user explicitly requires the push at the end of each future phase. Do not
 force-push or discard remote work. See repository_workflow.md.
 
-User authorized H after the Phase G checkpoint. Stop before I until the user
+User authorized I after the touch checkpoint. Stop before J until the user
 approves or explicitly requests continuation. Keep offline play, no ads/accounts/
 servers, and one authoritative pipeline for machine/carried/counter/cash/wallet.

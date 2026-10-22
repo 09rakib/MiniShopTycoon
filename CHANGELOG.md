@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.0 — Transformation Phase I — 22 October 2026
+
+- Added pooled quantity/ring feedback, chef/stocker handling poses, machine steam
+  and light, customer patience meter and paid-customer bag/thanks.
+- Added eight original short offline sounds, four bounded voices, repeat throttling
+  and persistent Menu sound toggle. Focus loss clears transient sound/animation.
+- Added short menu/sheet entrance fades with immediate input blocking/close.
+- Preserved floating joystick, compact HUD, automatic transfers and schema 8 saves.
+- 509 headless checks plus 50 desktop polish checks pass with clean logs.
+- Debug APK v0.11.0/code 12; see docs/test_report_phaseI.md. Stop before Phase J.
+
 ## 0.10.1 — User-requested touch/control update — 22 October 2026
 
 - Replaced fixed visible joystick with low-opacity floating touch control: hidden

@@ -7,6 +7,9 @@ var actors: Node2D
 var fixtures: Array[ShopFixture] = []
 var cash_reward: Label
 var floor_art: ShopFloor
+var cues: Array[WorldCue] = []
+var cue_cursor: int = 0
+var presentation_paused: bool = false
 var reward_tween: Tween
 
 func _ready() -> void:
@@ -58,14 +61,21 @@ func _ready() -> void:
 	cash_reward.add_theme_constant_override("outline_size", 7)
 	cash_reward.hide()
 	add_child(cash_reward)
+	for index: int in 4:
+		var cue: WorldCue = WorldCue.new()
+		add_child(cue)
+		cues.append(cue)
+	Game.presentation.connect(_show_presentation)
 
 func _refresh_machine() -> void:
 	for fixture: ShopFixture in fixtures:
 		if fixture.definition["id"] == "burger_machine":
 			fixture.production = Game.economy.production
+			fixture.set_process(not presentation_paused and fixture.production.can_produce())
 			fixture.queue_redraw()
 		elif fixture.definition["id"] == "fries_machine":
 			fixture.production = Game.economy.expansion.production
+			fixture.set_process(not presentation_paused and fixture.production.can_produce())
 			fixture.queue_redraw()
 
 func location_hint() -> String:
@@ -127,3 +137,22 @@ func _sync_expansion() -> void:
 	floor_art.queue_redraw()
 	_refresh_machine()
 	_refresh_handling()
+
+func _show_presentation(kind: String, point: Vector2, amount: int) -> void:
+	if presentation_paused or kind == "menu":
+		return
+	cues[cue_cursor].show_cue(kind, point, amount)
+	cue_cursor = (cue_cursor + 1) % cues.size()
+	if kind in ["pickup", "serve"]:
+		player.animate_handling()
+
+func set_presentation_paused(value: bool) -> void:
+	presentation_paused = value
+	if value:
+		for cue: WorldCue in cues:
+			cue.clear()
+		if reward_tween != null:
+			reward_tween.kill()
+		cash_reward.hide()
+		player.clear_pose()
+	_refresh_machine()

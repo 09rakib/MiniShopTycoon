@@ -41,5 +41,12 @@ compact HUD/hidden idle joystick and one injected floating touch gesture were
 inspected. Physical feel/multitouch user review remains pending. See
 test_report_touch.md for actual APK and phone verification.
 
-No full Phase I audio/polish, measured FPS, low-end/heat or release acceptance
-claim. Further phase work waits for user continuation.
+## Phase I verification
+
+509 headless checks pass: the above 459 plus 50 polish checks. Desktop with actual
+audio playback also passes the 50 polish checks; all final logs clean. test.cmd
+includes run_polish_tests.gd. See test_report_phaseI.md for exact artifact/results.
+New desktop previews cover quantity effects, bag/thanks, patience and sound menu,
+including 360×640. Listen on the phone for comfort, toggle sound/relaunch and test
+Home/resume/rapid menu transitions while carrying. No measured FPS, low-end/heat
+or release acceptance claim. Stop before Phase J until user continuation.

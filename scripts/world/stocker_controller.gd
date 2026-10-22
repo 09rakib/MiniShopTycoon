@@ -17,6 +17,7 @@ func _ready() -> void:
 	decision_timer.start()
 	Game.changed.connect(sync)
 	Game.handling_changed.connect(sync)
+	Game.presentation.connect(_presentation)
 	sync()
 
 func sync() -> void:
@@ -78,6 +79,10 @@ func _decide() -> void:
 			if Game.stocker_transfer("pickup", worker.position) > 0:
 				_set_route("deliver")
 
+func _presentation(kind: String, _point: Vector2, _amount: int) -> void:
+	if kind.begins_with("staff_") and is_instance_valid(worker) and not paused:
+		worker.animate_handling()
+
 func set_paused(value: bool) -> void:
 	paused = value
 	decision_timer.paused = value
@@ -85,3 +90,4 @@ func set_paused(value: bool) -> void:
 		worker.controls_blocked = value
 		if value:
 			worker.stop()
+			worker.clear_pose()

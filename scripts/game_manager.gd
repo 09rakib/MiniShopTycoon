@@ -7,6 +7,7 @@ signal handling_changed
 signal burger_sale_completed(amount: int)
 signal cash_collected(amount: int)
 signal machine_upgraded(kind: String)
+signal presentation(kind: String, point: Vector2, amount: int)
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
@@ -65,6 +66,7 @@ func interact_burgers(action: String, worker_position: Vector2) -> bool:
 	handling_changed.emit()
 	if saved:
 		var amount: int = int(result["amount"])
+		presentation.emit("pickup" if action in ["pickup", "fries"] else "serve", worker_position, amount)
 		feedback.emit(("Picked up %d item%s." if action in ["pickup", "fries"] else "Delivered %d item%s.") % [amount, "s" if amount != 1 else ""])
 	return true
 
@@ -72,9 +74,11 @@ func sell_burger(ticket: int) -> bool:
 	var amount: int = economy.burger_sales.purchase(ticket, economy.handling, economy.production, economy.expansion.handling if economy.expansion.unlocked else null, economy.expansion.production if economy.expansion.unlocked else null)
 	if amount == 0:
 		return false
-	persist()
+	var saved: bool = persist()
 	handling_changed.emit()
 	burger_sale_completed.emit(amount)
+	if saved:
+		presentation.emit("sale", economy.cash_pickup.point, amount)
 	return true
 
 func collect_cash(worker_position: Vector2) -> int:
@@ -92,6 +96,7 @@ func collect_cash(worker_position: Vector2) -> int:
 	production_dirty = false
 	changed.emit()
 	cash_collected.emit(amount)
+	presentation.emit("cash", worker_position, amount)
 	return amount
 
 func purchase_operation(kind: String) -> bool:
@@ -115,6 +120,7 @@ func purchase_operation(kind: String) -> bool:
 		machine_upgraded.emit(kind)
 		production_changed.emit()
 	changed.emit()
+	presentation.emit("hire" if kind == "stocker" else "upgrade", economy.handling.station_point("pickup"), 0)
 	feedback.emit("Stocker hired! Two burgers per trip." if kind == "stocker" else "Burger machine upgraded!")
 	return true
 
@@ -133,6 +139,7 @@ func purchase_expansion(kind: String) -> bool:
 	production_dirty = false
 	changed.emit()
 	production_changed.emit()
+	presentation.emit("unlock", economy.expansion.handling.station_point("pickup") if kind == "fries" else Vector2(170, 790), 0)
 	feedback.emit("Fries machine unlocked! Collect at FRIES." if kind == "fries" else "Table and two chairs placed. Seating: 2.")
 	return true
 
@@ -141,8 +148,10 @@ func stocker_transfer(action: String, worker_position: Vector2) -> int:
 	var amount: int = int(result["amount"])
 	if amount > 0:
 		production_dirty = true
-		persist()
+		var saved: bool = persist()
 		handling_changed.emit()
+		if saved:
+			presentation.emit("staff_pickup" if action == "pickup" else "staff_serve", worker_position, amount)
 	return amount
 
 func restart() -> void:

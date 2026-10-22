@@ -1,4 +1,4 @@
-# Known limits — touch/control update on Phase H
+# Known limits — Phase I
 
 - Floating joystick stays centered on the initial touch for one gesture; next
   touch relocates it. Idle/release/cancel/menu/focus loss draws nothing. Buttons
@@ -14,7 +14,11 @@
   Sudden process kill can lose newest unsaved production; no offline income.
 - Burger stocker handles burgers only; player carries fries automatically near
   its stations. Table/two chairs are fixed with two seats, no dining bonus yet.
-- Full audio/animation polish, comprehensive lifecycle/release checks remain later
-  phases. No measured Android FPS/memory/heat or low-end result is claimed here.
+- Audio/presentation polish is complete; human tone/volume review and comprehensive
+  lifecycle/release checks remain. No measured Android FPS/memory/heat or low-end
+  result is claimed. Four reusable effects/voices can replace older feedback.
+- Headless tests use a silent sound sink; actual playback was exercised in the
+  desktop polish test. Persistent audio preference is separate from economy saves.
 - Exact phone install/runtime observations are recorded in test_report_touch.md;
   scripted touch checks do not replace the user's physical feel/multitouch review.
+- Phase I artifact/device results are recorded in test_report_phaseI.md.

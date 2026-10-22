@@ -14,7 +14,6 @@ Never force-push or overwrite unrelated remote work; inspect remote state first.
 If authentication/network blocks a push, preserve the local commit and report
 the exact blocker. Do not claim an upload succeeded without remote verification.
 
-Current scope: H published as be2891d after G dff71d8. User now explicitly
-requested floating joystick, compact HUD and automatic item pickup/service/cash.
-Complete this control patch, test/build/update phone when connected, document,
-commit/push and stop for feedback. Do not infer approval for all Phase I content.
+Current scope: Phase I, authorized by the user's next-phase request after the
+touch update (b9fc270 and phone verification 26a6dd5). Complete visual/audio polish,
+test/build/update the connected phone, document, commit/push and stop before J.

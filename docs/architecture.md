@@ -307,4 +307,27 @@ re-read worker position and only transact positive available quantities. Economy
 food routing/limits/persistence remain authoritative, including fries, partial
 shelves and one food type per trip. Empty/full polls do not mutate/save. Automatic
 cash behavior and safe persistence are preserved. Schema 8 needs no new field.
-The requested control patch does not authorize all remaining Phase I content.
+That control patch was followed by the user's explicit Phase I continuation.
+
+## Phase I presentation
+
+Game.presentation(kind, point, amount) carries presentation-only events after
+successful saves for transfers, sales, cash and purchases. Production emits after
+a real produced item. Subscribers cannot grant stock/money: authoritative state
+stays in the existing transaction classes. Four WorldCue instances are reused,
+expire within 0.8s and stop processing. Worker poses use one replaceable tween;
+machine animation redraw is 10Hz and full/inactive machines stop processing.
+Customers show their existing patience timeout and a paid-only bag/thanks.
+
+ShopAudio maps eight original local WAVs onto four AudioStreamPlayers, suppresses
+same-sound repeats within 80ms, ignores production and uses quieter staff cues.
+Headless simulations use a silent sink; Android/desktop use actual playback.
+Focus loss stops voices, cues, cash reward and worker/staffer poses. Muting stops
+active sounds and persists separately through ShopSettings preferences.cfg using
+a temporary file/rename. Failed writes retain the prior value; malformed settings
+fall back to sound on. Economy reset leaves the preference intact.
+
+Menu and sheets fade in over 160ms; visibility and movement exclusion take effect
+immediately. Closing kills pending entrance tweens and hides immediately, retaining
+the floating joystick and automatic interaction guards. Sound controls are in the
+menu so the two-line gameplay HUD stays compact.

@@ -1,7 +1,7 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: **Phase H + requested floating touch controls (v0.10.1)**.
+Current checkpoint: **Phase I — visual/audio polish (v0.11.0)**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
 floating joystick: touch and drag anywhere in gameplay (or WASD/arrows on desktop).
 Joystick starts hidden, appears faintly at your touch and hides on release. Camera follows within the room;
@@ -36,7 +36,14 @@ Double-click **play.cmd** to play on this PC. Double-click **editor.cmd** to ope
 the Godot project, then press F6/F5 to run (F5 runs the main scene).
 Double-click **test.cmd** for the automated checks.
 
-Android: transfer `builds/MiniShopTycoon-touch-update.apk` to an Android 7.0+ phone
+Pickup and service lift the chef's hands and show the transferred quantity.
+Production has a gentle machine light/steam cue; customers show remaining patience
+and leave with a bag and thanks after payment. Cash, upgrades and unlocks have
+brief feedback. Eight original short sound cues play through four reused voices.
+Menu → Sound toggles all cues and saves the choice locally. Menus fade in while
+blocking movement immediately; app focus loss stops sound and transient effects.
+
+Android: transfer `builds/MiniShopTycoon-phaseI.apk` to an Android 7.0+ phone
 and install it using Files. Update the existing app without uninstalling to
 retain progress. Schema 8 preserves grocery/machine progress and also saves carried
 and counter burgers, pending cash/sales, independent upgrades, stocker state, fries and purchased furniture. Source and tests: https://github.com/09rakib/MiniShopTycoon.
@@ -49,5 +56,6 @@ See [setup](docs/setup.md), [manual tests](docs/testing.md),
 [architecture](docs/architecture.md), and [phase status](PHASE_STATUS.md).
 
 All gameplay runs locally. No accounts, services, ads, analytics, or networking.
-Art is original vector drawing code plus an original SVG icon. Godot includes
+Art is original vector drawing code plus an original SVG icon; sound is original
+synthesized PCM audio (regenerate with `python tests/generate_audio.py`). Godot includes
 its own default font. Engine licensing: https://godotengine.org/license/.

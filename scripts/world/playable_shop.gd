@@ -25,11 +25,17 @@ var action: String = ""
 var feedback_label: Label
 var cash_retry_at: int = 0
 var feedback_timer: Timer
+var audio: ShopAudio
+var sound_button: Button
+var menu_tween: Tween
+var sheet_tween: Tween
 
 func _ready() -> void:
 	Game.running = false
 	world = ShopWorld.new()
 	add_child(world)
+	audio = ShopAudio.new()
+	add_child(audio)
 	production_controller = ProductionController.new()
 	add_child(production_controller)
 	fries_controller = ProductionController.new()
@@ -206,12 +212,14 @@ func _build_menu() -> void:
 	buttons.add_child(_label("LITTLE BUN", 30))
 	buttons.add_child(_label("Build a bigger little food shop.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
+	sound_button = _button("Sound: On" if audio.settings.enabled else "Sound: Off", _toggle_sound)
+	buttons.add_child(sound_button)
 	buttons.add_child(_button("Burger machine & stocker", _open_operations))
 	buttons.add_child(_button("New machines & furniture", _open_expansion))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.10.1 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.11.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -315,21 +323,48 @@ func _open_expansion() -> void:
 	operations_panel.hide()
 	expansion_panel.show()
 	expansion_panel.refresh()
-	operations_layer.show()
+	_reveal_sheet()
 
 func _open_operations() -> void:
 	expansion_panel.hide()
 	operations_panel.show()
 	operations_panel.refresh()
+	_reveal_sheet()
+
+func _toggle_sound() -> void:
+	if not audio.set_sound_enabled(not audio.settings.enabled):
+		_feedback("Could not save sound setting. Try again.")
+	sound_button.text = "Sound: On" if audio.settings.enabled else "Sound: Off"
+	audio.play("menu")
+
+func _reveal_sheet() -> void:
+	if is_instance_valid(sheet_tween):
+		sheet_tween.kill()
+	operations_layer.modulate.a = 0
 	operations_layer.show()
+	sheet_tween = create_tween()
+	sheet_tween.tween_property(operations_layer, "modulate:a", 1.0, 0.16)
+	audio.play("menu")
 
 func open_menu() -> void:
 	operations_layer.hide()
+	if is_instance_valid(menu_tween):
+		menu_tween.kill()
+	menu.modulate.a = 0
 	menu.show()
+	menu_tween = create_tween()
+	menu_tween.tween_property(menu, "modulate:a", 1.0, 0.16)
+	audio.play("menu")
 	_block_controls(true)
 	_update_location()
 
 func close_menu() -> void:
+	if is_instance_valid(menu_tween):
+		menu_tween.kill()
+	if is_instance_valid(sheet_tween):
+		sheet_tween.kill()
+	menu.modulate.a = 1
+	operations_layer.modulate.a = 1
 	operations_layer.hide()
 	menu.hide()
 	Game.running = false
@@ -379,6 +414,8 @@ func _notification(what: int) -> void:
 		fries_controller.set_paused(true)
 		customer_controller.set_paused(true)
 		stocker_controller.set_paused(true)
+		audio.set_suspended(true)
+		world.set_presentation_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
 		_block_controls(menu.visible or legacy_layer.visible)
@@ -386,6 +423,8 @@ func _notification(what: int) -> void:
 		fries_controller.set_paused(false)
 		customer_controller.set_paused(false)
 		stocker_controller.set_paused(false)
+		audio.set_suspended(false)
+		world.set_presentation_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if legacy_layer.visible:
 			_close_legacy()

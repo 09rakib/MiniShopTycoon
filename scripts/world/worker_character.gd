@@ -10,6 +10,24 @@ var was_walking: bool = false
 var carried_count: int = 0
 var fries_count: int = 0
 var staff_style: bool = false
+var pose_tween: Tween
+var hand_lift: float = 0:
+	set(value):
+		hand_lift = value
+		queue_redraw()
+
+func animate_handling() -> void:
+	if pose_tween != null:
+		pose_tween.kill()
+	pose_tween = create_tween()
+	pose_tween.tween_property(self, "hand_lift", 5.0, 0.08)
+	pose_tween.tween_property(self, "hand_lift", 0.0, 0.16)
+
+func clear_pose() -> void:
+	if pose_tween != null:
+		pose_tween.kill()
+	hand_lift = 0
+
 
 func set_carried_count(value: int) -> void:
 	carried_count = value
@@ -57,7 +75,7 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	var step: float = sin(walk_phase) * 4.5 if was_walking else 0.0
-	var bounce: float = absf(sin(walk_phase)) * 2 if was_walking else 0.0
+	var bounce: float = (absf(sin(walk_phase)) * 2 if was_walking else 0.0) + hand_lift
 	draw_set_transform(Vector2.ZERO, 0, Vector2(1, 0.38))
 	draw_circle(Vector2(0, 4), 21, Color(0.12, 0.22, 0.17, 0.20))
 	draw_set_transform(Vector2.ZERO)

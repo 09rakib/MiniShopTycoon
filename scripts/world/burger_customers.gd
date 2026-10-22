@@ -29,6 +29,7 @@ func spawn_customer() -> void:
 	var visitor: BurgerCustomer = BurgerCustomer.new()
 	visitor.ticket = ticket
 	visitor.speed = float(config["speed"])
+	visitor.patience_seconds = float(config["wait_seconds"])
 	visitor.position = point("entrance")
 	actors.add_child(visitor)
 	visitors.append(visitor)
