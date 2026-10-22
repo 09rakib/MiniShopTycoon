@@ -50,10 +50,10 @@ comfortable tone/volume remains manual acceptance.
 - apksigner verification passes v2/v3; aapt metadata/manifest inspected.
 
 Phone update: vivo V2405A connected at the user-provided wireless endpoint.
-First adb install -r was rejected by the phone installer; after user confirmation,
-retry reached vivo Super Care's per-app authorization screen. Its protected
-confirmation is pending on the phone. At this checkpoint dumpsys still reports
-v0.10.1/code 11, so Phase I is not yet claimed installed. No data clearing/uninstall.
+After the user completed vivo Super Care authorization, adb install -r returned
+Success. Cold launch returned Status: ok (714 ms reported launch time); dumpsys
+confirms v0.11.0/code 12 and the game process is running. No data clearing/uninstall.
+This launch time is an adb observation, not a gameplay performance measurement.
 
 ## Manual acceptance / limits
 
