@@ -49,10 +49,11 @@ Export → Android**. Set Android SDK Path to your SDK and Java SDK Path to JDK
 17 or a supported newer JDK. On this PC the inspected JDK is
 `C:/Program Files/Android/Android Studio/jbr` (21.0.10).
 Install matching **4.7.2** export templates using **Editor → Manage Export
-Templates**. Choose **Project → Export → Android Touch Update → Export Project**,
-keep debug enabled, and save to `builds/MiniShopTycoon-touch-update.apk`.
+Templates**. Choose **Project → Export → Android Phase K → Export Project**,
+keep debug enabled, and save to `builds/MiniShopTycoon-phaseK.apk`.
 
 The Android preset uses both ARMv7 and ARM64, portrait configuration and package
 `com.minishoptycoon.offlinegame` (provisional; global uniqueness not verified).
-AAB, release signing, current target API compliance and store publication are
-deferred. Do not publish this prototype as a completed game.
+Phase K adds unsigned APK/AAB candidates and static API/native alignment checks.
+See release_preparation.md for build/signing commands and remaining device/store
+acceptance. No release key has been generated and nothing has been published.

@@ -11,6 +11,7 @@ var carried_count: int = 0
 var fries_count: int = 0
 var staff_style: bool = false
 var pose_tween: Tween
+var style_cache: Dictionary = {}
 var hand_lift: float = 0:
 	set(value):
 		hand_lift = value
@@ -114,7 +115,11 @@ func _draw() -> void:
 		draw_line(point + Vector2(-4, 5), point + Vector2(4, 5), Color("ffe6aa"), 3)
 
 func _style(color: Color, radius: int) -> StyleBoxFlat:
+	var key: String = color.to_html() + ":" + str(radius)
+	if style_cache.has(key):
+		return style_cache[key]
 	var value: StyleBoxFlat = StyleBoxFlat.new()
 	value.bg_color = color
 	value.set_corner_radius_all(radius)
+	style_cache[key] = value
 	return value

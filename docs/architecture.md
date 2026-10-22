@@ -347,3 +347,21 @@ restore both shelves, aggregate sales and the live unpaid ticket map. Grocery
 buy/sell/upgrades restore only affected fields. Existing production/controller
 instances remain stable. Cash and operation/expansion purchases retain their
 earlier rollback rules. Success feedback/presentation follows durable success.
+
+## Phase K resource and export bounds
+
+WorkerCharacter and ShopFixture reuse StyleBoxFlat resources keyed by palette color
+and radius instead of allocating on every draw. The fixed artwork palette bounds
+the cache; drawing colors/geometry are unchanged. Production/cue redraw throttles,
+four-customer/four-effect/four-voice bounds and existing simulation remain intact.
+The standalone benchmark creates an isolated expanded-shop save and compares busy,
+menu and paused idle rendering on desktop; it is excluded from shipped artifacts.
+
+Export presets separate update-compatible debug APK, unsigned release-template APK
+and unsigned Gradle AAB. AAB SDK min/target are pinned to 24/36; non-Gradle APKs
+inherit the verified template levels (overrides require Gradle). Game category uses
+exporter enum index 2 (Android manifest category 0), not index 0 (Accessibility).
+Generated android/ content, tooling, credentials and APK/AAB outputs are ignored.
+audit_android.py checks ZIP CRC, excluded/private content, ARM64 ELF load alignment
+and AAB structure. bundletool validates the bundle; signing/device checks remain
+separate release gates, not runtime gameplay behavior.

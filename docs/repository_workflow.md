@@ -14,7 +14,8 @@ Never force-push or overwrite unrelated remote work; inspect remote state first.
 If authentication/network blocks a push, preserve the local commit and report
 the exact blocker. Do not claim an upload succeeded without remote verification.
 
-Current scope: Phase J, authorized by the user's next-phase request on 23 October
-after Phase I (5e57af0, phone verification 93dda97). Complete save/lifecycle tests,
-fixes, APK and docs; commit/push, verify remote hash and stop before K. The user
-explicitly deferred this version's phone testing: finish APK and GitHub first.
+Current scope: Phase K candidate after J (876406a), authorized 23 October. The user
+explicitly deferred phone performance tests and selected unsigned candidates plus
+signing instructions. Publish source/tests/docs and verify the remote hash; APK/AAB,
+Gradle generated files and validators stay local/ignored. Do not generate a release
+key or publish to a store. Device acceptance and owner signing remain outstanding.

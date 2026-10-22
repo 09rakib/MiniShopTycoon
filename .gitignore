@@ -10,3 +10,6 @@ script_templates/
 text_editor_themes/
 .env
 .env.*
+android/
+__pycache__/
+*.pyc

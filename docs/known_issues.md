@@ -1,4 +1,4 @@
-# Known limits — Phase J
+# Known limits — Phase K candidate
 
 - Floating joystick stays centered on the initial touch for one gesture; next
   touch relocates it. Idle/release/cancel/menu/focus loss draws nothing. Buttons
@@ -26,3 +26,10 @@
   Home/relaunch/force-kill and actual low-storage checks were deferred by the user;
   this version has not been installed. See test_report_phaseJ.md. Automated blocked
   storage tests do not emulate every operating-system or filesystem failure.
+- Phase K phone measurements/16KB runtime, low-end thermal/memory and signed store
+  acceptance remain deferred. Desktop benchmark is not Android FPS evidence.
+- Unsigned candidates cannot be installed directly. Keep the debug APK for the
+  existing debug phone app; use owner signing for release. No key was generated.
+- Godot's supplied Gradle template warns about compileSdk 36 with AGP 8.6.1 and
+  manifest replacement/native stripping. See release_preparation.md; do not label
+  the candidate production-ready solely because structural validation passed.

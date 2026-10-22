@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.13.0 — Phase K candidate checkpoint — 23 October 2026
+
+- Cached chef and fixture drawing styles instead of allocating resources every redraw.
+- Added reproducible desktop idle/busy/menu benchmark and ten bounded-resource tests;
+  all 595 checks pass. Desktop observations are not Android performance measurements.
+- Added distinct debug, unsigned release APK and unsigned Gradle AAB presets,
+  build wrapper and artifact/ARM64 ELF/content audit.
+- Corrected Android Game category; pinned AAB SDK 24/36 and verified APK template levels.
+- Prepared signing, privacy/store text drafts and current primary policy references.
+- User explicitly deferred phone measurements and chose unsigned candidates; device,
+  signing and store acceptance remain pending. No publication or new signing key.
+
 ## 0.12.0 — Transformation Phase J — 23 October 2026
 
 - Audited schema 1–8 migrations, recovery files, reset, progression and lifecycle.

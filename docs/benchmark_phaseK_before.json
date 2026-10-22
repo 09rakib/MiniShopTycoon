@@ -1,0 +1,36 @@
+{
+	"android_measurement": false,
+	"engine": "4.7.2-stable (official)",
+	"frame_cap": 60,
+	"platform": "Windows",
+	"renderer": "NVIDIA GeForce GTX 1650",
+	"sample_frames": 180,
+	"scenarios": {
+		"busy": {
+			"frame_median_ms": 16.668,
+			"frame_p95_ms": 17.53,
+			"peak_draw_calls": 285,
+			"peak_nodes": 117,
+			"peak_static_memory_bytes": 39307542.0,
+			"process_p95_ms": 3.971
+		},
+		"idle": {
+			"frame_median_ms": 16.666,
+			"frame_p95_ms": 16.846,
+			"peak_draw_calls": 239,
+			"peak_nodes": 115,
+			"peak_static_memory_bytes": 39353034.0,
+			"process_p95_ms": 114.102
+		},
+		"menu": {
+			"frame_median_ms": 16.653,
+			"frame_p95_ms": 17.159,
+			"peak_draw_calls": 291,
+			"peak_nodes": 117,
+			"peak_static_memory_bytes": 39380658.0,
+			"process_p95_ms": 33.1
+		}
+	},
+	"viewport": "480x900",
+	"warmup_frames": 60
+}

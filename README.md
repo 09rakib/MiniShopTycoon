@@ -1,7 +1,7 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: **Phase J — save/lifecycle verification (v0.12.0)**.
+Current checkpoint: **Phase K — unsigned release candidate (v0.13.0)**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
 floating joystick: touch and drag anywhere in gameplay (or WASD/arrows on desktop).
 Joystick starts hidden, appears faintly at your touch and hides on release. Camera follows within the room;
@@ -43,7 +43,7 @@ brief feedback. Eight original short sound cues play through four reused voices.
 Menu → Sound toggles all cues and saves the choice locally. Menus fade in while
 blocking movement immediately; app focus loss stops sound and transient effects.
 
-Android: transfer `builds/MiniShopTycoon-phaseJ.apk` to an Android 7.0+ phone
+Android: transfer `builds/MiniShopTycoon-phaseK.apk` to an Android 7.0+ phone
 and install it using Files. Update the existing app without uninstalling to
 retain progress. Schema 8 preserves grocery/machine progress and also saves carried
 and counter burgers, pending cash/sales, independent upgrades, stocker state, fries and purchased furniture. Source and tests: https://github.com/09rakib/MiniShopTycoon.
@@ -52,8 +52,13 @@ Failed saves now roll back player/staffer transfers, customer sales and grocery
 purchases/sales/upgrades. Unsupported newer saves block writes instead of falling
 back to an older backup. Explicit reset prepares fresh progress before replacing
 the primary and archives old files; failed preparation leaves live progress intact.
-585 automated checks pass; see docs/test_report_phaseJ.md. Phone testing of this
+595 automated checks pass; see docs/test_report_phaseK.md. Phone testing of this
 version is deferred at the user's request; Phase I v0.11.0 was installed previously.
+
+Unsigned optimized APK/AAB candidates are separate local artifacts. Run
+`build-release.ps1 -Format apk` or `-Format aab` to rebuild; owner signing and device
+acceptance remain pending. See [release handoff](docs/release_preparation.md) for
+private signing instructions and verified policy sources. No store upload was made.
 
 The portable engine lives under `tools/godot`; launchers keep its profile and
 desktop game saves inside `tools/profile`. No administrator installation needed.

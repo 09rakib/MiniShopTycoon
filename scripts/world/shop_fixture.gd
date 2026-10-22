@@ -8,6 +8,7 @@ var fries_handling: BurgerHandling
 var animation_clock: float = 0
 var redraw_clock: float = 0
 var sales: BurgerSales
+var style_cache: Dictionary = {}
 
 func _ready() -> void:
 	var values: Array = definition["rect"]
@@ -108,10 +109,16 @@ func _draw() -> void:
 			text(amount_text, Vector2(-w / 2, -h - lift - 12), font_size, Color("255d42"))
 
 func panel(rect: Rect2, color: Color, radius: int) -> void:
-	var value: StyleBoxFlat = StyleBoxFlat.new()
-	value.bg_color = color
-	value.set_corner_radius_all(radius)
-	draw_style_box(value, rect)
+	draw_style_box(panel_style(color, radius), rect)
+
+func panel_style(color: Color, radius: int) -> StyleBoxFlat:
+	var key: String = color.to_html() + ":" + str(radius)
+	if not style_cache.has(key):
+		var value: StyleBoxFlat = StyleBoxFlat.new()
+		value.bg_color = color
+		value.set_corner_radius_all(radius)
+		style_cache[key] = value
+	return style_cache[key]
 
 func text(value: String, point: Vector2, font_size: int, color: Color) -> void:
 	draw_string(ThemeDB.fallback_font, point, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)

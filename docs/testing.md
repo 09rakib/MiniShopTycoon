@@ -61,3 +61,17 @@ are covered. Actual controller notification injection verifies pause/focus guard
 See test_report_phaseJ.md for artifact/hash and limits. The user deferred physical
 phone checks; no claim of Android kill/low-storage/performance verification.
 Next phase is K, requiring user continuation.
+
+## Phase K candidate verification
+
+Phase K was authorized with phone measurements deferred and unsigned candidates
+requested. All 595 checks pass: earlier 585 plus 10 resource-bound checks. They
+exercise repeated style reuse, palette/geometry separation, bounded spawns/tickets,
+overlay cleanup and unknown audio event handling. The expanded shop stays below
+180 nodes in this fixture; that is a structural guard, not an FPS measurement.
+
+Run `Godot --path . --script tests/benchmark_shop.gd -- --output=res://builds/benchmark.json`
+with the local profile to capture desktop rendered idle/busy/menu samples. Checked-in
+before/after JSON is Windows/GTX 1650 data with a 60 FPS cap, not Android evidence.
+Candidate audits, bundletool/native alignment checks, hashes, toolchain warnings
+and remaining device/signing gates are recorded in test_report_phaseK.md.
