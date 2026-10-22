@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 — Transformation Phase H — 22 October 2026
+
+- Added unlockable fries press using shared production/handling/controller code.
+- Added separate fries carry/counter stock, visible cups, contextual pickup and
+  customer purchases at correct product prices; alternate stocked products.
+- Added wallet-funded table/two-chair bundle, valid solid placement and two seats.
+- Added expansion menu, duplicate/fund guards, durable purchase and failure rollback.
+- Added schema 8 with old progress migration and persistent owned objects/fries.
+- Added 50 expansion checks including 10,000 complete fries-to-sale cycles; all
+  430 checks pass. Rendered normal/compact layouts, prepared code 10 Android APK.
+- Dining and fries staff/upgrades remain later scope; no phone install claimed.
+
 ## 0.9.0 — Transformation Phase G — 19 October 2026
 
 - Added independent speed, capacity and selling-price upgrades with five tiers.

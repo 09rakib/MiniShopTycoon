@@ -243,3 +243,44 @@ and cash; legacy machine level supplies both speed/capacity, price starts at 1.
 Old saves initialize no employee or business spending. Employee-held food persists;
 position/task path restarts safely at the press and resumes delivery. No offline
 employee work, wages, cashier or dismissal are introduced in this checkpoint.
+
+
+## Phase H — a second machine and deterministic furniture
+
+ShopExpansion owns a ProductionState("fries_press") and a BurgerHandling
+("fries_machine", 4). Both use the same existing classes as burgers. A second
+ProductionController receives its state before entering the scene; its one-shot
+cycle is inactive while locked. Primary controller's shared autosave timer writes
+all machine/inventory state. Burger speed upgrades reset only the burger cycle.
+No duplicated machine production script or unbounded spawning.
+
+expansion.json configures 400 unlock, 180 table/two-chair bundle, two seats and
+fixed world rectangles/approach points. ShopEconomy validates wallet/expense caps
+and ownership before purchases. Game writes before changed/world creation, and
+restores wallet/expansion on write failure. Owned fixtures are reconciled by ID,
+not appended each refresh; reset removes them. World collision uses the fixed
+footprints; tests check player-radius margins around staff aisle, customer lane
+and entrance. Furniture provides persistent seat capacity, not fake dining income.
+
+Existing transfer code supports another machine source. Economy's authoritative
+food_action/food_amount/transfer_food routes player interaction by current world
+position. Each player trip carries at most two of one type; other-type pickup
+rejects without overwriting food. Shared staff transfer still handles burgers.
+Separate burger/fries counter shelves store 8/4 respectively. Full/partial
+shelves retain leftovers. Machine→carry→counter are paired synchronous mutations.
+
+BurgerSales remains the compatible class/save name, now a shared food-sale ledger.
+It chooses an available shelf, alternates when both stocked, consumes one item,
+credits that source's current selling_price and marks the visit consumed once.
+No cross-product duplicate sale. next_fries rotation persists (old records default
+false). Total sold/revenue/pending and cash collection cover both foods; original
+grocery accounting remains separate. Both automatic foods currently have zero
+ingredient cost; expansion expense is separate from gross profit.
+
+Schema 8 adds expansion flags, spending, production and handling. All nested
+records validate before any working state applies; reject stock on locked machine,
+active/unlock disagreement, wrong limits and saved mixed player carrying. Schemas
+1–7 preserve all previous fields and initialize locked/unowned/empty expansions.
+Own machine/furniture reconciles once on relaunch. Worker positions are transient,
+held food is durable. No offline work/income, seating behavior or fries upgrades
+introduced beyond the initial configurable tier in this checkpoint.

@@ -8,6 +8,7 @@ var facing: Vector2 = Vector2.DOWN
 var walk_phase: float = 0.0
 var was_walking: bool = false
 var carried_count: int = 0
+var fries_count: int = 0
 var staff_style: bool = false
 
 func set_carried_count(value: int) -> void:
@@ -86,6 +87,13 @@ func _draw() -> void:
 			draw_line(point + Vector2(-13, 0), point + Vector2(13, 0), Color("976039"), 6, true)
 			draw_line(point + Vector2(-14, -3), point + Vector2(14, -3), Color("91b762"), 3, true)
 			draw_arc(point + Vector2(0, -3), 12, PI, TAU, 14, Color("e7b364"), 8, true)
+
+	for index: int in mini(fries_count, 2):
+		var point: Vector2 = Vector2(facing.x * 5, -19 - index * 19 - bounce)
+		for x: int in [-7, 0, 7]:
+			draw_line(point + Vector2(x, -14), point + Vector2(x, 0), Color("efc668"), 5, true)
+		draw_style_box(_style(Color("c36c52"), 3), Rect2(point + Vector2(-11, -2), Vector2(22, 16)))
+		draw_line(point + Vector2(-4, 5), point + Vector2(4, 5), Color("ffe6aa"), 3)
 
 func _style(color: Color, radius: int) -> StyleBoxFlat:
 	var value: StyleBoxFlat = StyleBoxFlat.new()

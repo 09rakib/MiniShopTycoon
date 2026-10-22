@@ -57,7 +57,7 @@ func persist() -> bool:
 	return true
 
 func interact_burgers(action: String, worker_position: Vector2) -> bool:
-	var result: Dictionary = economy.handling.transfer(action, worker_position, economy.production)
+	var result: Dictionary = economy.transfer_food(action, worker_position)
 	if int(result["amount"]) <= 0:
 		feedback.emit(result["error"])
 		return false
@@ -65,11 +65,11 @@ func interact_burgers(action: String, worker_position: Vector2) -> bool:
 	handling_changed.emit()
 	if saved:
 		var amount: int = int(result["amount"])
-		feedback.emit(("Picked up %d burger%s." if action == "pickup" else "Delivered %d burger%s.") % [amount, "s" if amount != 1 else ""])
+		feedback.emit(("Picked up %d item%s." if action in ["pickup", "fries"] else "Delivered %d item%s.") % [amount, "s" if amount != 1 else ""])
 	return true
 
 func sell_burger(ticket: int) -> bool:
-	var amount: int = economy.burger_sales.purchase(ticket, economy.handling, economy.production)
+	var amount: int = economy.burger_sales.purchase(ticket, economy.handling, economy.production, economy.expansion.handling if economy.expansion.unlocked else null, economy.expansion.production if economy.expansion.unlocked else null)
 	if amount == 0:
 		return false
 	persist()
@@ -116,6 +116,24 @@ func purchase_operation(kind: String) -> bool:
 		production_changed.emit()
 	changed.emit()
 	feedback.emit("Stocker hired! Two burgers per trip." if kind == "stocker" else "Burger machine upgraded!")
+	return true
+
+func purchase_expansion(kind: String) -> bool:
+	var previous_coins: int = economy.coins
+	var previous: Dictionary = economy.expansion.snapshot()
+	var error: String = economy.purchase_expansion(kind)
+	if not error.is_empty():
+		feedback.emit(error)
+		return false
+	if not storage.write(economy):
+		economy.coins = previous_coins
+		economy.expansion.restore(previous)
+		feedback.emit(storage.message)
+		return false
+	production_dirty = false
+	changed.emit()
+	production_changed.emit()
+	feedback.emit("Fries machine unlocked! Collect at FRIES." if kind == "fries" else "Table and two chairs placed. Seating: 2.")
 	return true
 
 func stocker_transfer(action: String, worker_position: Vector2) -> int:

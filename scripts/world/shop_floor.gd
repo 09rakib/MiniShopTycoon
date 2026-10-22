@@ -1,6 +1,8 @@
 class_name ShopFloor
 extends Node2D
 var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world_layout.json"))
+var fries_unlocked: bool = false
+var fries_point: Vector2 = Vector2(170, 620)
 ## Static original artwork. Repaint only when its geometry changes.
 func _draw() -> void:
 	draw_rect(Rect2(0, 0, 820, 1200), Color("e5d7b8"))
@@ -23,7 +25,11 @@ func _draw() -> void:
 	# Empty expansion bay and a separate customer approach lane.
 	draw_style_box(style(Color("e3cfaa"), 16), Rect2(92, 490, 154, 140))
 	draw_rect(Rect2(108, 507, 122, 105), Color("d5c098"), false, 2)
-	text("SPACE TO GROW", Vector2(112, 559), 13, Color("8c815e"))
+	if not fries_unlocked:
+		text("SPACE TO GROW", Vector2(112, 559), 13, Color("8c815e"))
+	else:
+		draw_arc(fries_point, 29, 0, TAU, 36, Color("8ca67e"), 2, true)
+		text("FRIES", fries_point + Vector2(-24, 46), 12, Color("698361"))
 	for y: int in [600, 664, 728, 792]:
 		draw_arc(Vector2(700, y), 22, 0, TAU, 32, Color("c4ad82"), 2, true)
 	text("QUEUE", Vector2(674, 830), 15, Color("a29170"))

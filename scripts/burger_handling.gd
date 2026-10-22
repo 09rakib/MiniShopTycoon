@@ -3,10 +3,17 @@ extends RefCounted
 ## All machine → worker → counter transfers are synchronous and bounded.
 var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/burger_handling.json"))
 var layout: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/world_layout.json"))
+var source_id: String = "burger_machine"
 var carried: int = 0
 var counter: int = 0
 
-func _init() -> void:
+func _init(source: String = "burger_machine", storage_capacity: int = -1) -> void:
+	source_id = source
+	if storage_capacity >= 0:
+		config["counter_capacity"] = storage_capacity
+	if source != "burger_machine":
+		var expansion: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/expansion.json"))
+		layout["fixtures"].append_array(expansion["fixtures"])
 	assert(validate(config).is_empty(), validate(config))
 
 static func validate(data: Dictionary) -> String:
@@ -28,7 +35,7 @@ func counter_capacity() -> int:
 	return int(config["counter_capacity"])
 
 func station_point(action: String) -> Vector2:
-	var id: String = "burger_machine" if action == "pickup" else "serving_counter" if action == "deliver" else ""
+	var id: String = source_id if action == "pickup" else "serving_counter" if action == "deliver" else ""
 	for fixture: Dictionary in layout["fixtures"]:
 		if fixture["id"] == id:
 			return Vector2(fixture["hint_point"][0], fixture["hint_point"][1])

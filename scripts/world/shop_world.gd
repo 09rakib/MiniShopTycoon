@@ -6,10 +6,12 @@ var camera: ShopCamera
 var actors: Node2D
 var fixtures: Array[ShopFixture] = []
 var cash_reward: Label
+var floor_art: ShopFloor
 var reward_tween: Tween
 
 func _ready() -> void:
-	add_child(ShopFloor.new())
+	floor_art = ShopFloor.new()
+	add_child(floor_art)
 	for wall: Array in layout["walls"]:
 		var body: StaticBody2D = StaticBody2D.new()
 		var shape: CollisionShape2D = CollisionShape2D.new()
@@ -30,6 +32,7 @@ func _ready() -> void:
 	Game.production_changed.connect(_refresh_machine)
 	Game.handling_changed.connect(_refresh_handling)
 	Game.changed.connect(_refresh_cash)
+	Game.changed.connect(_sync_expansion)
 	Game.cash_collected.connect(_show_cash_reward)
 	player = WorkerCharacter.new()
 	player.speed = float(layout["player_speed"])
@@ -42,6 +45,7 @@ func _ready() -> void:
 	camera.base_zoom = float(layout["camera_zoom"])
 	camera.follow_speed = float(layout["camera_follow_speed"])
 	add_child(camera)
+	_sync_expansion()
 	_refresh_machine()
 	_refresh_handling()
 	_refresh_cash()
@@ -60,6 +64,9 @@ func _refresh_machine() -> void:
 		if fixture.definition["id"] == "burger_machine":
 			fixture.production = Game.economy.production
 			fixture.queue_redraw()
+		elif fixture.definition["id"] == "fries_machine":
+			fixture.production = Game.economy.expansion.production
+			fixture.queue_redraw()
 
 func location_hint() -> String:
 	for definition: Dictionary in layout["fixtures"]:
@@ -72,9 +79,12 @@ func location_hint() -> String:
 
 func _refresh_handling() -> void:
 	player.set_carried_count(Game.economy.handling.carried)
+	player.fries_count = Game.economy.expansion.handling.carried
+	player.queue_redraw()
 	for fixture: ShopFixture in fixtures:
 		if fixture.definition["id"] == "serving_counter":
 			fixture.handling = Game.economy.handling
+			fixture.fries_handling = Game.economy.expansion.handling if Game.economy.expansion.unlocked else null
 			fixture.queue_redraw()
 	_refresh_cash()
 
@@ -95,3 +105,25 @@ func _show_cash_reward(amount: int) -> void:
 	reward_tween.tween_property(cash_reward, "position:y", cash_reward.position.y - 42, 1.1)
 	reward_tween.tween_property(cash_reward, "modulate:a", 0.0, 0.5).set_delay(0.6)
 	reward_tween.chain().tween_callback(cash_reward.hide)
+
+func _sync_expansion() -> void:
+	var expansion: ShopExpansion = Game.economy.expansion
+	for definition: Dictionary in expansion.config["fixtures"]:
+		var owned: bool = expansion.unlocked if definition["id"] == "fries_machine" else expansion.furniture
+		var existing: ShopFixture = null
+		for fixture: ShopFixture in fixtures:
+			if fixture.definition["id"] == definition["id"]:
+				existing = fixture
+		if owned and existing == null:
+			var fixture: ShopFixture = ShopFixture.new()
+			fixture.definition = definition
+			actors.add_child(fixture)
+			fixtures.append(fixture)
+		elif not owned and existing != null:
+			fixtures.erase(existing)
+			existing.queue_free()
+	floor_art.fries_unlocked = expansion.unlocked
+	floor_art.fries_point = expansion.handling.station_point("pickup")
+	floor_art.queue_redraw()
+	_refresh_machine()
+	_refresh_handling()

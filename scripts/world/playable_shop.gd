@@ -10,6 +10,8 @@ var menu: Control
 var legacy_layer: Control
 var legacy: Control
 var suspended: bool = false
+var fries_controller: ProductionController
+var expansion_panel: ShopExpansionPanel
 var production_controller: ProductionController
 var stocker_controller: StockerController
 var operations_layer: Control
@@ -29,6 +31,9 @@ func _ready() -> void:
 	add_child(world)
 	production_controller = ProductionController.new()
 	add_child(production_controller)
+	fries_controller = ProductionController.new()
+	fries_controller.state = Game.economy.expansion.production
+	add_child(fries_controller)
 	customer_controller = BurgerCustomers.new()
 	customer_controller.actors = world.actors
 	add_child(customer_controller)
@@ -197,13 +202,14 @@ func _build_menu() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	panel.add_child(buttons)
 	buttons.add_child(_label("LITTLE BUN", 30))
-	buttons.add_child(_label("Upgrade your press and hire a helping hand.", 17))
+	buttons.add_child(_label("Build a bigger little food shop.", 17))
 	buttons.add_child(_button("Back to the shop", close_menu))
 	buttons.add_child(_button("Burger machine & stocker", _open_operations))
+	buttons.add_child(_button("New machines & furniture", _open_expansion))
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.9.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.10.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -228,6 +234,12 @@ func _build_menu() -> void:
 	operations_panel.closed.connect(operations_layer.hide)
 	operations_panel.return_to_shop.connect(close_menu)
 	workshop_center.add_child(operations_panel)
+	expansion_panel = ShopExpansionPanel.new()
+	expansion_panel.custom_minimum_size.x = 408
+	expansion_panel.add_theme_stylebox_override("panel", workshop_style)
+	expansion_panel.return_to_shop.connect(close_menu)
+	workshop_center.add_child(expansion_panel)
+	expansion_panel.hide()
 	operations_layer.hide()
 	legacy_layer = Control.new()
 	legacy_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -238,6 +250,8 @@ func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
 	level_label.text = "Level %d • %s" % [Game.economy.shop_level(), Game.economy.progression.xp_text(Game.economy.customers)]
 	carry_label.text = "Carry %d/%d • Counter %d/%d" % [Game.economy.handling.carried, Game.economy.handling.carry_capacity(), Game.economy.handling.counter, Game.economy.handling.counter_capacity()]
+	if Game.economy.expansion.unlocked:
+		carry_label.text = "Carry %d/2 • B %d/8 • F %d/4" % [Game.economy.handling.carried + Game.economy.expansion.handling.carried, Game.economy.handling.counter, Game.economy.expansion.handling.counter]
 	cash_label.text = "Cash waiting: %d" % Game.economy.burger_sales.uncollected_cash
 	_update_location()
 
@@ -259,22 +273,28 @@ func _update_location() -> void:
 			action_button.hide()
 		return
 	var handling: BurgerHandling = Game.economy.handling
-	action = handling.nearby_action(world.player.position)
+	action = Game.economy.food_action(world.player.position)
 	action_button.visible = not action.is_empty()
 	if action.is_empty():
 		if Game.economy.cash_pickup.is_near(world.player.position):
 			location_label.text = "Cash collects automatically" if Game.economy.burger_sales.uncollected_cash > 0 else "Cash collected • keep serving"
 		else:
-			location_label.text = "Deliver to the counter" if handling.carried > 0 else "Walk to CASH to collect" if Game.economy.burger_sales.uncollected_cash > 0 else "Collect from the press"
+			location_label.text = "Deliver to the counter" if handling.carried + Game.economy.expansion.handling.carried > 0 else "Walk to CASH to collect" if Game.economy.burger_sales.uncollected_cash > 0 else "Collect from the press"
 		return
-	var amount: int = handling.available_amount(action, Game.economy.production)
+	var amount: int = Game.economy.food_amount(action)
 	action_button.disabled = amount <= 0
-	if action == "pickup":
+	if action == "fries":
+		var fries: ShopExpansion = Game.economy.expansion
+		location_label.text = "Fries %d/%d" % [fries.production.stock, fries.production.capacity()]
+		action_button.text = "Collect fries %d" % amount if amount > 0 else "Deliver burgers first" if handling.carried > 0 else "Hands full" if fries.handling.carried >= 2 else "Cooking…"
+	elif action == "pickup":
 		location_label.text = "Machine %d/%d" % [Game.economy.production.stock, Game.economy.production.capacity()]
-		action_button.text = "Collect %d" % amount if amount > 0 else "Hands full" if handling.carried >= handling.carry_capacity() else "Cooking…"
+		action_button.text = "Collect %d" % amount if amount > 0 else "Hands full" if Game.economy.expansion.handling.carried > 0 or handling.carried >= handling.carry_capacity() else "Cooking…"
 	else:
 		location_label.text = "Counter %d/%d" % [handling.counter, handling.counter_capacity()]
-		action_button.text = "Deliver %d" % amount if amount > 0 else "Counter full" if handling.counter >= handling.counter_capacity() else "Hands empty"
+		if Game.economy.expansion.unlocked:
+			location_label.text = "B %d/8 • F %d/4" % [handling.counter, Game.economy.expansion.handling.counter]
+		action_button.text = "Deliver %d" % amount if amount > 0 else "Counter full" if handling.carried + Game.economy.expansion.handling.carried > 0 else "Hands empty"
 
 func _feedback(message: String) -> void:
 	feedback_label.text = message
@@ -285,7 +305,7 @@ func _interact() -> void:
 	if suspended or world.player.controls_blocked or menu.visible or legacy_layer.visible:
 		return
 	# Re-evaluate distance and action at press time; never trust a stale HUD prompt.
-	var current: String = Game.economy.handling.nearby_action(world.player.position)
+	var current: String = Game.economy.food_action(world.player.position)
 	if not current.is_empty():
 		Game.interact_burgers(current, world.player.position)
 	_update_location()
@@ -300,7 +320,15 @@ func _block_controls(value: bool) -> void:
 	world.player.stop()
 	joystick.set_enabled(not value)
 
+func _open_expansion() -> void:
+	operations_panel.hide()
+	expansion_panel.show()
+	expansion_panel.refresh()
+	operations_layer.show()
+
 func _open_operations() -> void:
+	expansion_panel.hide()
+	operations_panel.show()
 	operations_panel.refresh()
 	operations_layer.show()
 
@@ -357,12 +385,14 @@ func _notification(what: int) -> void:
 		suspended = true
 		_block_controls(true)
 		production_controller.set_paused(true)
+		fries_controller.set_paused(true)
 		customer_controller.set_paused(true)
 		stocker_controller.set_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
 		_block_controls(menu.visible or legacy_layer.visible)
 		production_controller.set_paused(false)
+		fries_controller.set_paused(false)
 		customer_controller.set_paused(false)
 		stocker_controller.set_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:

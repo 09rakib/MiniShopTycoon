@@ -20,6 +20,7 @@ var handling: BurgerHandling = BurgerHandling.new()
 var burger_sales: BurgerSales = BurgerSales.new()
 var cash_pickup: CashPickup = CashPickup.new()
 var operations: ShopOperations = ShopOperations.new()
+var expansion: ShopExpansion = ShopExpansion.new()
 const MAX_TOTAL: int = 1000000000000
 const LEGACY_PRODUCTS: Array[String] = ["bread", "milk", "apples"]
 
@@ -31,6 +32,7 @@ func _init() -> void:
 	reset()
 
 func reset() -> void:
+	expansion.reset()
 	operations.reset()
 	burger_sales.reset()
 	handling.reset()
@@ -175,6 +177,58 @@ func purchase_operation(kind: String) -> String:
 		production.apply_upgrade(kind)
 	return ""
 
+func purchase_expansion(kind: String) -> String:
+	var cost: int
+	if kind == "fries" and not expansion.unlocked:
+		cost = int(expansion.config["machine_cost"])
+	elif kind == "furniture" and not expansion.furniture:
+		cost = int(expansion.config["furniture_cost"])
+	else:
+		return "Already owned or unknown expansion."
+	if coins < cost:
+		return "Not enough wallet coins. Collect cash first."
+	if expansion.spending > MAX_TOTAL - cost:
+		return "Expansion spending limit reached."
+	coins -= cost
+	expansion.spending += cost
+	if kind == "fries":
+		expansion.unlocked = true
+		expansion.production.active = true
+	else:
+		expansion.furniture = true
+	return ""
+
+func food_action(position: Vector2) -> String:
+	var action: String = handling.nearby_action(position)
+	if not action.is_empty():
+		return action
+	if expansion.unlocked and expansion.handling.is_near("pickup", position):
+		return "fries"
+	return ""
+
+func food_amount(action: String) -> int:
+	if action == "pickup":
+		return handling.available_amount("pickup", production) if expansion.handling.carried == 0 else 0
+	if action == "fries":
+		return expansion.handling.available_amount("pickup", expansion.production) if expansion.unlocked and handling.carried == 0 else 0
+	if action == "deliver":
+		return handling.available_amount("deliver", production) + expansion.handling.available_amount("deliver", expansion.production)
+	return 0
+
+func transfer_food(action: String, position: Vector2) -> Dictionary:
+	if action == "fries":
+		if not expansion.unlocked or handling.carried > 0:
+			return {"amount": 0, "error": "Deliver burgers before collecting fries." if expansion.unlocked else "Unlock the fries machine first."}
+		return expansion.handling.transfer("pickup", position, expansion.production)
+	if action == "pickup" and expansion.handling.carried > 0:
+		return {"amount": 0, "error": "Deliver fries before collecting burgers."}
+	if action == "deliver" and expansion.handling.carried > 0:
+		return expansion.handling.transfer("deliver", position, expansion.production)
+	return handling.transfer(action, position, production)
+
+func counter_food() -> int:
+	return handling.counter + expansion.handling.counter
+
 func collect_cash(worker_position: Vector2) -> int:
 	var amount: int = burger_sales.uncollected_cash
 	if amount <= 0 or not cash_pickup.is_near(worker_position) or coins > MAX_TOTAL - amount:
@@ -185,9 +239,9 @@ func collect_cash(worker_position: Vector2) -> int:
 	return amount
 
 func snapshot() -> Dictionary:
-	return {"schema_version": 7, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
+	return {"schema_version": 8, "coins": coins, "revenue": revenue, "stock_spending": stock_spending,
 		"burger_handling": handling.snapshot(), "burger_sales": burger_sales.snapshot(),
-		"production": production.snapshot(), "operations": operations.snapshot(),
+		"production": production.snapshot(), "operations": operations.snapshot(), "expansion": expansion.snapshot(),
 		"upgrade_spending": upgrade_spending, "shelf_upgrades": shelf_upgrades.duplicate(),
 		"retained_unlocks": retained_unlocks.duplicate(),
 		"cost_of_goods": cost_of_goods, "customers": customers,
@@ -201,7 +255,7 @@ func inventory_value() -> int:
 
 func restore(data: Dictionary) -> bool:
 	# Validate the entire record before touching working state.
-	if not _valid_integer(data.get("schema_version"), 1, 7) or not data.get("stock") is Dictionary:
+	if not _valid_integer(data.get("schema_version"), 1, 8) or not data.get("stock") is Dictionary:
 		return false
 	for key: String in ["coins", "revenue", "cost_of_goods", "customers"]:
 		if not _valid_integer(data.get(key), 0, MAX_TOTAL):
@@ -262,8 +316,15 @@ func restore(data: Dictionary) -> bool:
 			return false
 		if not data["production"].has("capacity_level") or not data["production"].has("price_level"):
 			return false
+	var loaded_expansion: ShopExpansion = ShopExpansion.new()
+	if version >= 8:
+		if not data.get("expansion") is Dictionary or not loaded_expansion.restore(data["expansion"]):
+			return false
+		if loaded_handling.carried > 0 and loaded_expansion.handling.carried > 0:
+			return false
 	# All fields have validated. Update the existing instance so controllers keep
 	# their reference across restores/resets; no partial state is applied earlier.
+	expansion.restore(loaded_expansion.snapshot())
 	operations.restore(loaded_operations.snapshot())
 	burger_sales.restore(loaded_sales.snapshot())
 	handling.restore(loaded_handling.snapshot())

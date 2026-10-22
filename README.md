@@ -1,7 +1,7 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: transformation **Phase G — machine upgrades and a working stocker**.
+Current checkpoint: transformation **Phase H — fries machine and fixed furniture**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
 bottom-left joystick (or WASD/arrows on desktop). Camera follows within the room;
 walls, machine and counter are solid. The world occupies the main screen.
@@ -21,6 +21,12 @@ and a 300-coin stocker hire. Current/next values and wallet costs are shown.
 Stocker wears a blue cap, physically walks and carries at most two burgers to the
 counter. Full counters preserve staff-held food; employee progress/upgrades save.
 Only collected wallet coins fund purchases; no offline staff work or wages.
+
+Menu → New machines & furniture unlocks a 400-coin fries press (3s, storage 8,
+price 16, four counter trays) and a 180-coin table + two-chair set. Collect fries
+at FRIES, deliver at DELIVER; player carries two of one product per trip.
+Customers alternate foods when both are stocked. Stocker handles burgers only.
+Furniture adds two persistent seats; dining comes later.
 Existing grocery inventory, economy, levels and upgrades remain available through
 Menu; no saved progress is reset. Source backup: `builds/backups/phase3-before-world.zip`.
 
@@ -28,10 +34,10 @@ Double-click **play.cmd** to play on this PC. Double-click **editor.cmd** to ope
 the Godot project, then press F6/F5 to run (F5 runs the main scene).
 Double-click **test.cmd** for the automated checks.
 
-Android: transfer `builds/MiniShopTycoon-phaseG.apk` to an Android 7.0+ phone
+Android: transfer `builds/MiniShopTycoon-phaseH.apk` to an Android 7.0+ phone
 and install it using Files. Update the existing app without uninstalling to
-retain progress. Schema 7 preserves grocery/machine progress and also saves carried
-and counter burgers, pending cash/sales, independent upgrades and stocker state. Source and tests: https://github.com/09rakib/MiniShopTycoon.
+retain progress. Schema 8 preserves grocery/machine progress and also saves carried
+and counter burgers, pending cash/sales, independent upgrades, stocker state, fries and purchased furniture. Source and tests: https://github.com/09rakib/MiniShopTycoon.
 
 The portable engine lives under `tools/godot`; launchers keep its profile and
 desktop game saves inside `tools/profile`. No administrator installation needed.

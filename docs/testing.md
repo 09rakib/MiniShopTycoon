@@ -1,49 +1,47 @@
-# Phase G manual checkpoint — upgrades and a working stocker
+# Phase H manual checkpoint — fries machine and furniture
 
-Update builds/MiniShopTycoon-phaseG.apk (v0.9.0/code 9) over the installed game.
-Do not uninstall/clear data or downgrade after schema 7 migration. Prior coins,
-grocery upgrades/inventory, machine/counter/held stock, revenue and cash migrate.
+Install builds/MiniShopTycoon-phaseH.apk (v0.10.0/code 10) as an update. Do not
+uninstall/clear data or downgrade after schema 8 migration. Existing coins,
+grocery upgrades, burger tiers/stock, held food, staff and pending cash remain.
 
-1. Open Menu → Burger machine & stocker. The compact workshop shows wallet,
-   current/next stats and exact costs. Back to shop resumes the same world.
-   Android Back first closes workshop, then menu. World business keeps running
-   while menus are open; player movement/cash pickup is blocked in menus.
-2. Speed 1 → 2 costs 180 coins, changes 2.0s → 1.7s and leaves capacity at 10.
-   A fresh cycle starts at the new speed; buying does not create free burgers.
-3. Capacity 1 → 2 costs 120 coins, changes 10 → 12 without losing existing food.
-   A full machine resumes because the new capacity has room. Speed stays the same.
-4. Price 1 → 2 costs 140 coins, changes 20 → 25. Subsequent successful customer
-   purchases pay 25; existing pending cash/revenue does not change retroactively.
-5. Only wallet coins can buy upgrades. Pending cash cannot be spent; walk to CASH
-   and collect it first. Unaffordable/maxed buttons disable; repeated hiring must
-   never create multiple stockers or charge after the first successful purchase.
-6. Hire stocker for 300 coins. A blue-capped worker appears at the press, picks up
-   at most two and visibly walks through the middle aisle to DELIVER. The counter
-   changes only at delivery, not immediately when pickup occurs.
-7. Help the stocker by collecting/delivering yourself. Shared stock must not go
-   negative or duplicate. Full counter: employee waits and keeps the carried food.
-   Partial space: only fitting burgers move; remainder stays held until a sale.
-8. Continue selling and collecting cash. Employee stocks the counter but never
-   creates products/money or collects cash for you. No staff wages in this version.
-9. Close/reopen while stocker carries food. Hired status, exact held items, machine
-   tiers, business expenses, wallet and cash persist. Employee respawns safely and
-   resumes delivery. Do not reset progress just to test upgrades.
-10. Test joystick/menu/two-finger controls, Home/resume, Back and airplane mode.
-    Confirm staff/production/customer activity pauses in background, with no
-    offline catch-up. Character positions are transient; inventories are durable.
+1. Collect wallet cash, then open Menu → New machines & furniture. Pending cash
+   is not spendable. Unlock fries costs 400; table + two chairs costs 180. Owned
+   buttons disable. Repeated taps must not double-charge or duplicate fixtures.
+2. Unlocked fries press appears in the left expansion bay. It produces one fries
+   serving every three seconds, stops at eight, resumes after collection. Before
+   unlock it must not produce anything or obstruct the bay.
+3. Walk to FRIES, tap Collect fries 2 when at least two exist. The machine loses
+   exactly two and visible cups appear in the chef's hands. Pickup is local only.
+4. Player carries at most two items and one product type per trip. Carrying a
+   burger blocks fries pickup and vice versa, retaining held food. Deliver first.
+5. Walk to DELIVER. Fries move to four dedicated trays; burger counter still has
+   its separate eight slots. HUD/world show B and F counts. Full or partial fries
+   shelf retains leftovers in the chef's hands, never deletes/retypes food.
+6. Customers buy food at the counter, never the machines. They alternate when
+   both foods are stocked; otherwise buy what exists. One visit buys once total.
+   Base burgers pay 20 (or upgraded price), fries 16. Cash waits until collected.
+7. Walk to CASH: combined proceeds enter wallet exactly once. Burger upgrades and
+   stocker remain intact; stocker still carries burgers only, player handles fries.
+8. Buy the table set. One original table/two chairs appears in the lower-left bay,
+   seating capacity becomes 2. It is solid but leaves worker/customer/entrance
+   paths open. This checkpoint has no dining or seating revenue bonus yet.
+9. Restart while carrying fries and with both counter products stocked. Owned
+   machine/furniture, food, cash/wallet and old progress persist. Saved objects
+   must appear exactly once on relaunch, never duplicate on menu refresh.
+10. Test small-screen joystick/actions, Home/resume, Back/menu and airplane mode.
+    Both machines pause in background; no offline production or income.
 
-## Actual automated and visual verification
+## Actual verification
 
-380 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
-34 cash, 69 operations. test.cmd runs all seven suites and rejects runtime errors.
-The new suite tests all upgrade tiers/caps/costs, fund checks, price timing, schema
-migration and malformed records, single hire/save failure rollback, player/staff
-stock contention, 10,000 rejected full-counter transfers, actual machine timer,
-real worker travel/partial delivery, saved in-transit items, pause/reset and a
-10.5-second full production → stocker → customer → cash collection loop.
-Workshop/default/hired and employee carry images rendered and inspected at
-480×900 and 360×640. See test_report_phaseG.md for exact build verification.
+430 checks pass: 128 economy, 34 world, 32 production, 44 handling, 39 customers,
+34 cash, 69 operations, 50 expansion. test.cmd runs all eight suites and flags
+script/runtime errors. New cases cover purchase funds/repeats/rollback, locked
+production, shared two-item handling, full/partial shelf retention, alternating
+payments and last-item claim, schema 7 migration/8 validation, actual production,
+UI pickup/delivery, customer fries purchase/cash collection, placement margins,
+solid furniture, relaunch/reset and 10,000 complete fries-to-sale cycles.
+Five real render previews inspected at 480×900 and 360×640.
 
-Phase F was installed/launched in the previous turn. G phone installation was not
-run: ADB USB and wireless discovery found no phone at this checkpoint. No G device
-migration/touch/airplane/performance acceptance claimed. Stop before Phase H.
+No Phase H phone installation, physical touch/airplane-mode/device migration or
+measured performance run is claimed. APK signature/manifest are verified; see
+test_report_phaseH.md. Stop for feedback before Phase I.

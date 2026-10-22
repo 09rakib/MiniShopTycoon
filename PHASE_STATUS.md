@@ -1,63 +1,63 @@
-# Phase status — 19 October 2026
+# Phase status — 22 October 2026
 
-Current checkpoint: **Transformation Phase G — machine upgrades and stocker complete.**
+Current checkpoint: **Transformation Phase H — fries machine and furniture complete.**
 
-- User authorized G after Phase F (594ff82). Original grocery Phases 0–3 and all
-  burger production/carry/counter/customers/cash features remain preserved.
-- Independent speed/capacity/price levels, five tiers each; current/next values
-  and wallet costs shown in Menu → Burger machine & stocker. Machine +UP/MAX
-  indicator. Speed starts a fresh real timer cycle; capacity preserves all stock;
-  new price applies at the next successful checkout, never retroactively.
-- One stocker hired for 300 wallet coins, distinct blue cap/uniform. Walks at
-  135 units/sec along a configured clear aisle, carries at most two burgers,
-  shares the player's actual proximity/bounded inventory transaction code.
-- Full counter retains employee's carried items. Partial delivery retains the
-  remainder and waits for space. No stock teleport, instant restocking or wages.
-- Menus block player input while business continues. App pause/focus loss freezes
-  production/customers/stocker. Characters ignore each other but collide with
-  solid world fixtures, preserving player/customer/stocker paths.
-- Single validated economy purchase method uses spendable wallet only; maximum
-  tiers, insufficient funds, unknown purchases and expense ceiling reject safely.
-  Purchases persist before effect signals/spawn; write failure restores wallet,
-  tiers and hire state. Staff transfers persist immediately and mark dirty for
-  retry if save fails.
-- Schema 7 adds operations {hired, carried, spending} and independent capacity/
-  price levels. Old schemas 1–6 migrate; prior machine level retains matching
-  speed/capacity, price defaults to base, no employee. Old wallet/inventory/
-  upgrades/cash remain intact. Employee's carried food survives relaunch.
-- 128 economy + 34 world + 32 production + 44 handling + 39 customers + 34 cash
-  + 69 operations = **380 checks passed, zero failures**; final logs clean.
-- New checks cover upgrades/max/insufficient funds, no spending pending cash,
-  single hire, save rollback/migration, shared staff/player contention, 10,000
-  full-counter attempts, real timer, visible travel/partial delivery, saved staff
-  carry and full timed production → stocker → sale → proximity cash loop.
-- Workshop/default/hired and stocker-carry render captures inspected at 480×900
-  and 360×640. APK v0.9.0/code 9 debug exported and signature/manifest verified.
+- User approved H after published G (dff71d8). Existing grocery Phases 0–3 and
+  burger world/production/carry/customers/cash/upgrades/stocker remain intact.
+- Added unlockable fries press: 400 wallet coins, 3-second production, storage 8,
+  selling price 16 and four dedicated fries trays at the existing serving counter.
+- ProductionState and ProductionController are reused by both machines, not
+  copied scripts. Locked machine has no world fixture, stock or active timer.
+- Player collects at FRIES and delivers at DELIVER. Maximum two items, one product
+  type per trip; existing carried food is retained when another type is rejected.
+  Burger and fries inventories stay separate. Partial/full shelves preserve held
+  food. Shared transfer code enforces source stock, capacity and proximity.
+- Customers buy available counter food; alternate when both shelves have stock.
+  One live visit buys exactly once across all products. Payment uses the selected
+  product price and enters the same pending cash ledger, collected as before.
+- 180-coin table + two chairs bundle adds seating capacity 2 in a fixed valid bay.
+  Purchased geometry is solid and deterministic. Dining behavior is later scope;
+  no unimplemented seating bonus or extra cash is granted. Stocker handles burgers.
+- Menu → New machines & furniture shows costs, owned states and seating. Purchase
+  funds use wallet only, reject repeats, persist before object creation and roll
+  back on storage failure. Original visuals show fries machine/cups/carried cups,
+  counter product counts, furniture and collection marker.
+- Schema 8 adds expansion {unlocked, furniture, spending, production, handling}.
+  Schemas 1–7 retain previous progress, initialize expansions locked/unowned.
+  Validate all fields before applying any; reject locked stock, bad capacities,
+  invalid flags and saved mixed product carrying. Sale rotation also persists.
+- 128 economy + 34 world + 32 production + 44 handling + 39 customer + 34 cash
+  + 69 operations + 50 expansion = **430 checks passed, zero failures**.
+- Tests include 10,000 rejected full-fries-counter attempts, 10,000 complete fries
+  production/carry/delivery/sale cycles, payment/rotation/last-stock contention,
+  migration, failure rollback, actual timers/buttons/customer/cash, placement
+  margins, furniture collision, relaunch and non-duplicating world recreation.
+- Rendered/inspected expansion panel, carried fries and expanded shop at 480×900
+  and 360×640. See test_report_phaseH.md for actual APK verification and hash.
 
 ## Checkpoint handoff
 
-Artifact: builds/MiniShopTycoon-phaseG.apk; see test_report_phaseG.md for size,
-hash and verification. Phase F was successfully installed/launched on the phone
-in the prior turn. Phone now absent from ADB USB/wireless discovery, so G was not
-installed or tested on-device. Update the existing app without uninstall/data reset.
-Commit/push all tested source/assets/docs and verify remote hash. Stop before H
-for feedback; user requires a GitHub push at the end of each completed phase.
+APK: builds/MiniShopTycoon-phaseH.apk, v0.10.0/code 10. Update the existing app
+without uninstalling/clearing data. G and H were not installed on the phone in
+this work; F was installed/launched earlier. Device touch/migration/performance
+acceptance remains pending. Commit/push this completed phase, verify remote hash,
+then stop before I for feedback. Keep the user-required automatic phase pushes.
 
 ## Manual acceptance pending
 
-Menu → Burger machine & stocker. Try the 180-coin speed, 120-coin capacity,
-140-coin price upgrades or hire the 300-coin stocker. Each must spend wallet once,
-show new actual values and persist. Stocker physically carries at most two and
-waits with leftovers at a full counter. Collect customer cash yourself as before.
-Restart while employee carries food: hired worker and exact carried amount remain.
-Test small-screen touch, Back/menu, Home/resume and airplane mode on phone.
+Collect cash → Menu → New machines & furniture → unlock fries/table set.
+At FRIES collect two, walk to DELIVER, observe correct fries shelf. Let customers
+buy both foods at their prices, then collect exact combined cash. Full fries
+shelf keeps leftovers; another product pickup cannot overwrite held food.
+Restart retains purchased objects, inventories, wallet and old upgrades/staffer.
+Verify customer, player and stocker routes, phone controls, Back/Home and airplane
+mode. Table creates two seats; customers do not dine in this checkpoint.
 
 ## Limits / next phases
 
-One useful stocker only; cashier/general assistant, additional food machines,
-furniture and content expansion remain later scope. No staff wages or dismissal
-this checkpoint. Staff uses fixed valid aisle; future placement must preserve it.
-No offline work/income. Worker/customer/staff positions restart safely; inventories
-persist. Production-only writes batch five seconds; sudden kill can lose latest
-unsaved production. No measured Android FPS/memory/heat or low-end claims.
-H additional machines/furniture; I polish; J full lifecycle; K release/performance.
+Fries has one configured tier; burger upgrades remain available. Stocker transports
+burgers only. Furniture is a fixed bundle, no drag/dining yet. Character positions
+restart safely; food persists. No offline production/work/sales. Production-only
+saves batch five seconds; sudden kill can lose newest unsaved production.
+I visuals/audio/UI polish; J comprehensive save/lifecycle verification; K measured
+Android performance/release. Do not begin I without user continuation/approval.

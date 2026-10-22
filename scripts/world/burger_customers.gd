@@ -74,7 +74,7 @@ func _physics_process(_delta: float) -> void:
 			BurgerCustomer.State.WAITING_FOR_STOCK:
 				if visitor.elapsed >= float(config["wait_seconds"]):
 					_leave(visitor)
-				elif queue[0] == visitor and visitor.at_target() and Game.economy.handling.counter > 0:
+				elif queue[0] == visitor and visitor.at_target() and Game.economy.counter_food() > 0:
 					visitor.state = BurgerCustomer.State.BUYING
 					visitor.target = point("checkout")
 					visitor.elapsed = 0

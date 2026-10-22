@@ -1,0 +1,37 @@
+{
+  "machine_cost": 400,
+  "furniture_cost": 180,
+  "seats": 2,
+  "fixtures": [
+    {
+      "id": "fries_machine",
+      "type": "fries",
+      "name": "Fries machine",
+      "rect": [
+        100,
+        490,
+        145,
+        90
+      ],
+      "hint_point": [
+        170,
+        620
+      ]
+    },
+    {
+      "id": "dining_set",
+      "type": "furniture",
+      "name": "Table and 2 chairs",
+      "rect": [
+        100,
+        735,
+        140,
+        110
+      ],
+      "hint_point": [
+        270,
+        790
+      ]
+    }
+  ]
+}
