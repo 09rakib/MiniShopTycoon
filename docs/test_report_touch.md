@@ -57,12 +57,18 @@ under 80 logical pixels in tests; no fixed action controls occupy bottom world.
 
 ## Phone / limits
 
-Initial wireless discovery found vivo V2405A, but connection disappeared before
-install, so adb install -r returned device not found. Restarted ADB and checked USB
-interfaces/discovery; no active debugging device was listed. User re-enabled
-connection; current wireless IP/port requested because discovery remained empty.
-Installation/launch is pending a working connection; prior Phase H was installed.
-No claim of this patch running on phone until actual successful update and launch.
+Initial wireless connection dropped before installation. User supplied the current
+debugging endpoint; direct reconnection succeeded. adb install -r then returned
+Success, exported launcher start returned Status: ok, installed version confirmed
+0.10.1/code 11, and the game process remained running on vivo V2405A (PD2405),
+physical screen 1260×2800. No uninstall or data clearing was performed.
+
+Inspected actual phone screenshot: compact wallet/status HUD, no idle joystick,
+existing game progress and automatic service feedback. A single Android injected
+DOWN/MOVE/UP gesture in gameplay displayed the faint floating joystick at its
+starting point and moved the worker/camera. UP was sent before handoff. Phone
+screenshots remain local in ignored builds, never committed. A transient ADB
+daemon restart interrupted one version query; retry confirmed code 11 successfully.
 
 Scripted input verifies logic but does not replace physical user feel/multitouch
 review. No measured FPS/memory/heat, low-end or airplane-mode test claimed here.

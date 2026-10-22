@@ -32,7 +32,10 @@ Current checkpoint: **User-requested touch/control update on completed Phase H.*
 ## Handoff
 
 Artifact: builds/MiniShopTycoon-touch-update.apk. See test_report_touch.md for
-exact verification and phone status. Update without uninstalling or clearing data.
+exact verification and phone status. v0.10.1/code 11 was installed with adb -r
+and launched successfully on the connected vivo V2405A. Compact/idle HUD and one
+injected floating touch gesture were inspected on its 1260×2800 display. No
+uninstall/data clearing; device screenshots stay local and ignored.
 Commit/push the user-requested patch and verify remote hash, as with phase work.
 Wait for user testing; do not silently expand into the remaining I/J/K scope.
 

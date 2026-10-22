@@ -36,7 +36,10 @@ test.cmd flags script/runtime errors as failures. Touch tests route actual event
 check finger ownership/UI blocking/opacity/HUD height, drive real worker movement
 and real 150 ms pickup/service/cash timers, limits and persistent exact quantities.
 Idle/floating/auto pickup/serve/compact layouts rendered and inspected at 480×900
-and 360×640. See test_report_touch.md for actual APK and phone verification.
+and 360×640. On vivo V2405A, adb update succeeded, v0.10.1/code 11 launched,
+compact HUD/hidden idle joystick and one injected floating touch gesture were
+inspected. Physical feel/multitouch user review remains pending. See
+test_report_touch.md for actual APK and phone verification.
 
 No full Phase I audio/polish, measured FPS, low-end/heat or release acceptance
 claim. Further phase work waits for user continuation.
