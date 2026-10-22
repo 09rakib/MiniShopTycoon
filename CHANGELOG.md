@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.0 — Transformation Phase J — 23 October 2026
+
+- Audited schema 1–8 migrations, recovery files, reset, progression and lifecycle.
+- Block writes when a recovery candidate needs a newer game; clear stale blocked
+  state/messages after a successful reload.
+- Prepare reset replacement first, archive copies, then commit primary and reset
+  live state. Failed preparation/archive leaves original progress intact.
+- Roll back failed player/staffer food transfers, customer stock/cash/ticket sales
+  and grocery buy/sell/upgrade mutations; recovered storage can retry safely.
+- Added 76 checks including 20 disk-backed journeys with reload while carrying;
+  all 585 checks pass, clean logs. Schema remains 8, no offline income.
+- Verified debug APK v0.12.0/code 13. User deferred physical phone checks; no
+  Phase K performance/release claim. See docs/test_report_phaseJ.md.
+
 ## 0.11.0 — Transformation Phase I — 22 October 2026
 
 - Added pooled quantity/ring feedback, chef/stocker handling poses, machine steam

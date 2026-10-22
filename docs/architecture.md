@@ -331,3 +331,19 @@ Menu and sheets fade in over 160ms; visibility and movement exclusion take effec
 immediately. Closing kills pending entrance tweens and hides immediately, retaining
 the floating joystick and automatic interaction guards. Sound controls are in the
 menu so the two-line gameplay HUD stays compact.
+
+## Phase J persistence and failures
+
+LocalSave checks supported schemas before considering fallback; a newer-schema
+candidate blocks writes. Fresh load attempts clear stale blocked/messages. Reset
+prepares progress.reset.json, copies original primary/backup/temp to before-reset
+archives, commits the fresh primary, removes obsolete recovery candidates, then
+resets live state. Until the commit, original progress remains authoritative;
+prepared reset files are never normal recovery candidates.
+
+Game rolls back failed player/staff food writes using a small stock/carry/counter
+checkpoint and emits refresh after restoring all ledgers. Failed customer sales
+restore both shelves, aggregate sales and the live unpaid ticket map. Grocery
+buy/sell/upgrades restore only affected fields. Existing production/controller
+instances remain stable. Cash and operation/expansion purchases retain their
+earlier rollback rules. Success feedback/presentation follows durable success.

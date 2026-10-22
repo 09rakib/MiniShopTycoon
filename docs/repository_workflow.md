@@ -14,6 +14,7 @@ Never force-push or overwrite unrelated remote work; inspect remote state first.
 If authentication/network blocks a push, preserve the local commit and report
 the exact blocker. Do not claim an upload succeeded without remote verification.
 
-Current scope: Phase I, authorized by the user's next-phase request after the
-touch update (b9fc270 and phone verification 26a6dd5). Complete visual/audio polish,
-test/build/update the connected phone, document, commit/push and stop before J.
+Current scope: Phase J, authorized by the user's next-phase request on 23 October
+after Phase I (5e57af0, phone verification 93dda97). Complete save/lifecycle tests,
+fixes, APK and docs; commit/push, verify remote hash and stop before K. The user
+explicitly deferred this version's phone testing: finish APK and GitHub first.

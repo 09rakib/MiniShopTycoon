@@ -219,7 +219,7 @@ func _build_menu() -> void:
 	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
 	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
 	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.11.0 • Fully offline", 14)
+	var note: Label = _label("Your saved grocery business stays available here.\nv0.12.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()

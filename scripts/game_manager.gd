@@ -20,10 +20,18 @@ func _ready() -> void:
 	get_tree().auto_accept_quit = false
 
 func buy(id: String, quantity: int = 0) -> void:
+	var previous_coins: int = economy.coins
+	var previous_spending: int = economy.stock_spending
+	var previous_stock: int = int(economy.stock.get(id, 0))
 	var requested: int = int(economy.catalog["stock_batch"]) if quantity == 0 else quantity
 	var error: String = economy.buy(id, requested)
 	if error.is_empty():
 		var saved: bool = persist()
+		if not saved:
+			economy.coins = previous_coins
+			economy.stock_spending = previous_spending
+			economy.stock[id] = previous_stock
+			return
 		changed.emit()
 		if saved:
 			feedback.emit("Shelf stocked. Customers check out automatically!")
@@ -31,21 +39,38 @@ func buy(id: String, quantity: int = 0) -> void:
 		feedback.emit(error)
 
 func sell(id: String) -> bool:
+	var previous: Array = [economy.coins, economy.revenue, economy.cost_of_goods, economy.customers, economy.stock.get(id, 0)]
 	var before_level: int = economy.shop_level()
 	if not economy.sell(id):
 		return false
-	persist()
+	if not persist():
+		economy.coins = previous[0]
+		economy.revenue = previous[1]
+		economy.cost_of_goods = previous[2]
+		economy.customers = previous[3]
+		economy.stock[id] = previous[4]
+		return false
 	changed.emit()
 	if economy.shop_level() > before_level:
 		level_up.emit(economy.shop_level())
 	return true
 
 func buy_upgrade(id: String) -> void:
+	var previous_coins: int = economy.coins
+	var previous_spending: int = economy.upgrade_spending
+	var previous_upgrades: Dictionary = economy.shelf_upgrades.duplicate()
+	var previous_unlocks: Array[String] = economy.retained_unlocks.duplicate()
 	var error: String = economy.buy_upgrade(id)
 	if not error.is_empty():
 		feedback.emit(error)
 		return
 	var saved: bool = persist()
+	if not saved:
+		economy.coins = previous_coins
+		economy.upgrade_spending = previous_spending
+		economy.shelf_upgrades = previous_upgrades
+		economy.retained_unlocks = previous_unlocks
+		return
 	changed.emit()
 	if saved:
 		feedback.emit("Shelf upgraded! +%d capacity for every product in this group." % int(economy.upgrade_rules.find(id)["capacity_per_level"]))
@@ -58,11 +83,15 @@ func persist() -> bool:
 	return true
 
 func interact_burgers(action: String, worker_position: Vector2) -> bool:
+	var previous: Dictionary = _food_checkpoint()
 	var result: Dictionary = economy.transfer_food(action, worker_position)
 	if int(result["amount"]) <= 0:
 		feedback.emit(result["error"])
 		return false
 	var saved: bool = persist()
+	if not saved:
+		_rollback_food(previous)
+		return false
 	handling_changed.emit()
 	if saved:
 		var amount: int = int(result["amount"])
@@ -71,10 +100,21 @@ func interact_burgers(action: String, worker_position: Vector2) -> bool:
 	return true
 
 func sell_burger(ticket: int) -> bool:
+	var previous: Dictionary = economy.burger_sales.snapshot()
+	var tickets: Dictionary = economy.burger_sales.tickets.duplicate()
+	var burger_counter: int = economy.handling.counter
+	var fries_counter: int = economy.expansion.handling.counter
 	var amount: int = economy.burger_sales.purchase(ticket, economy.handling, economy.production, economy.expansion.handling if economy.expansion.unlocked else null, economy.expansion.production if economy.expansion.unlocked else null)
 	if amount == 0:
 		return false
 	var saved: bool = persist()
+	if not saved:
+		economy.handling.counter = burger_counter
+		economy.expansion.handling.counter = fries_counter
+		economy.burger_sales.restore(previous)
+		economy.burger_sales.tickets = tickets
+		handling_changed.emit()
+		return false
 	handling_changed.emit()
 	burger_sale_completed.emit(amount)
 	if saved:
@@ -144,15 +184,37 @@ func purchase_expansion(kind: String) -> bool:
 	return true
 
 func stocker_transfer(action: String, worker_position: Vector2) -> int:
+	var previous: Dictionary = _food_checkpoint()
 	var result: Dictionary = economy.handling.transfer(action, worker_position, economy.production, economy.operations)
 	var amount: int = int(result["amount"])
 	if amount > 0:
 		production_dirty = true
 		var saved: bool = persist()
+		if not saved:
+			_rollback_food(previous)
+			return 0
 		handling_changed.emit()
 		if saved:
 			presentation.emit("staff_pickup" if action == "pickup" else "staff_serve", worker_position, amount)
 	return amount
+
+func _food_checkpoint() -> Dictionary:
+	return {"stock": economy.production.stock, "carried": economy.handling.carried,
+		"counter": economy.handling.counter, "fries_stock": economy.expansion.production.stock,
+		"fries_carried": economy.expansion.handling.carried, "fries_counter": economy.expansion.handling.counter,
+		"staff_carried": economy.operations.carried, "dirty": production_dirty}
+
+func _rollback_food(previous: Dictionary) -> void:
+	economy.production.stock = previous["stock"]
+	economy.handling.carried = previous["carried"]
+	economy.handling.counter = previous["counter"]
+	economy.expansion.production.stock = previous["fries_stock"]
+	economy.expansion.handling.carried = previous["fries_carried"]
+	economy.expansion.handling.counter = previous["fries_counter"]
+	economy.operations.carried = previous["staff_carried"]
+	production_changed.emit()
+	handling_changed.emit()
+	production_dirty = previous["dirty"]
 
 func restart() -> void:
 	if storage.reset_with(economy):

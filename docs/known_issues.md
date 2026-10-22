@@ -1,4 +1,4 @@
-# Known limits — Phase I
+# Known limits — Phase J
 
 - Floating joystick stays centered on the initial touch for one gesture; next
   touch relocates it. Idle/release/cancel/menu/focus loss draws nothing. Buttons
@@ -22,3 +22,7 @@
 - Exact phone install/runtime observations are recorded in test_report_touch.md;
   scripted touch checks do not replace the user's physical feel/multitouch review.
 - Phase I artifact/device results are recorded in test_report_phaseI.md.
+- Phase J fixes save/reset/transaction failure paths and passes 585 checks. Phone
+  Home/relaunch/force-kill and actual low-storage checks were deferred by the user;
+  this version has not been installed. See test_report_phaseJ.md. Automated blocked
+  storage tests do not emulate every operating-system or filesystem failure.

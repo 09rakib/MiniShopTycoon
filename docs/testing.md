@@ -50,3 +50,14 @@ New desktop previews cover quantity effects, bag/thanks, patience and sound menu
 including 360×640. Listen on the phone for comfort, toggle sound/relaunch and test
 Home/resume/rapid menu transitions while carrying. No measured FPS, low-end/heat
 or release acceptance claim. Stop before Phase J until user continuation.
+
+## Phase J verification
+
+Phase J was subsequently authorized. All 585 checks pass across eleven suites:
+509 earlier checks plus 76 lifecycle checks. Schema 1–8 disk roundtrips, invalid
+nested state, backup/temp recovery, future-save guards, safe reset failure,
+transaction rollback/retry, progression and twenty reload-while-carrying journeys
+are covered. Actual controller notification injection verifies pause/focus guards.
+See test_report_phaseJ.md for artifact/hash and limits. The user deferred physical
+phone checks; no claim of Android kill/low-storage/performance verification.
+Next phase is K, requiring user continuation.

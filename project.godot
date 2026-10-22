@@ -1,9 +1,9 @@
-; Mini Shop Tycoon — Transformation Phase I
+; Mini Shop Tycoon — Transformation Phase J
 config_version=5
 
 [application]
 config/name="Mini Shop Tycoon"
-config/version="0.11.0"
+config/version="0.12.0"
 run/main_scene="res://scenes/playable_shop.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
