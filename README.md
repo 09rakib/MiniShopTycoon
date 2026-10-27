@@ -1,7 +1,7 @@
 # Mini Shop Tycoon
 
 An offline portrait Android grocery shop game built in Godot 4.7.2 / GDScript.
-Current checkpoint: **Phase K — unsigned release candidate (v0.13.0)**.
+Current checkpoint: **Phase K — unsigned release candidate (v0.13.1)**.
 Launch straight into an original raised 2D burger shop. Move the chef with the
 floating joystick: touch and drag anywhere in gameplay (or WASD/arrows on desktop).
 Joystick starts hidden, appears faintly at your touch and hides on release. Camera follows within the room;
@@ -52,7 +52,7 @@ Failed saves now roll back player/staffer transfers, customer sales and grocery
 purchases/sales/upgrades. Unsupported newer saves block writes instead of falling
 back to an older backup. Explicit reset prepares fresh progress before replacing
 the primary and archives old files; failed preparation leaves live progress intact.
-595 automated checks pass; see docs/test_report_phaseK.md. Phone testing of this
+605 automated checks pass; see docs/test_report_toolchain.md. Phone testing of this
 version is deferred at the user's request; Phase I v0.11.0 was installed previously.
 
 Unsigned optimized APK/AAB candidates are separate local artifacts. Run

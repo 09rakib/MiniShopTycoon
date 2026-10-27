@@ -1,4 +1,4 @@
-# Release candidate handoff — 23 October 2026
+# Release candidate handoff — refreshed 27 October 2026
 
 This is an **unsigned candidate**, as requested by the user. No new signing key
 was created, no account was accessed and nothing was uploaded to a store. Debug
@@ -12,7 +12,8 @@ with another key cannot update that installation; preserve test progress first.
 - `powershell -File build-release.ps1 -Format aab`: unsigned Gradle App Bundle.
 
 Matching Godot 4.7.2 templates, JDK and Android SDK are required. The AAB command
-installs the matching local Android build template if absent. Generated android/,
+extracts the matching local Android build template if absent, then runs
+prepare-android-build.ps1 before export. Generated android/,
 Gradle output, APK/AAB files, keystores and credentials are ignored by Git. The
 wrapper rejects missing/stale artifacts and engine errors, then runs the native
 library/ZIP content audit. No private signing data belongs in export_presets.cfg.
@@ -21,12 +22,16 @@ validates AAB structure. Download its all-in-one JAR from the official
 [bundletool releases](https://github.com/google/bundletool/releases/tag/1.18.3)
 to tools/bundletool-all-1.18.3.jar; it is deliberately not committed.
 
-The supplied Godot Gradle template uses AGP 8.6.1/Gradle 8.11.1 and emits a
-compileSdk 36 compatibility warning (tested by that plugin only through 35),
-manifest replacement warnings and an inability-to-strip-native-libraries notice.
-The candidate builds/validates, but the owner should resolve/retest this toolchain
-before store acceptance. AGP 8.11 supports API 36 and requires Gradle 8.13;
-upgrading needs a matching template integration test, not warning suppression.
+The supplied template defaults to AGP 8.6.1/Gradle 8.11.1. Preparation now pins
+AGP 8.11.1/Gradle 8.13 (official SHA256 checked), NDK 28.2.13676358 and SDK
+build-tools 36.0.0. Install that NDK before using the wrapper. It uses project-local
+non-persistent/plain-console execution; global Gradle settings are not changed.
+Base manifest renderer/editor metadata lets export overlays replace real values.
+The old API compatibility, missing metadata and native stripping warnings are
+resolved. Template Groovy DSL deprecations for future Gradle 10 and the existing
+experimental path-check notice remain; no warning suppression is used.
+See test_report_toolchain.md for v0.13.1/code 15 evidence. AGP 8.11 supports API 36
+and requires Gradle 8.13.
 [Official AGP 8.11 compatibility](https://developer.android.com/build/releases/agp-8-11-0-release-notes).
 
 ## Sign locally when the owner is ready
@@ -63,7 +68,7 @@ and run internal testing with the owner-approved upload key before any productio
 release. Package name uniqueness, developer identity/account verification, privacy
 URL/contact, content rating, audience and store listing need owner completion.
 
-## Current primary guidance checked
+## Store guidance checked 23 October; toolchain guidance rechecked 27 October
 
 - New mobile apps/updates must target API 36 from 31 August 2026. Candidate targets
   36. [Google Play target API requirements](https://support.google.com/googleplay/android-developer/answer/11926878).

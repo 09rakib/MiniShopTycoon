@@ -27,6 +27,8 @@ Original numbered Phases 0–3 remain preserved. New A–K phases control expans
   desktop benchmark, unsigned release APK/AAB and policy/signing handoff prepared.
   User explicitly deferred phone measurements and chose unsigned artifacts:
   Android performance/device acceptance and owner signing remain release gates.
+  Follow-up v0.13.1 on 27 October pins the compatible build toolchain, resolves
+  original compatibility/manifest/stripping warnings and adds ten setup checks.
 
 At each approved phase: inspect → implement → test/fix → update docs/status →
 commit and push to https://github.com/09rakib/MiniShopTycoon → stop for feedback.

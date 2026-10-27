@@ -1,5 +1,8 @@
 # Phase K candidate verification — 23 October 2026
 
+Historical v0.13.0/code 14 snapshot. Current v0.13.1 artifacts reuse the local
+filenames; see test_report_toolchain.md and artifacts_phaseK.json for latest hashes.
+
 User authorized continuation after J, then explicitly deferred phone measurements
 and requested unsigned release candidates plus signing instructions. This is the
 candidate checkpoint; Android performance/signing/store acceptance remain pending.

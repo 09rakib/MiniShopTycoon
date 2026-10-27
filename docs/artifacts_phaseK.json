@@ -2,21 +2,21 @@
   {
     "artifact": "MiniShopTycoon-phaseK.apk",
     "bytes": 57777373,
-    "sha256": "4f3bbd005ad944b06bcfb911e0875c23ee7b94aa0cdf4e059524958c6ee5442d",
+    "sha256": "5769236407069435a9d60c7dc9f5980a4c44128a7855bd183685aefbe8ae1b7d",
     "bundle": false,
     "errors": []
   },
   {
     "artifact": "MiniShopTycoon-phaseK-unsigned.apk",
     "bytes": 52551179,
-    "sha256": "6e2f258a496873c4b4dc671a8a4d316e5444beda5c7061556bbc60208c6da1d0",
+    "sha256": "99ed4097a8aa4a8dac86c8f8119bca67ce8a3c8a43aa1df8eb5f9a9b63926108",
     "bundle": false,
     "errors": []
   },
   {
     "artifact": "MiniShopTycoon-phaseK-unsigned.aab",
-    "bytes": 52533502,
-    "sha256": "d01fe8eacb03ef65da75a68f750c618c1dfa78624f21b6ddefd67444cfab2bd1",
+    "bytes": 52530994,
+    "sha256": "f098e9370d85d8917492baddb0a68c7d4732d38cb10431c6e40118ae7fdde028",
     "bundle": true,
     "errors": []
   }

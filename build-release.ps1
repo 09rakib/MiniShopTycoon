@@ -4,12 +4,20 @@ Set-Location -LiteralPath $PSScriptRoot
 $env:APPDATA = Join-Path $PSScriptRoot 'tools/profile'
 $env:LOCALAPPDATA = Join-Path $PSScriptRoot 'tools/local-profile'
 if (-not $env:JAVA_HOME) { $env:JAVA_HOME = 'C:\Program Files\Android\Android Studio\jbr' }
+$androidSdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } else { Join-Path $env:USERPROFILE 'AppData/Local/Android/Sdk' }
 $engine = Join-Path $PSScriptRoot 'tools/godot/Godot_v4.7.2-stable_win64_console.exe'
 $preset = if ($Format -eq 'aab') { 'Android Bundle Candidate' } else { 'Android Release Candidate' }
 $artifact = "builds/MiniShopTycoon-phaseK-unsigned.$Format"
 $arguments = @('--headless', '--path', '.', '--export-release', $preset, $artifact)
-if ($Format -eq 'aab' -and -not (Test-Path -LiteralPath 'android/build/build.gradle')) {
-    $arguments = @('--install-android-build-template') + $arguments
+if ($Format -eq 'aab') {
+    if (-not (Test-Path -LiteralPath 'android/build/build.gradle')) {
+        $template = Join-Path $env:APPDATA 'Godot/export_templates/4.7.2.stable/android_source.zip'
+        if (-not (Test-Path -LiteralPath $template)) { throw 'Install matching Godot 4.7.2 Android templates first.' }
+        Expand-Archive -LiteralPath $template -DestinationPath 'android/build' -Force
+        [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'android/.build_version'), "4.7.2.stable`n")
+        [IO.File]::WriteAllText((Join-Path $PSScriptRoot 'android/build/.gdignore'), '')
+    }
+    & (Join-Path $PSScriptRoot 'prepare-android-build.ps1') -SdkRoot $androidSdk
 }
 # A failed export must not be mistaken for a stale successful artifact.
 if (Test-Path -LiteralPath $artifact) { Remove-Item -LiteralPath $artifact }

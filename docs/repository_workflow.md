@@ -19,3 +19,7 @@ explicitly deferred phone performance tests and selected unsigned candidates plu
 signing instructions. Publish source/tests/docs and verify the remote hash; APK/AAB,
 Gradle generated files and validators stay local/ignored. Do not generate a release
 key or publish to a store. Device acceptance and owner signing remain outstanding.
+
+27 October continuation after 005d57c: finish the toolchain compatibility follow-up
+as v0.13.1/code 15, including prepared-template tests and rebuilt unsigned artifacts.
+Commit/push this checkpoint as usual; phone/signing deferrals remain in effect.

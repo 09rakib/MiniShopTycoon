@@ -75,3 +75,12 @@ with the local profile to capture desktop rendered idle/busy/menu samples. Check
 before/after JSON is Windows/GTX 1650 data with a 60 FPS cap, not Android evidence.
 Candidate audits, bundletool/native alignment checks, hashes, toolchain warnings
 and remaining device/signing gates are recorded in test_report_phaseK.md.
+
+## Android toolchain follow-up
+
+The existing 595 Godot checks pass after the v0.13.1 version refresh. Ten additional
+PowerShell checks validate template preparation against isolated generated files:
+explicit tool versions, distribution checksum, preserved settings/XML, byte-stable
+rerun and failure-before-write for missing NDK/unknown formats. test.cmd now invokes
+both runners (605 total checks). End-to-end bundle verification and remaining
+notices are recorded in test_report_toolchain.md; no physical device claim.

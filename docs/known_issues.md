@@ -30,6 +30,7 @@
   acceptance remain deferred. Desktop benchmark is not Android FPS evidence.
 - Unsigned candidates cannot be installed directly. Keep the debug APK for the
   existing debug phone app; use owner signing for release. No key was generated.
-- Godot's supplied Gradle template warns about compileSdk 36 with AGP 8.6.1 and
-  manifest replacement/native stripping. See release_preparation.md; do not label
-  the candidate production-ready solely because structural validation passed.
+- v0.13.1 resolves the old API compatibility/manifest/strip warnings through a
+  pinned prepared toolchain. Future Gradle 10 Groovy DSL deprecations and the
+  template's experimental path-check notice remain. See release_preparation.md;
+  structural validation alone does not establish production readiness.

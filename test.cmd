@@ -50,6 +50,8 @@ if not errorlevel 1 set "testResult=1"
 if errorlevel 1 set "testResult=1"
 findstr /C:"SCRIPT ERROR:" /C:"ERROR:" tools\performance-test-run.log >nul
 if not errorlevel 1 set "testResult=1"
+powershell -NoProfile -File tests/test_android_setup.ps1
+if errorlevel 1 set "testResult=1"
 if not "%testResult%"=="0" echo Tests failed. See tools\*-test-run.log.
 pause
 exit /b %testResult%

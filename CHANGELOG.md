@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.13.1 — Android toolchain follow-up — 27 October 2026
+
+- Pin API-36-compatible AGP 8.11.1 and Gradle 8.13 with official distribution SHA256.
+- Use explicit installed NDK 28.2.13676358/build-tools 36.0.0 for bundle processing.
+- Prepare real base manifest metadata for exporter overlays instead of suppressing
+  missing-replacement warnings. Add reproducible template preparation before export.
+- Add ten setup tests for version/checksum pinning, preservation, idempotence and
+  failure without partial writes. 595 gameplay/resource checks still pass.
+- Rebuild unsigned candidates; phone testing and signing remain deferred.
+
 ## 0.13.0 — Phase K candidate checkpoint — 23 October 2026
 
 - Cached chef and fixture drawing styles instead of allocating resources every redraw.

@@ -365,3 +365,11 @@ Generated android/ content, tooling, credentials and APK/AAB outputs are ignored
 audit_android.py checks ZIP CRC, excluded/private content, ARM64 ELF load alignment
 and AAB structure. bundletool validates the bundle; signing/device checks remain
 separate release gates, not runtime gameplay behavior.
+
+The v0.13.1 follow-up adds prepare-android-build.ps1: it pins generated template
+AGP/Gradle/NDK/build-tools, verifies the Gradle distribution checksum and provides
+fallback renderer/editor metadata in the base manifest. The generated exporter
+overlay can then replace real declarations. Unrelated XML/settings remain intact;
+missing tools or unexpected template structure stop preparation before file writes.
+build-release.ps1 extracts the matching local template when absent, then prepares
+it before exporting. No generated Gradle tree or credentials are committed.
