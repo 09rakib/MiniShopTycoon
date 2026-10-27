@@ -1,5 +1,9 @@
 # Known limits — Phase K candidate
 
+Current app is v0.14.0, containing only the playable burger/fries shop. The retired
+grocery screens/navigation/assets have been deleted. Legacy save fields remain
+for compatibility; old docs/previews are historical checkpoints.
+
 - Floating joystick stays centered on the initial touch for one gesture; next
   touch relocates it. Idle/release/cancel/menu/focus loss draws nothing. Buttons
   and management overlays are excluded from movement capture.

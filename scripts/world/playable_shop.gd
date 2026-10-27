@@ -1,5 +1,5 @@
 extends Node2D
-## Playable burger shop. Previous grocery gameplay remains intact in a sheet.
+## Current playable food shop with no retired grocery UI.
 var world: ShopWorld
 var joystick: ShopJoystick
 var hud: Control
@@ -7,8 +7,6 @@ var wallet_label: Label
 var level_label: Label
 var location_label: Label
 var menu: Control
-var legacy_layer: Control
-var legacy: Control
 var suspended: bool = false
 var fries_controller: ProductionController
 var expansion_panel: ShopExpansionPanel
@@ -31,7 +29,6 @@ var menu_tween: Tween
 var sheet_tween: Tween
 
 func _ready() -> void:
-	Game.running = false
 	world = ShopWorld.new()
 	add_child(world)
 	audio = ShopAudio.new()
@@ -216,10 +213,7 @@ func _build_menu() -> void:
 	buttons.add_child(sound_button)
 	buttons.add_child(_button("Burger machine & stocker", _open_operations))
 	buttons.add_child(_button("New machines & furniture", _open_expansion))
-	buttons.add_child(_button("Inventory • grocery", _open_legacy.bind("inventory")))
-	buttons.add_child(_button("Shelf upgrades & goals", _open_legacy.bind("upgrades")))
-	buttons.add_child(_button("Previous grocery shop", _open_legacy.bind("shop")))
-	var note: Label = _label("Your saved grocery business stays available here.\nv0.13.1 • Fully offline", 14)
+	var note: Label = _label("v0.14.0 • Fully offline", 14)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	buttons.add_child(note)
 	menu.hide()
@@ -251,10 +245,6 @@ func _build_menu() -> void:
 	workshop_center.add_child(expansion_panel)
 	expansion_panel.hide()
 	operations_layer.hide()
-	legacy_layer = Control.new()
-	legacy_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	hud.add_child(legacy_layer)
-	legacy_layer.hide()
 
 func _refresh() -> void:
 	wallet_label.text = "%d coins" % Game.economy.coins
@@ -272,7 +262,7 @@ func _check_nearby() -> void:
 	_update_location()
 
 func _try_collect_cash() -> void:
-	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or legacy_layer.visible or Time.get_ticks_msec() < cash_retry_at:
+	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or Time.get_ticks_msec() < cash_retry_at:
 		return
 	if Game.economy.burger_sales.uncollected_cash <= 0 or not Game.economy.cash_pickup.is_near(world.player.position):
 		return
@@ -280,7 +270,7 @@ func _try_collect_cash() -> void:
 		cash_retry_at = Time.get_ticks_msec() + int(float(Game.economy.cash_pickup.config["retry_seconds"]) * 1000)
 
 func _update_location() -> void:
-	if menu.visible or legacy_layer.visible or suspended:
+	if menu.visible or suspended:
 		location_label.text = ""
 		return
 	var economy: ShopEconomy = Game.economy
@@ -302,7 +292,7 @@ func _update_location() -> void:
 		location_label.text = "Walk to the counter to serve" if held > 0 else "Walk to CASH to collect" if economy.burger_sales.uncollected_cash > 0 else "Touch & drag anywhere"
 
 func _auto_transfer_food() -> void:
-	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible or legacy_layer.visible:
+	if suspended or get_tree().paused or world.player.controls_blocked or menu.visible:
 		return
 	# Re-read position on every poll; a previous hint never authorizes a transfer.
 	var current: String = Game.economy.food_action(world.player.position)
@@ -367,42 +357,8 @@ func close_menu() -> void:
 	operations_layer.modulate.a = 1
 	operations_layer.hide()
 	menu.hide()
-	Game.running = false
 	_block_controls(suspended)
 	_update_location()
-
-func _open_legacy(screen: String) -> void:
-	menu.hide()
-	legacy_layer.show()
-	_block_controls(true)
-	legacy = preload("res://scenes/main.tscn").instantiate()
-	legacy.embedded = true
-	legacy.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	legacy.offset_top = 66
-	legacy_layer.add_child(legacy)
-	if screen == "inventory":
-		legacy._show_inventory()
-	elif screen == "upgrades":
-		legacy._show_upgrades()
-	else:
-		legacy._show_shop()
-	var close: Button = _button("← Back to Little Bun", _close_legacy)
-	close.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	close.offset_left = 20
-	close.offset_right = -20
-	close.offset_top = 8
-	close.offset_bottom = 60
-	legacy_layer.add_child(close)
-
-func _close_legacy() -> void:
-	for child: Node in legacy_layer.get_children():
-		legacy_layer.remove_child(child)
-		child.queue_free()
-	legacy = null
-	legacy_layer.hide()
-	Game.running = false
-	menu.show()
-	_refresh()
 
 func _notification(what: int) -> void:
 	if not is_instance_valid(joystick):
@@ -418,7 +374,7 @@ func _notification(what: int) -> void:
 		world.set_presentation_paused(true)
 	elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
 		suspended = false
-		_block_controls(menu.visible or legacy_layer.visible)
+		_block_controls(menu.visible)
 		production_controller.set_paused(false)
 		fries_controller.set_paused(false)
 		customer_controller.set_paused(false)
@@ -426,9 +382,7 @@ func _notification(what: int) -> void:
 		audio.set_suspended(false)
 		world.set_presentation_paused(false)
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		if legacy_layer.visible:
-			_close_legacy()
-		elif operations_layer.visible:
+		if operations_layer.visible:
 			operations_layer.hide()
 		elif menu.visible:
 			close_menu()

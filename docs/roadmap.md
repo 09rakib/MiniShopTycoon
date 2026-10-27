@@ -30,6 +30,10 @@ Original numbered Phases 0–3 remain preserved. New A–K phases control expans
   Follow-up v0.13.1 on 27 October pins the compatible build toolchain, resolves
   original compatibility/manifest/stripping warnings and adds ten setup checks.
 
+User-requested cleanup on 27 October: v0.14.0 removes the retired grocery mode and
+all its navigation/screens/customer rendering/icons, preserving save compatibility.
+See test_report_current_only.md. No new gameplay phase or store upload is implied.
+
 At each approved phase: inspect → implement → test/fix → update docs/status →
 commit and push to https://github.com/09rakib/MiniShopTycoon → stop for feedback.
 The user explicitly requires the push at the end of each future phase. Do not

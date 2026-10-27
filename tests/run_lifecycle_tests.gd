@@ -122,11 +122,6 @@ func _run() -> void:
 	var ticket: int = initial.burger_sales.register_customer()
 	var tickets: Dictionary = initial.burger_sales.tickets.duplicate()
 	check(not game.sell_burger(ticket) and same(unchanged, initial.snapshot()) and tickets == initial.burger_sales.tickets, "Failed customer sale preserves stock/cash and reusable unpaid ticket")
-	game.buy("bread", 1)
-	check(same(unchanged, initial.snapshot()), "Failed grocery buy preserves stock/wallet/spending")
-	check(not game.sell("bread") and same(unchanged, initial.snapshot()), "Failed grocery sale preserves stock/profit/XP")
-	game.buy_upgrade("pantry")
-	check(same(unchanged, initial.snapshot()), "Failed shelf purchase retains wallet/tier/upgrade spending")
 	game.storage.blocked = false
 	check(game.sell_burger(ticket) and not game.sell_burger(ticket), "Recovered storage retries unpaid sale exactly once")
 	var old: Dictionary = initial.snapshot()

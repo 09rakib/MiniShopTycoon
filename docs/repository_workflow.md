@@ -23,3 +23,7 @@ key or publish to a store. Device acceptance and owner signing remain outstandin
 27 October continuation after 005d57c: finish the toolchain compatibility follow-up
 as v0.13.1/code 15, including prepared-template tests and rebuilt unsigned artifacts.
 Commit/push this checkpoint as usual; phone/signing deferrals remain in effect.
+
+Current task after 9d9b56d: user explicitly requested deleting the old-version menu
+option and the old version itself. Remove retired UI/runtime/assets, keep save
+compatibility, test/build v0.14.0 and commit/push. No store upload or signing change.

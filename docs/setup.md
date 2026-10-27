@@ -33,7 +33,8 @@ key are retained, with version code increased to 11. Existing coins, stock,
 levels/upgrades, machine/carried/counter inventory and cash stay intact. Schema 8
 adds owned fries production/inventory and furniture; prior machine upgrades, staff
 and cash remain intact. Older saves initialize new content locked/unowned. Do not downgrade after migration.
-It launches into the new world; Menu opens the preserved grocery business.
+It launches into the playable food shop. Menu contains current food-shop options;
+the retired grocery UI was deleted in v0.14.0 while save compatibility remains.
 
 This is a locally signed debug build, not a Play Store release. It does not
 request internet access. No release signing keys or Play account are required
@@ -50,7 +51,7 @@ Export → Android**. Set Android SDK Path to your SDK and Java SDK Path to JDK
 `C:/Program Files/Android/Android Studio/jbr` (21.0.10).
 Install matching **4.7.2** export templates using **Editor → Manage Export
 Templates**. Choose **Project → Export → Android Phase K → Export Project**,
-keep debug enabled, and save to `builds/MiniShopTycoon-phaseK.apk`.
+keep debug enabled, and save to `builds/MiniShopTycoon-v0.14.0.apk`.
 
 The Android preset uses both ARMv7 and ARM64, portrait configuration and package
 `com.minishoptycoon.offlinegame` (provisional; global uniqueness not verified).

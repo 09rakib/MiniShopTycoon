@@ -24,14 +24,15 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(folder)
 	game.storage = LocalSave.new(folder)
 	game.economy = ShopEconomy.new()
-	game.buy("bread", 5)
+	game.economy.buy("bread", 5)
+	game.persist()
 	var saved_coins: int = game.economy.coins
 	var scene: Node2D = load("res://scenes/playable_shop.tscn").instantiate()
 	root.add_child(scene)
 	await frames(3)
 	var player: CharacterBody2D = scene.world.player
 	check(is_instance_valid(player) and scene.world.fixtures.size() == 4, "Playable entry creates worker, bounded room and four fixtures")
-	check(game.economy.coins == saved_coins and game.economy.stock["bread"] == 5 and not game.running, "Entering new world preserves existing stock and money; old sales remain off")
+	check(game.economy.coins == saved_coins and game.economy.stock["bread"] == 5 and not game.has_method("buy"), "Current world preserves migrated stock and wallet without retired gameplay entrypoints")
 	var joystick: Control = scene.joystick
 	var press: InputEventScreenTouch = InputEventScreenTouch.new()
 	press.index = 1
@@ -157,12 +158,15 @@ func _run() -> void:
 	check(not player.controls_blocked and player.move_vector == Vector2.ZERO, "Resume waits for fresh input")
 	var saved_position: Vector2 = player.position
 	scene.open_menu()
-	scene._open_legacy("inventory")
-	check(scene.legacy.embedded and scene.legacy.on_inventory and player.controls_blocked, "Existing inventory opens inside management without losing world")
-	check(game.economy.coins == saved_coins and game.economy.stock["bread"] == 5, "Opening inventory does not alter existing economy")
-	scene._close_legacy()
+	scene._open_operations()
+	check(scene.operations_layer.visible and player.controls_blocked, "Current machine workshop opens with controls blocked")
+	check(not scene.has_method("_open_legacy") and not FileAccess.file_exists("res://scenes/main.tscn"), "Retired grocery screen and navigation are removed")
+	var clean_menu: bool = true
+	for button: Button in scene.menu.find_children("*", "Button", true, false):
+		clean_menu = clean_menu and not button.text in ["Inventory • grocery", "Shelf upgrades & goals", "Previous grocery shop"]
+	check(clean_menu, "Menu contains no retired version, inventory or shelf-upgrade navigation")
 	scene.close_menu()
-	check(player.position.is_equal_approx(saved_position) and not game.running, "Return from grocery panels preserves player position and disables old automatic sales")
+	check(player.position.is_equal_approx(saved_position) and game.economy.coins == saved_coins, "Closing current workshop preserves worker and wallet")
 	var restored: ShopEconomy = ShopEconomy.new()
 	game.storage.load_into(restored)
 	check(restored.coins == saved_coins and restored.stock["bread"] == 5, "Existing schema-3 progress remains save/load compatible")

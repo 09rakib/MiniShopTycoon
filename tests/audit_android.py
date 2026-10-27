@@ -10,6 +10,12 @@ from pathlib import Path
 import struct
 import zipfile
 
+RETIRED_RESOURCES = (
+    'scenes/main.tscn', 'scenes/inventory.tscn', 'scenes/upgrades.tscn',
+    'scripts/main.gd', 'scripts/inventory_screen.gd', 'scripts/upgrades_screen.gd',
+    'scripts/shop_view.gd', 'scripts/customer_manager.gd', 'scripts/product_icons.gd',
+)
+
 
 def native_segments(data):
     if data[:4] != b'\x7fELF' or data[5] != 1:
@@ -47,6 +53,9 @@ def audit(path):
         result['bundle'] = 'BundleConfig.pb' in names
         result['jar_signatures'] = [n for n in names if n.startswith('META-INF/') and n.endswith(('.RSA', '.DSA', '.EC'))]
         for name in names:
+            resource = name.removeprefix('base/').removeprefix('assets/')
+            if resource.startswith('assets/icons/') or any(resource == old or resource == old + '.remap' or resource == old + 'c' for old in RETIRED_RESOURCES):
+                result['errors'].append('Retired grocery content exported: ' + name)
             if any('/' + directory + '/' in '/' + name for directory in ('tests', 'docs', 'tools', '.git')) or name.endswith(('.jks', '.keystore', 'export_credentials.cfg', 'progress.json', 'preferences.cfg')):
                 result['excluded_content_leaks'].append(name)
             if name.endswith('.so'):

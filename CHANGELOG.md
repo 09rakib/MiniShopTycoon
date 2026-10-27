@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.14.0 — Remove the retired grocery version — 27 October 2026
+
+- Removed Previous grocery shop, Inventory and Shelf upgrades & goals menu entries.
+- Deleted retired scenes, UI/rendering scripts, customer loop and grocery icons,
+  plus Game's retired buy/sell/upgrade/navigation state and old capture helper.
+- Current burger/fries shop, sound, staff/upgrades and expansion remain available.
+- Preserved schema 1–8 reading and all current saved coins/food/upgrades/staff.
+- Added retired-content guards to APK/AAB audits. Updated current menu and
+  regression coverage; removed checks solely for deleted UI/icons/actions.
+- 567 checks pass. See docs/test_report_current_only.md; new APK/AAB v0.14.0/code 16.
+
 ## 0.13.1 — Android toolchain follow-up — 27 October 2026
 
 - Pin API-36-compatible AGP 8.11.1 and Gradle 8.13 with official distribution SHA256.

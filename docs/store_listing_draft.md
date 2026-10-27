@@ -12,8 +12,7 @@ to the cash point to collect your earnings, improve your burger machine and hire
 a stocker to help move burgers.
 
 Unlock a fries machine and add a table and chairs. Keep track of your stock,
-carry up to two items and grow at your own pace. The earlier grocery business is
-also available from the menu.
+carry up to two items and grow at your own pace.
 
 Play offline, with no account or ads. Progress and your sound preference stay on
 your device. Furniture currently provides seating decoration; customer dining

@@ -1,0 +1,23 @@
+[
+  {
+    "artifact": "MiniShopTycoon-v0.14.0.apk",
+    "bytes": 57720553,
+    "sha256": "35fff119a4e7e54ae432c97a3fdea2af67939c3e28ee520c08c0367c7ef2a64a",
+    "bundle": false,
+    "errors": []
+  },
+  {
+    "artifact": "MiniShopTycoon-v0.14.0-unsigned.apk",
+    "bytes": 52497191,
+    "sha256": "51d1ba0eadc039ba6340fd3a99b481e6db7108526b444f80e73b0cda5e078291",
+    "bundle": false,
+    "errors": []
+  },
+  {
+    "artifact": "MiniShopTycoon-v0.14.0-unsigned.aab",
+    "bytes": 52477118,
+    "sha256": "e9dae65854dc3dd9e47d089c4d8fb117e22c9b4422cd5841033e3bfa9f70e28c",
+    "bundle": true,
+    "errors": []
+  }
+]

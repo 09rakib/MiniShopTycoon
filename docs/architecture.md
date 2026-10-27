@@ -373,3 +373,17 @@ overlay can then replace real declarations. Unrelated XML/settings remain intact
 missing tools or unexpected template structure stop preparation before file writes.
 build-release.ps1 extracts the matching local template when absent, then prepares
 it before exporting. No generated Gradle tree or credentials are committed.
+
+## Current-only shop (v0.14.0)
+
+The retired grocery UI is removed: main/inventory/upgrades scenes, their screens,
+shop renderer, old customer controller and product icons no longer exist. The
+current menu has no entrypoint or layer for that mode; Android Back and focus
+guards handle only current menu/workshops. Old Game buy/sell/shelf-upgrade APIs
+and old running/level-up UI state were removed. APK/AAB audit rejects retired
+scene/script/icon paths, including compiled/remapped script variants.
+
+ShopEconomy retains the established serialized fields and validation/migration
+model so schema 1–8 files still load without losing wallet or food-shop progress.
+Those compatibility fields do not expose a grocery screen or customer simulation.
+Historical documentation/previews describe earlier checkpoints, not current menus.

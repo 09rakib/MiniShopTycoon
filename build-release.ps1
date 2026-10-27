@@ -7,7 +7,7 @@ if (-not $env:JAVA_HOME) { $env:JAVA_HOME = 'C:\Program Files\Android\Android St
 $androidSdk = if ($env:ANDROID_HOME) { $env:ANDROID_HOME } else { Join-Path $env:USERPROFILE 'AppData/Local/Android/Sdk' }
 $engine = Join-Path $PSScriptRoot 'tools/godot/Godot_v4.7.2-stable_win64_console.exe'
 $preset = if ($Format -eq 'aab') { 'Android Bundle Candidate' } else { 'Android Release Candidate' }
-$artifact = "builds/MiniShopTycoon-phaseK-unsigned.$Format"
+$artifact = "builds/MiniShopTycoon-v0.14.0-unsigned.$Format"
 $arguments = @('--headless', '--path', '.', '--export-release', $preset, $artifact)
 if ($Format -eq 'aab') {
     if (-not (Test-Path -LiteralPath 'android/build/build.gradle')) {

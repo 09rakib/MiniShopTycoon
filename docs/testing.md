@@ -84,3 +84,13 @@ explicit tool versions, distribution checksum, preserved settings/XML, byte-stab
 rerun and failure-before-write for missing NDK/unknown formats. test.cmd now invokes
 both runners (605 total checks). End-to-end bundle verification and remaining
 notices are recorded in test_report_toolchain.md; no physical device claim.
+
+## Current-only shop verification
+
+v0.14.0 removes the retired grocery UI/icons/customer loop and its runtime APIs.
+Tests solely for those deleted features were removed. Pure economy/save migration
+checks remain, while world/performance navigation tests now exercise the current
+workshops. The world suite also rejects the deleted scene/entrypoint/menu labels.
+567 checks pass across twelve Godot suites and ten PowerShell setup checks. APK/AAB
+content audit rejects retired files. See test_report_current_only.md for actual
+artifact evidence and rendered current menus at 480×900 and 360×640.

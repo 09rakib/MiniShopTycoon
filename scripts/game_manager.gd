@@ -1,7 +1,6 @@
 extends Node
 signal changed
 signal feedback(text: String)
-signal level_up(level: int)
 signal production_changed
 signal handling_changed
 signal burger_sale_completed(amount: int)
@@ -11,69 +10,12 @@ signal presentation(kind: String, point: Vector2, amount: int)
 
 var economy: ShopEconomy = ShopEconomy.new()
 var storage: LocalSave = LocalSave.new()
-var running: bool = false
 var production_dirty: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	storage.load_into(economy)
 	get_tree().auto_accept_quit = false
-
-func buy(id: String, quantity: int = 0) -> void:
-	var previous_coins: int = economy.coins
-	var previous_spending: int = economy.stock_spending
-	var previous_stock: int = int(economy.stock.get(id, 0))
-	var requested: int = int(economy.catalog["stock_batch"]) if quantity == 0 else quantity
-	var error: String = economy.buy(id, requested)
-	if error.is_empty():
-		var saved: bool = persist()
-		if not saved:
-			economy.coins = previous_coins
-			economy.stock_spending = previous_spending
-			economy.stock[id] = previous_stock
-			return
-		changed.emit()
-		if saved:
-			feedback.emit("Shelf stocked. Customers check out automatically!")
-	else:
-		feedback.emit(error)
-
-func sell(id: String) -> bool:
-	var previous: Array = [economy.coins, economy.revenue, economy.cost_of_goods, economy.customers, economy.stock.get(id, 0)]
-	var before_level: int = economy.shop_level()
-	if not economy.sell(id):
-		return false
-	if not persist():
-		economy.coins = previous[0]
-		economy.revenue = previous[1]
-		economy.cost_of_goods = previous[2]
-		economy.customers = previous[3]
-		economy.stock[id] = previous[4]
-		return false
-	changed.emit()
-	if economy.shop_level() > before_level:
-		level_up.emit(economy.shop_level())
-	return true
-
-func buy_upgrade(id: String) -> void:
-	var previous_coins: int = economy.coins
-	var previous_spending: int = economy.upgrade_spending
-	var previous_upgrades: Dictionary = economy.shelf_upgrades.duplicate()
-	var previous_unlocks: Array[String] = economy.retained_unlocks.duplicate()
-	var error: String = economy.buy_upgrade(id)
-	if not error.is_empty():
-		feedback.emit(error)
-		return
-	var saved: bool = persist()
-	if not saved:
-		economy.coins = previous_coins
-		economy.upgrade_spending = previous_spending
-		economy.shelf_upgrades = previous_upgrades
-		economy.retained_unlocks = previous_unlocks
-		return
-	changed.emit()
-	if saved:
-		feedback.emit("Shelf upgraded! +%d capacity for every product in this group." % int(economy.upgrade_rules.find(id)["capacity_per_level"]))
 
 func persist() -> bool:
 	if not storage.write(economy):
@@ -222,7 +164,7 @@ func restart() -> void:
 		changed.emit()
 		production_changed.emit()
 		handling_changed.emit()
-		feedback.emit("A fresh start — stock your first shelf!")
+		feedback.emit("A fresh start — your food shop is ready!")
 	else:
 		feedback.emit(storage.message)
 

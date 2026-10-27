@@ -30,7 +30,7 @@ Base manifest renderer/editor metadata lets export overlays replace real values.
 The old API compatibility, missing metadata and native stripping warnings are
 resolved. Template Groovy DSL deprecations for future Gradle 10 and the existing
 experimental path-check notice remain; no warning suppression is used.
-See test_report_toolchain.md for v0.13.1/code 15 evidence. AGP 8.11 supports API 36
+See test_report_toolchain.md for v0.13.1/code 15 toolchain evidence; current UI cleanup is v0.14.0/code 16. AGP 8.11 supports API 36
 and requires Gradle 8.13.
 [Official AGP 8.11 compatibility](https://developer.android.com/build/releases/agp-8-11-0-release-notes).
 
@@ -45,10 +45,10 @@ For the AAB, use the JDK jarsigner (not apksigner):
 
 ```powershell
 & "$env:JAVA_HOME/bin/jarsigner.exe" -keystore 'C:/private/upload.jks' `
-  -signedjar 'builds/MiniShopTycoon-phaseK-signed.aab' `
-  'builds/MiniShopTycoon-phaseK-unsigned.aab' 'upload-alias'
+  -signedjar 'builds/MiniShopTycoon-v0.14.0-signed.aab' `
+  'builds/MiniShopTycoon-v0.14.0-unsigned.aab' 'upload-alias'
 & "$env:JAVA_HOME/bin/jarsigner.exe" -verify -verbose -certs `
-  'builds/MiniShopTycoon-phaseK-signed.aab'
+  'builds/MiniShopTycoon-v0.14.0-signed.aab'
 ```
 
 For the APK, the exported candidate is already aligned. Sign a new output with
@@ -57,10 +57,10 @@ SDK build-tools apksigner and verify it; never change its contents after signing
 ```powershell
 & "$env:ANDROID_HOME/build-tools/36.0.0/apksigner.bat" sign `
   --ks 'C:/private/upload.jks' --ks-key-alias 'upload-alias' `
-  --out 'builds/MiniShopTycoon-phaseK-signed.apk' `
-  'builds/MiniShopTycoon-phaseK-unsigned.apk'
+  --out 'builds/MiniShopTycoon-v0.14.0-signed.apk' `
+  'builds/MiniShopTycoon-v0.14.0-unsigned.apk'
 & "$env:ANDROID_HOME/build-tools/36.0.0/apksigner.bat" verify --verbose `
-  'builds/MiniShopTycoon-phaseK-signed.apk'
+  'builds/MiniShopTycoon-v0.14.0-signed.apk'
 ```
 
 Verify the package/version/certificate independently. Configure Play App Signing

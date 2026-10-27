@@ -58,12 +58,12 @@ func _run() -> void:
 	var nodes: int = get_node_count()
 	for index: int in 5:
 		scene.open_menu()
-		scene._open_legacy("inventory")
+		scene._open_operations()
 		await process_frame
-		scene._close_legacy()
+		scene._open_expansion()
 		scene.close_menu()
 		await process_frame
-	check(get_node_count() == nodes, "Repeated grocery overlay open/close releases all overlay nodes")
+	check(get_node_count() == nodes, "Repeated current workshop transitions do not accumulate nodes")
 	var audio: Node = scene.audio
 	for index: int in 5000:
 		audio.play("unknown_" + str(index))
